@@ -2,7 +2,7 @@
 
 The playbook that runs Tribe's outbound sales desk inside Claude. Two skills, built and battle-tested on live outreach in August 2026: one writes, one keeps the discipline. Together they turn "find me leads" into sent-ready drafts with the CRM already handled.
 
-**This repository is PRIVATE.** It contains the full outbound playbook, client proof points, live A/B test variants and HubSpot record references. Never fork it public.
+**This repository is public so the Tribe team can use it without access friction** (Jacopo's call, 20 Aug 2026). It still contains the full outbound playbook, client proof points, live A/B test variants and HubSpot record references, so don't advertise the link outside Tribe.
 
 ## What the system guarantees
 
