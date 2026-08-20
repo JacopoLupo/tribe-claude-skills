@@ -28,17 +28,20 @@ Source: `tribe-sales-desk.SKILL.md` | Packaged: `tribe-sales-desk.skill`
 
 ```mermaid
 flowchart LR
-    A[Find leads<br/>funding news, board scans] --> B[HubSpot check<br/>duplicates, colleague-owned accounts]
+    A1[COLD feed<br/>funding news, board anomalies] --> B[Monday harvest<br/>one list, deduped in HubSpot]
+    A2[WARM feed<br/>LinkedIn commenting radar] --> B
+    A2 -.-> W[Comment on their post<br/>WARMING task, 3-7 day window]
+    W --> B
     B --> C[Board scan<br/>index.py]
-    C --> D[Draft<br/>variant A or B, verified address]
+    C --> D[Draft: variant A/B cold,<br/>variant W warm, verified address]
     D --> E[Human sends<br/>Claude never sends]
     E --> F[BCC auto-logs to HubSpot]
     F --> G[Task closed +<br/>follow-up scheduled]
-    G --> H[Daily reconcile<br/>replies, bounces, tracking]
-    H --> A
+    G --> H[Daily reconcile: replies, bounces,<br/>tracking, warming queue]
+    H --> A1
 ```
 
-The human stays in the loop at exactly one point: the send. Claude drafts, logs, schedules and audits; a person reads and presses Send.
+This is the Lead Engine: two feeds, one pipeline. Cold leads come from market signals and get the A/B-tested variants. Warm leads come from the commenting radar, Jacopo comments on their LinkedIn post first, and 3 to 7 days later they get variant W, which opens from that exchange. The rule that protects both lanes: nobody mid-warm-up ever receives a cold email. The human stays in the loop at exactly two points: the comment and the send.
 
 ## Getting started
 

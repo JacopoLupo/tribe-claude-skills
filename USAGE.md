@@ -31,11 +31,21 @@ Two Gmail-side habits that make the whole system work:
 
 Runs the sales-desk routine: reconciles open tasks against the Sent folder (so you never email someone twice), checks bounces from yesterday, checks email tracking health, surfaces replies that have no task behind them (the most expensive thing to miss), and reports: what is done, what needs you today, what is scheduled.
 
-### Find new prospects
+### Find new prospects: the Lead Engine
 
-> "find new leads" or "deep search for recent funding rounds"
+> "run the lead engine" or "fresh leads" or "harvest"
 
-Claude hunts (funding announcements, job board scans), then for each candidate: checks HubSpot for existing records, duplicates, and accounts a colleague already owns (those get parked, always), scans the prospect's live job board, and reports which ones deserve an email.
+One pipeline, two feeds. The COLD feed: funding announcements from that week plus job board anomalies (roles crossing 90 days, reposted roles, hiring waves). The WARM feed: the LinkedIn commenting radar surfaces ICP people who posted in the last 4 weeks. Everything merges into one Monday list, deduped against HubSpot, colleague-owned accounts parked. Cold leads go straight to drafts; warm leads go through the commenting step first.
+
+### The commenting workflow (warm lane)
+
+You comment on 2 to 3 radar posts a day, real comments, in your voice. Tell Claude who you commented on:
+
+> "I commented on [name]'s post about [topic]"
+
+Claude logs a WARMING task on that contact the same day, with the outreach-ready date stamped 3 to 7 days out. When the date arrives, the morning run surfaces them ("two warm leads ready today") and the draft uses **variant W**: it opens from the exchange ("good exchange under your post on [topic]"), then goes into their board data, same skeleton as everything else after that. If the person replied to your comment, the touch goes as a LinkedIn DM instead of an email, they chose the channel.
+
+Three rules the engine enforces: nobody mid-warm-up gets a cold email (the draft step checks for open WARMING tasks first); warmth expires at 10 days, after which the lead falls back to the cold lane; and variant W stays out of the A/B scoreboard, warm replies would corrupt the cold test.
 
 ### Turn prospects into drafts
 
