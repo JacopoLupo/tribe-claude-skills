@@ -13,10 +13,12 @@ Usage:
     python3 index.py monumental      # index stats + that board's roles
     python3 index.py --probe 127     # percentile for a 127-day-old role
 """
-import json, sys, datetime, statistics as st, concurrent.futures as cf
+import json, sys, os, datetime, statistics as st, concurrent.futures as cf
 import urllib.request
 
 TODAY = datetime.date.today()
+HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "board_history.json")
+TA_WORDS = ("recruit", "talent", "people", "hr ")
 
 # The 40-board universe. Add new boards here so week-over-week numbers stay
 # comparable; note the change in the skill when you do.
@@ -90,6 +92,63 @@ print("--- open TA roles across the index (>50d) ---")
 for s, t, d, c, loc in sorted(rows, key=lambda r: -r[2]):
     if c == "ta" and d > 50:
         print(f"  {d:>4}d {s:<22} {t}")
+
+# --- TA PRESSURE: companies whose hiring function is visibly under strain ---
+# High ratio of open TA roles to total roles = they cannot hire fast enough
+# to hire. The best-qualified cold targets in the index.
+print("--- TA PRESSURE (open TA roles vs board size) ---")
+by_board = {}
+for s, t, d, c, loc in rows:
+    tot, ta = by_board.get(s, (0, 0))
+    by_board[s] = (tot + 1, ta + (1 if c == "ta" else 0))
+pressure = [(s, ta, tot, 100 * ta / tot) for s, (tot, ta) in by_board.items()
+            if ta >= 2 or (ta >= 1 and tot >= 5 and 100 * ta / tot >= 10)]
+for s, ta, tot, ratio in sorted(pressure, key=lambda x: -x[3]):
+    print(f"  {s:<22} {ta} TA roles of {tot} total ({ratio:.0f}% of the board)")
+if not pressure:
+    print("  none above threshold this scan")
+
+# --- VELOCITY: diff against the previous scan (the scaling detector) ---
+current = {}
+for s, t, d, c, loc in rows:
+    current.setdefault(s, []).append(t)
+prev, prev_date = {}, None
+if os.path.exists(HISTORY):
+    try:
+        h = json.load(open(HISTORY))
+        prev_date = h.get("date")
+        prev = h.get("boards", {})
+    except Exception:
+        pass
+if prev:
+    print(f"--- VELOCITY vs previous scan ({prev_date}) ---")
+    alerts = []
+    for slug in sorted(current):
+        if slug not in prev:
+            alerts.append((slug, f"NEW BOARD with {len(current[slug])} roles"))
+            continue
+        added = [t for t in current[slug] if t not in prev[slug]]
+        closed = [t for t in prev[slug] if t not in current[slug]]
+        first_ta = [t for t in added
+                    if any(k in (t or "").lower() for k in TA_WORDS)
+                    and not any(any(k in (p or "").lower() for k in TA_WORDS)
+                                for p in prev[slug])]
+        if len(added) >= 3:
+            alerts.append((slug, f"SCALING: +{len(added)} roles "
+                                 f"({', '.join(added[:4])}{'...' if len(added) > 4 else ''})"))
+        if first_ta:
+            alerts.append((slug, f"FIRST RECRUITER ROLE posted: {first_ta[0]} "
+                                 f"(they are building a hiring function NOW)"))
+        if len(closed) >= 4:
+            alerts.append((slug, f"slowdown or hiring freeze: -{len(closed)} roles"))
+    if alerts:
+        for slug, msg in alerts:
+            print(f"  {slug:<22} {msg}")
+    else:
+        print("  no significant board movement since last scan")
+else:
+    print("--- VELOCITY: first scan recorded, diffs start next run ---")
+json.dump({"date": str(TODAY), "boards": current}, open(HISTORY, "w"))
 
 for slug in [a for a in args if not a.startswith("--") and not a.isdigit()]:
     print(f"--- full board: {slug} ---")

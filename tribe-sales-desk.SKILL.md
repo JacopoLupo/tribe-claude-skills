@@ -57,7 +57,11 @@ One query against HubSpot's logged emails (the EMAIL engagement object) for the 
 
 ### 1d. The warming queue
 
-Ask every morning: who in the warming queue is ready today? Open tasks with subject "WARMING:" whose outreach-ready date has arrived become today's warm sends, variant W per the Lead Engine in tribe-outbound-sequence, counted inside the same 2-outbound-tasks-per-day cap, and warm beats cold when both compete for a slot (warmth expires, cold leads keep). A WARMING task past 10 days without its send is flagged: the window closed, the lead falls back to the cold lane.
+Ask every morning: who in the warming queue is ready today? Open tasks with subject "WARMING:" become today's warm sends inside a FRESH-ONLY window (Jacopo, 20 Aug): within 72 hours of the comment, same day or next day if the person replied or reacted. Variant W per the Lead Engine in tribe-outbound-sequence, counted inside the same 2-outbound-tasks-per-day cap, and warm ALWAYS beats cold for a slot because warmth expires and cold leads keep. A WARMING task past 5 days without its send is flagged: window closed, lead falls back to the cold lane.
+
+### 1e. The funding radar
+
+Daily, not weekly: one sweep for EU funding rounds announced the previous day. A round announced yesterday is today's best cold lead and next week's worst one. Any hit goes through the Lead Engine (dedupe, Tribester check, board scan) the same morning.
 
 ### 2. Find replies with no task behind them
 

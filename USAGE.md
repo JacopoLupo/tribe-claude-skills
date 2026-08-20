@@ -35,7 +35,7 @@ Runs the sales-desk routine: reconciles open tasks against the Sent folder (so y
 
 > "run the lead engine" or "fresh leads" or "harvest"
 
-One pipeline, two feeds. The COLD feed: funding announcements from that week plus job board anomalies (roles crossing 90 days, reposted roles, hiring waves). The WARM feed: the LinkedIn commenting radar surfaces ICP people who posted in the last 4 weeks. Everything merges into one Monday list, deduped against HubSpot, colleague-owned accounts parked. Cold leads go straight to drafts; warm leads go through the commenting step first.
+One pipeline, two feeds. The COLD feed is a scaling detector with four signals: board velocity (the index script diffs every scan against the last one and flags any company that added 3+ roles, a brand-new board, or its FIRST recruiter role, the best-timed signal there is), plus a DAILY sweep of EU funding rounds announced the previous day, a round from yesterday is the warmest cold lead that exists. The WARM feed: the LinkedIn commenting radar surfaces ICP people who posted recently. Everything merges into one list, deduped against HubSpot, colleague-owned accounts parked. A company hitting two signals in one week jumps the queue.
 
 ### The commenting workflow (warm lane)
 
@@ -43,9 +43,9 @@ You comment on 2 to 3 radar posts a day, real comments, in your voice. Tell Clau
 
 > "I commented on [name]'s post about [topic]"
 
-Claude logs a WARMING task on that contact the same day, with the outreach-ready date stamped 3 to 7 days out. When the date arrives, the morning run surfaces them ("two warm leads ready today") and the draft uses **variant W**: it opens from the exchange ("good exchange under your post on [topic]"), then goes into their board data, same skeleton as everything else after that. If the person replied to your comment, the touch goes as a LinkedIn DM instead of an email, they chose the channel.
+Claude logs a WARMING task on that contact the same day. The window is FRESH ONLY: the outreach goes out within 72 hours of the comment, and same day or next day if the person replied or reacted, while the exchange is still on their mind. The morning run surfaces who's ready ("two warm leads ready today") and the draft uses **variant W**: it opens from the exchange ("good exchange under your post on [topic]"), then goes into their board data, same skeleton as everything else after that. If the person replied to your comment, the touch goes as a LinkedIn DM instead of an email, they chose the channel.
 
-Three rules the engine enforces: nobody mid-warm-up gets a cold email (the draft step checks for open WARMING tasks first); warmth expires at 10 days, after which the lead falls back to the cold lane; and variant W stays out of the A/B scoreboard, warm replies would corrupt the cold test.
+Three rules the engine enforces: nobody mid-warm-up gets a cold email (the draft step checks for open WARMING tasks first); warmth expires at 5 days, after which the lead falls back to the cold lane; and variant W stays out of the A/B scoreboard, warm replies would corrupt the cold test.
 
 ### Turn prospects into drafts
 

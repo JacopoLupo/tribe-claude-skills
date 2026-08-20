@@ -30,7 +30,7 @@ Source: `tribe-sales-desk.SKILL.md` | Packaged: `tribe-sales-desk.skill`
 flowchart LR
     A1[COLD feed<br/>funding news, board anomalies] --> B[Monday harvest<br/>one list, deduped in HubSpot]
     A2[WARM feed<br/>LinkedIn commenting radar] --> B
-    A2 -.-> W[Comment on their post<br/>WARMING task, 3-7 day window]
+    A2 -.-> W[Comment on their post<br/>WARMING task, 72h fresh window]
     W --> B
     B --> C[Board scan<br/>index.py]
     C --> D[Draft: variant A/B cold,<br/>variant W warm, verified address]
@@ -41,7 +41,9 @@ flowchart LR
     H --> A1
 ```
 
-This is the Lead Engine: two feeds, one pipeline. Cold leads come from market signals and get the A/B-tested variants. Warm leads come from the commenting radar, Jacopo comments on their LinkedIn post first, and 3 to 7 days later they get variant W, which opens from that exchange. The rule that protects both lanes: nobody mid-warm-up ever receives a cold email. The human stays in the loop at exactly two points: the comment and the send.
+This is the Lead Engine: two feeds, one pipeline. Cold leads come from the scaling detector, board velocity diffs, first-recruiter-role alerts, and a daily funding sweep, and get the A/B-tested variants. Warm leads come from the commenting radar: Jacopo comments on their LinkedIn post, and within 72 hours (same day if they engaged back) they get variant W, which opens from that exchange. The rule that protects both lanes: nobody mid-warm-up ever receives a cold email. The human stays in the loop at exactly two points: the comment and the send.
+
+Improving these skills is a team sport: see **[CONTRIBUTING.md](CONTRIBUTING.md)** for how to propose changes without breaking the machine.
 
 ## Getting started
 
