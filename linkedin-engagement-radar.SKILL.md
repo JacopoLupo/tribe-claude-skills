@@ -1,36 +1,61 @@
 ---
 name: linkedin-engagement-radar
 description: >-
-  Find EU-based people from Jacopo's Tribe account list who have recently posted on
-  LinkedIn, so he can go comment on them. Use whenever Jacopo asks to find posts to
-  comment on, "who from my accounts posted recently", "find me people to engage with
-  on LinkedIn", "commenting radar", "give me posts to comment on", or wants to warm up
-  target accounts through LinkedIn engagement. Pulls contacts from the account-list
-  Google Sheet, checks each person's recent LinkedIn activity through Jacopo's logged-in
-  browser, filters to EU/Europe-based people with a post in roughly the last 4 weeks,
-  ranks them, and (on request) drafts comments in his voice. EU-based only, never random
-  people. If fewer than 5 qualifying posts are found in the account list, it expands to a
-  wider but still-relevant EU ICP.
+  Find EU-based decision-makers who recently posted on LinkedIn so Jacopo can comment
+  and warm them up before outreach. Two modes. FRESH-LEAD mode (the default, and the
+  warm lane of the Lead Engine): checks the decision-makers at companies the cold feed
+  just surfaced (funding rounds, board velocity, TA pressure) for recent posts, because
+  a founder who announced a round this week has always posted about it and that post is
+  the best commenting surface there is. ACCOUNT-LIST mode (only when Jacopo explicitly
+  asks about "my accounts" or "the account list"): relationship-maintenance commenting
+  on his account-list sheet contacts, which is NOT a harvest source for new outreach.
+  Checks activity through Jacopo's logged-in browser, filters to EU/Europe-based people
+  with a post in roughly the last 4 weeks, ranks them, and (on request) drafts comments
+  in his voice. EU-based only, never random people.
 ---
 
 # LinkedIn engagement radar
 
-The job: give Jacopo a short, ranked list of **real people from his target accounts who
-posted on LinkedIn recently**, with the post and a direct link, so he can comment and warm
-up the relationship. Then, if he wants, draft the comments in his voice.
+The job: give Jacopo a short, ranked list of **real people who posted on LinkedIn
+recently**, with the post and a direct link, so he can comment and warm up the
+relationship before any outreach. Then, if he wants, draft the comments in his voice.
+
+## The two modes (Jacopo clarified this on 20 Aug 2026)
+
+**Fresh-lead mode is the default** and is what "run the lead engine" means for the warm
+lane. The people to check are the decision-makers at the NEW companies the cold feed just
+surfaced: fresh funding rounds, board-velocity alerts, first-recruiter-role alerts, TA
+pressure. A founder who announced a round in the last few days has always posted about it,
+and that announcement post is the single best commenting surface that exists. The engine's
+first live test (20 Aug 2026) proved it three for three: all three founders found by the
+funding sweep had posted their round within the previous 72 hours. Comment first, variant
+W inside the 72h window, cold email never while the warm-up is live.
+
+**Account-list mode runs only when Jacopo explicitly asks** ("who from my accounts posted
+recently", "check the account list"). Commenting on account-list people is relationship
+maintenance on existing territory, not lead harvesting, and it produces outreach only when
+Jacopo says he commented and wants the follow-through. The first test run made this
+mistake in reverse (crawled the account list while hunting new leads); the mode split
+exists so it never happens again. Side benefit of that crawl worth keeping: the sheet
+drifts badly, so any account-list run should report job changes it finds (it caught a
+Head of TA who had left a Tier 1 account, invalidating a scheduled follow-up contact).
 
 Two hard constraints that come straight from Jacopo and must never be relaxed:
 
 1. **EU / Europe based only.** Never surface someone based in the US, LatAm, APAC, etc.
    When in doubt about location, verify or drop them. Do not pad the list with people who
    are not clearly in Europe.
-2. **No random people.** Everyone on the list starts from his account list. Only expand
-   beyond it if the account list yields fewer than 5 qualifying posts (see Fallback), and
-   even then stay inside his genuine ICP.
+2. **No random people.** Fresh-lead mode starts from companies a real market signal
+   surfaced; account-list mode starts from the sheet. Never pad either list with people
+   who came from neither.
 
 ## Inputs and defaults
 
-- **Account-list sheet** (default): `30-Account-Target-List-Template`
+- **Fresh-lead mode source** (default): the current harvest's companies. Per company,
+  resolve the CEO/founder or the most senior People/TA leader via LinkedIn people search
+  (`/search/results/people/?keywords=<Company>%20founder%20CEO`), verify name + company
+  on the result, then check their recent activity. CEO/founder/Head-of only, never TA ICs.
+- **Account-list sheet** (account-list mode only): `30-Account-Target-List-Template`
   - fileId: `1Dj40gCj9qlEU34C7DEELRqJ25P4UYorEbjj5JNhZUHE`
   - Use the tab **named "Jacopo: Account List"**. Important: do not trust the `gid` in a
     pasted URL. The `gid` often points at whatever tab was open when the link was copied
@@ -49,7 +74,10 @@ recency window, use those instead.
 
 ## Step by step
 
-### 1. Read the account list
+### 1. Get the people to check
+**Fresh-lead mode:** take the current harvest's companies and resolve each decision-maker
+via LinkedIn people search (step 3's technique). Skip to step 2.
+**Account-list mode:** read the account list as follows.
 Use the Google Drive tool to read the sheet, then isolate the **Jacopo: Account List**
 tab. The full-sheet export concatenates every tab without labels, so confirm tab identity
 and order through the browser if needed (see step 2's browser session):

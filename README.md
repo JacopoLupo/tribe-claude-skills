@@ -28,11 +28,11 @@ Source: `tribe-sales-desk.SKILL.md` | Packaged: `tribe-sales-desk.skill`
 
 ```mermaid
 flowchart LR
-    A1[COLD feed<br/>funding news, board anomalies] --> B[Monday harvest<br/>one list, deduped in HubSpot]
-    A2[WARM feed<br/>LinkedIn commenting radar] --> B
-    A2 -.-> W[Comment on their post<br/>WARMING task, 72h fresh window]
+    A1[COLD feed<br/>triangulated funding sweep,<br/>board velocity, TA pressure] --> R{Decision-maker<br/>posted recently?}
+    R -->|no| B[Harvest list<br/>deduped in HubSpot]
+    R -->|yes| W[WARM lane: comment on their post<br/>WARMING task, 72h fresh window]
     W --> B
-    B --> C[Board scan<br/>index.py]
+    B --> C[Board scan<br/>index.py + ATS probes]
     C --> D[Draft: variant A/B cold,<br/>variant W warm, verified address]
     D --> E[Human sends<br/>Claude never sends]
     E --> F[BCC auto-logs to HubSpot]
@@ -41,7 +41,7 @@ flowchart LR
     H --> A1
 ```
 
-This is the Lead Engine: two feeds, one pipeline. Cold leads come from the scaling detector, board velocity diffs, first-recruiter-role alerts, and a daily funding sweep, and get the A/B-tested variants. Warm leads come from the commenting radar: Jacopo comments on their LinkedIn post, and within 72 hours (same day if they engaged back) they get variant W, which opens from that exchange. The rule that protects both lanes: nobody mid-warm-up ever receives a cold email. The human stays in the loop at exactly two points: the comment and the send.
+This is the Lead Engine: one pipeline, and every lead in it is FRESH. The cold feed finds new companies through a triangulated funding sweep (press + web search + VC announcements, every find confirmed against live open roles), board velocity diffs, first-recruiter-role alerts and TA pressure. Then the fork: if the company's decision-maker posted on LinkedIn recently, and a founder who just announced a round always has, the lead enters the WARM lane. Jacopo comments on the post, and within 72 hours (same day if they engaged back) they get variant W, which opens from that exchange. Everyone else gets the A/B-tested cold variants. The account-list sheet is not a harvest source; commenting there is relationship maintenance. The rule that protects both lanes: nobody mid-warm-up ever receives a cold email. The human stays in the loop at exactly two points: the comment and the send.
 
 Improving these skills is a team sport: see **[CONTRIBUTING.md](CONTRIBUTING.md)** for how to propose changes without breaking the machine.
 
