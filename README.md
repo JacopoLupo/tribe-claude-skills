@@ -45,6 +45,12 @@ This is the Lead Engine: two feeds, one pipeline. Cold leads come from the scali
 
 Improving these skills is a team sport: see **[CONTRIBUTING.md](CONTRIBUTING.md)** for how to propose changes without breaking the machine.
 
+## The supporting skills
+
+The two desk skills lean on four more, all documented here so the repo is the complete system:
+
+**linkedin-engagement-radar** (`linkedin-engagement-radar.SKILL.md`) feeds the warm lane of the Lead Engine: it surfaces EU people from Tribe's account list and ICP who posted on LinkedIn recently, so Jacopo can comment before the outreach goes out. **jacopo-linkedin-voice** and **tribe-brand** govern how anything published or sent actually sounds, personal voice and company brand respectively. **anti-ai-writing-skill** is the quality gate on every piece of prose: it bans the vocabulary, sentence shapes and hype patterns that make writing read as machine-generated, and every cold email passes through it.
+
 ## Getting started
 
 Read **[USAGE.md](USAGE.md)**. It has the setup checklist (which connectors to link), the exact phrases to say to Claude, and a walkthrough of a full day on the desk.
