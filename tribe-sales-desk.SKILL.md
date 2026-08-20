@@ -55,6 +55,10 @@ Search `from:mailer-daemon` since the last run, every day, no exceptions. Strict
 
 One query against HubSpot's logged emails (the EMAIL engagement object) for the most recent sends: do they carry a tracker key? If the latest sends have none, the Track box in the Gmail extension has lapsed (signed out, unticked, or sent outside desktop Chrome) and the morning report says "Track box lapsed, opens are not being recorded" the same day. The BCC keeps logging regardless, so this is about open data, not CRM history. Found the hard way on 20 August 2026: six sends went out untracked and nobody knew until the day was over.
 
+### 1d. The warming queue
+
+Ask every morning: who in the warming queue is ready today? Open tasks with subject "WARMING:" whose outreach-ready date has arrived become today's warm sends, variant W per the Lead Engine in tribe-outbound-sequence, counted inside the same 2-outbound-tasks-per-day cap, and warm beats cold when both compete for a slot (warmth expires, cold leads keep). A WARMING task past 10 days without its send is flagged: the window closed, the lead falls back to the cold lane.
+
 ### 2. Find replies with no task behind them
 
 Search the inbox for replies from prospects, then check whether each one has an open task. Anything with a reply and no task is the top of today's list, ahead of every cold email.

@@ -20,6 +20,33 @@ The job: take people Jacopo wants to contact and get him to the point where he o
 
 Most of the value here is not the writing. It is the checks that happen before the writing, because his CRM has 8,500+ companies, a history of bad imports, and duplicates that multiply every time someone sends an email to a contact whose email field is blank.
 
+## The Lead Engine: one intake for cold and warm
+
+Added 20 August 2026, Jacopo's design: every prospect enters through ONE pipeline with two feeds, and which feed they came through decides their opener. Trigger phrases: "run the lead engine", "fresh leads", "harvest".
+
+**Feed 1, market signals (COLD).** Funding rounds announced that week, plus index scan anomalies: roles crossing 90 days, reposted roles, a hiring wave after a raise, a recruiter role appearing. These flow straight to the outreach queue and get variant A or B, alternating, counted in the A/B test.
+
+**Feed 2, the commenting radar (WARM).** The linkedin-engagement-radar skill surfaces EU people from the ICP who posted in the last 4 weeks. Jacopo comments on 2 to 3 posts a day. EVERY comment gets logged the same day as a HubSpot task on that contact: subject "WARMING: [name]", body naming the post topic, the comment date, and the outreach-ready date. The window: outreach goes out 3 TO 7 DAYS after the comment, sooner if the person replied or reacted to it. Past 10 days the warmth is spent and the lead falls back to the cold lane.
+
+**Both feeds merge Monday.** One harvest list, deduped against HubSpot, Tribester-owned accounts parked, each lead tagged COLD or WARM in its task. Then the standard machine below runs on all of them: CRM checks, board scan, verified address, draft, task, ladder.
+
+**The two hard rules that make the engine work:**
+
+1. **Never cold-email someone mid-warm-up.** Before drafting ANY first touch, check the contact for an open WARMING task. If one exists, the email waits for the window and uses variant W. A cold index email landing two days after a friendly comment burns both.
+2. **A warm lead gets VARIANT W, not A or B**, and variant W is EXCLUDED from the A/B scoreboard (different population, warm openers always outperform, counting them would corrupt the test). Tag tasks "VARIANT W".
+
+**Variant W, the warm opener.** First line references the exchange, second line goes straight to their board, then the standard skeleton (solvable line, role-matched proof, five-day shortlist, index cut give, coffee close):
+
+> Hi [name], good exchange under your post on [topic] the other day.
+>
+> It got me looking at [company]'s board: your [role] has been open [X] days, and the median [category] role across the 40 scaleup boards I track closes in [Y].
+>
+> [continue with the variant A skeleton from the solvable line onward]
+
+If the person REPLIED to Jacopo's comment (not just liked), the W touch goes as a LinkedIn DM instead of an email, same content compressed to four sentences, no signature block. They chose that channel by engaging there.
+
+**Desk integration:** the daily run (tribe-sales-desk) asks "who in the warming queue is ready today?", open WARMING tasks whose ready-date has arrived become that day's warm sends, capped by the same 2-outbound-tasks-per-day rule, warm before cold when both compete.
+
 ## The order that matters
 
 Do these in sequence. Skipping the CRM checks and going straight to drafting is the single most common way this goes wrong, because you end up writing to someone a colleague contacted last week, or creating a second record for a person who is already there.
