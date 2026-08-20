@@ -43,6 +43,10 @@ Each signal flows to the outreach queue and gets variant A or B, alternating, co
 1. **Never cold-email someone mid-warm-up.** Before drafting ANY first touch, check the contact for an open WARMING task. If one exists, the email waits for the window and uses variant W. A cold index email landing two days after a friendly comment burns both.
 2. **A warm lead gets VARIANT W, not A or B**, and variant W is EXCLUDED from the A/B scoreboard (different population, warm openers always outperform, counting them would corrupt the test). Tag tasks "VARIANT W".
 
+**Variant W needs Jacopo's explicit go, every time (his rule, 20 Aug 2026).** Never draft or send variant W unless Jacopo has SAID, before the draft is built, that he commented on the person's post (or otherwise tells you to use W). A warm-lane lead without that confirmation gets variant A or B like everyone else, alternating in the test. The first harvest got this wrong: six W drafts were built on the assumption he would comment, and all six were rewritten to A/B the same day. Default is always A/B; W is the exception he unlocks in words.
+
+**The red reminder line (restored by Jacopo, 20 Aug 2026).** Every draft carries a red bold first line inside the body: `[DELETE THIS LINE BEFORE SENDING. VARIANT X. Track box ON, logo in. If you commented on their post and want the warm version, ask Claude first.]` (plus the empty-To warning when the address is unverified). It is his pre-send checklist at the exact moment he needs it. Known risk, accepted: the Corti send went out with a red line still in, so the line must stay SHORT and start with DELETE.
+
 **Variant W, the warm opener.** First line references the exchange, second line goes straight to their board, then the standard skeleton (solvable line, role-matched proof, five-day shortlist, index cut give, coffee close):
 
 > Hi [name], good exchange under your post on [topic] the other day.
