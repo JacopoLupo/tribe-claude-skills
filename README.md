@@ -4,9 +4,9 @@ The playbook that runs Tribe's outbound sales desk inside Claude. Two skills, bu
 
 **This repository is PRIVATE.** It contains the full outbound playbook, client proof points, live A/B test variants and HubSpot record references. Never fork it public.
 
-## What this system did in its first two weeks
+## What the system guarantees
 
-Around 27 companies contacted with researched, personalized cold emails. Every send logged in HubSpot automatically, every follow-up scheduled the moment a send was confirmed, zero accounts forgotten (an audit found three gaps in the old manual process; the system closed them and now prevents them by design). A proprietary dataset, the Tribe Board Index, scanning 41 European scaleup job boards weekly, that no competitor can quote. And a running A/B test between two email designs, with the verdict due end of September.
+Every send logged in HubSpot automatically. Every follow-up scheduled the moment a send is confirmed, so no account ever goes quiet unnoticed. Every email built on live job board data from the Tribe Board Index, a weekly scan of 41 European scaleup boards that no competitor can quote. And every design choice tested, not argued: the two email variants run as a live A/B test with replies as the metric.
 
 ## The two skills
 
