@@ -79,12 +79,13 @@ Ship them as one deliverable: the email draft in Gmail, the connect note text re
 
 If a DM was queued when the connect was written, send that. **If nothing was queued, write one on the spot rather than deferring it to a task.** Four properties, and nothing else:
 
+0. **This message now also carries the commercial model**, per "The conversation after they accept" below. Points 1 to 4 govern its FIRST half, the part that is unique to the recipient; the model paragraphs follow it.
 1. **Thank them in half a sentence.** "Thanks for accepting." Then stop. Gratitude that runs to a full paragraph is asking for something.
 2. **Do NOT repeat the email.** They have it. Reusing the hook proves both channels are one automation in two coats, which is the exact impression the double channel exists to avoid.
 3. **One new observation, specific to them, computed that day.** Re-scan the board before writing, always. For Ralf Gulde it was Sereact opening in four countries at once with three roles posted that morning; for Mirko Novakovic it was sixteen Solutions Engineer reqs published on one single day while an Amsterdam AE sat at 350. Neither number appeared in either email. Where they have written something public, bridge from their own sentence to the hiring problem rather than asserting the problem cold: Ralf's line about a robot having to work on the next site without starting over became a process that gets rebuilt the first time someone closes a candidate in Boston.
-4. **Close with ONE real question about their operation.** Not "would you be open to a chat", which is an ask wearing a question mark. "Who is carrying Boston at the moment?" and "is Amsterdam short of candidates, or is it that nobody has the hours to run it" are both things a founder answers for free, because answering is more interesting than ignoring.
+4. **A question about their operation is optional here, and is dropped when the model follows.** One message should not both explain the pricing and interrogate them. Where the observation already implies the question ("four hiring markets running at once"), let it imply it. "Would you be open to a chat" is never the question, being an ask wearing a question mark.
 
-No pitch, no Calendly, no Tribe. The email is carrying all of that already. This message is buying a reply, and a reply is what the entire month has failed to produce.
+No Calendly, no meeting request, no "worth a chat". The model paragraphs may name Tribe and its pricing; nothing in this message may ask for anything.
 
 When a connect is accepted and the person engages in the thread, touch 2 moves to a LinkedIn DM instead of email, they chose the channel. Accepted in silence keeps the email ladder but lets touch 2 open warmer, they know the name now.
 
@@ -371,31 +372,37 @@ The second is the bigger prize and it pairs exactly with the weekly index post. 
 
 The practical consequence: **stop trying to convert the thread, and let the feed do the middle of the funnel.** The DM opens, the index post keeps him in front of them for weeks, and the ask comes when they have seen the benchmark three times and it is no longer a claim.
 
-### The four rungs
+### The three rungs
 
-**Rung 1, the acceptance DM.** Same day. The formula is under "THE ACCEPTANCE DM" above: half a sentence of thanks, no repeat of the email, one fact re-scanned from their board that morning, one real question. No pitch.
+**Rung 1 is the acceptance message, and it carries the model (Jacopo overrode the original design on 24 Aug 2026: "I really would like the message after the connection is accepted that we explain...").**
 
-**Rung 2, they answer. This is the rung everything used to fall off.** Three rules, and the third is the hard one:
+The first draft of this ladder held the commercial model back until they had engaged twice. He was right to move it forward, and the reasoning matters more than the change:
 
-- **Answer inside the hour if possible, same day without exception.** A LinkedIn thread has a far shorter half-life than an email thread. A day of silence reads as disinterest in a way it never would in an inbox.
-- **Give before asking, always.** Whatever they said, the reply contains something concrete, useful and free: the segment cut, the percentile their role sits in, the two things that actually move a stuck req in their market. Real substance, not a teaser for substance.
-- **Do NOT ask for a meeting here.** This is the discipline the whole ladder rests on. The reply to their first answer is the highest-risk message in the sequence because the instinct is to convert, and converting here reliably produces "let's keep in touch", which is where threads go to die. End on a second question, or on a specific offer of a thing.
+**What burns an acceptance is the ASK, not the mention of Tribe.** They accepted a connection from a man whose headline says Head of Talent Acquisition at Tribe. Nobody is surprised he sells. A message that explains what Tribe is and asks for nothing is a disclosure, and disclosure is disarming in a way that a soft-shoe approach is not. Holding it back reads as technique the moment they notice it.
 
-**Rung 3, the model.** Once they have engaged twice, the thing to put in front of them is **not a data freebie and not a calendar link. It is how Tribe actually charges**, because the commercial structure IS the differentiator and founders think in incentives. Jacopo's own framing (24 Aug 2026): a startup that works with scaleups, shared success, a partner both ways, a low fixed fee plus a fee per hire, and the fixed part is low on purpose because he has spent years making the recruiters genuinely good.
+It is also differentiated in the only place that counts. Almost every competitor opens with what they do ("we embed recruiters in scaling teams"). Opening with **how you charge** is rare, and it is a filter: people who want that arrangement answer, people who do not, do not, and both outcomes beat silence.
 
-The message, as it should go out:
+**The message, one per accepted connect, both halves required:**
 
-> This is how we actually work, because the shape of it is the whole point.
+> [Thanks in half a sentence, then ONE observation from their own board, scanned that morning. This half must be unique to them.]
 >
-> We are a startup and we only work with scaleups. Most RPOs are built for enterprise hiring and charge like it, a large retainer that lands whether or not anyone joins.
+> [A bridge line, varied per person, saying he would rather be plain than dance around it.]
 >
-> We do the opposite. A low fixed fee, then a fee on each hire we make. The fixed part is small on purpose. I have spent years making our recruiters genuinely good rather than merely available, so I would rather be paid when people start than paid for the attempt. It puts us on the same side of the problem as you, which is the only arrangement I have seen work at this stage.
+> Tribe is a startup and we only work with scaleups. Most RPOs are built for enterprise hiring and priced that way, a big retainer that gets paid whether or not anyone joins. We do the opposite. A low fixed fee, then a fee on each hire we make.
 >
-> If that is the wrong shape for where you are, tell me and I will drop it.
+> The fixed part is small on purpose. I have spent years making our recruiters genuinely good rather than merely available, so I would rather be paid when people start than paid for the attempt. It puts us on the same side of the problem as you, and it is the only version of this I have seen work at your stage.
+>
+> No ask attached. If it is the wrong shape, tell me and I will leave it.
 
-**Two claims that were deliberately softened, and must stay softened.** Jacopo describes Tribe as "the only RPO made for real scaleups" and the fee as "one of the lowest in the market". Both are unfalsifiable superlatives, and in a first commercial message to a founder they invite exactly the scepticism the rest of the message is trying to avoid. The structural contrast (built for enterprise and priced that way, versus this) makes the same point and cannot be argued with. Say the fee is low and say WHY it is low; do not rank it.
+**"No ask attached" is load-bearing and must not be softened into an ask.** No Calendly, no "worth a chat?", no "happy to explore". The whole reason this message can carry pricing is that it demands nothing in return. The moment it asks, it becomes the cold email that got zero replies, only now on a channel where he was welcome.
 
-**Rung 4, the call, and only now.** It comes as a consequence of rung 3, never as the ask in rung 2. "Easier to walk you through how the per-hire part works than to type it, fifteen minutes?" A call proposed after the model has been explained is a logistics question. A call proposed before it is a request for free time from a stranger.
+**The two claims that get demonstrated rather than asserted.** Jacopo's own words are "the only RPO made for real scaleups" and a fixed fee that is "one of the lowest in the market". Both are true to him and both are unfalsifiable to a stranger, so the draft above converts them: the structural contrast (built for enterprise and priced that way, versus this) makes the exclusivity claim without stating it, and "small on purpose" plus the REASON beats a ranking, because a ranking invites a comparison while a reason invites a question. He has been offered the assertive versions and can swap them in on any send; do not swap them in unasked.
+
+**The carve-out to the no-repeated-sentence ban.** The two model paragraphs ARE near-identical across recipients, necessarily, because they describe how the company charges and a price that changed per reader would be worse than a repeated one. **The ban applies to the observation and the bridge, which must be unique every time.** A recipient-specific opener in front of a shared model paragraph reads as a person explaining their business. A shared opener in front of anything reads as a mail merge.
+
+**Rung 2, they answer, and this is where the discipline moves to.** The model is already out, so the reply to their first answer must NOT re-sell it. Answer what they actually asked, add one concrete thing that costs them nothing, and stop. Same day, inside the hour where possible, because a LinkedIn thread has a far shorter half-life than an inbox.
+
+**Rung 3, the call, and only now.** It comes as a consequence of the model having been read and not argued with, never as the ask that carried it. "Easier to walk you through how the per-hire part works than to type it, fifteen minutes?" A call proposed after the model is a logistics question. A call proposed before it is a request for free time from a stranger.
 
 ### When they do not answer
 

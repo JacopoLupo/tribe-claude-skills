@@ -225,10 +225,9 @@ The script prints an operator note under the post with the fastest-moving board 
 
 ```
 connects sent      ->  accepted        (10 -> 4, 40%)
-accepted           ->  DM sent         (4 -> 4)
-DM sent            ->  answered        (4 -> ?, too early)
-answered           ->  model explained
-model explained    ->  call booked
+accepted           ->  message sent    (4 -> 4, carries the model)
+message sent       ->  answered        (4 -> ?, too early)
+answered           ->  call booked
 emails sent        ->  opened          (needs the Track box)
 opened             ->  replied
 ```

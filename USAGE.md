@@ -111,13 +111,13 @@ Through 24 August 2026: **4 acceptances from 10 double-channel sends, against 0 
 
 The connect gets the door open. This is what happens once you are through it, and it is the part that used to have nothing written down.
 
-**Rung 1, the same day they accept.** Claude hands you a DM: half a sentence of thanks, one fact re-scanned from their board that morning, one real question. No pitch, and never a repeat of the email.
+**Rung 1, the same day they accept.** One message, two halves. First an observation from their own board scanned that morning, unique to them. Then how Tribe actually charges: a low fixed fee plus a fee per hire, the fixed part small on purpose because the recruiters are good enough to be paid on outcomes. It ends "no ask attached" and means it.
 
-**Rung 2, they answer.** Answer inside the hour if you can. Give something concrete and free before asking for anything. **Do not ask for a meeting here.** This is the message where the instinct is to convert and converting kills the thread.
+Leading with the pricing sounds backwards and is not. What burns an acceptance is the ask, never the mention of Tribe. They accepted a connection from someone whose headline says Head of Talent Acquisition, so nobody is surprised you sell. A message that explains what you are and wants nothing is a disclosure, and almost no competitor opens that way.
 
-**Rung 3, the model.** Once they have engaged twice, the thing to put in front of them is how Tribe actually charges, because that is the differentiator and founders think in incentives. A low fixed fee plus a fee per hire, the fixed part small on purpose. Ask Claude for it and it comes back in your words.
+**Rung 2, they answer.** Inside the hour if you can. The model is already out, so do not re-sell it. Answer what they asked, add one concrete free thing, stop.
 
-**Rung 4, the call.** Only after rung 3, where it becomes a logistics question rather than a request for free time.
+**Rung 3, the call.** Only once the model has been read and not argued with, where it becomes a logistics question rather than a request for free time.
 
 **If they never answer:** no nudge on LinkedIn, ever. The email ladder carries the account, and they stay connected, which means they see every index post from here on.
 
