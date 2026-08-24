@@ -59,6 +59,12 @@ Search `from:mailer-daemon` since the last run, every day, no exceptions. Strict
 
 Every morning, check the previous day's sends for tracker keys on the EMAIL engagement objects. **A send with no tracker key is EXCLUDED from the A/B test rather than counted**, and gets reported as excluded, because an untracked send is a data point that cannot be read. If a whole batch went out untracked, say so plainly and tell Jacopo to fix "track by default" in the HubSpot Sales extension before the next batch.
 
+**AND CHECK THE GDPR LAWFUL BASIS, WHICH IS A SECOND, SEPARATE WAY TO GO UNTRACKED (24 Aug 2026).** This portal has HubSpot's GDPR tools on, and a contact with no `hs_legal_basis` is silently excluded from tracking. HubSpot shows a one-line banner at send time and then sends normally, with no pixel. On 24 Aug a sweep found FORTY actively-worked contacts with no basis, every cold prospect since late July except two that came in with the original October 2025 import. Twelve of the fourteen August sends could never have registered an open under any circumstances.
+
+That is why "35 sends, 0 replies" was unreadable, and it is why "1 open in 14" was ALSO wrong: the real denominator was 2. An entire redesign of the A/B test was argued from a number whose denominator was an artefact. **Two different failures both present as an empty open count and they have different fixes**, so name which one it is: Track box lapsed is fixed in the Gmail extension, no lawful basis is fixed on the contact record.
+
+The daily check compares, for yesterday's sends, recipients carrying a lawful basis against recipients sent to. Any gap is reported by name, and those sends are excluded from the test rather than counted as unopened.
+
 One query against HubSpot's logged emails (the EMAIL engagement object) for the most recent sends: do they carry a tracker key? If the latest sends have none, the Track box in the Gmail extension has lapsed (signed out, unticked, or sent outside desktop Chrome) and the morning report says "Track box lapsed, opens are not being recorded" the same day. The BCC keeps logging regardless, so this is about open data, not CRM history. Found the hard way on 20 August 2026: six sends went out untracked and nobody knew until the day was over.
 
 ### 1d. The warming queue

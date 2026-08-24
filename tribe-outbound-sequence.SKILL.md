@@ -93,6 +93,20 @@ When a connect is accepted and the person engages in the thread, touch 2 moves t
 
 **Email patterns are per-company and must not be inferred from one record (24 Aug 2026).** DeepL's Head of TA is `amanda.johnson@deepl.com`, so firstname.lastname looked settled; the CEO is actually `kutylowski@deepl.com`, plain lastname. One address on file proves that address, never the pattern. Confirmed patterns so far: Mistral `firstname@`, Langfuse `firstname@`, ecoplanet `firstname.lastname@`, GitGuardian `firstname.lastname@`, DeepL `lastname@`. Record each one as it is confirmed, and treat an unconfirmed pattern as an empty To line.
 
+**SET THE GDPR LAWFUL BASIS ON EVERY CONTACT AT CREATION, OR THE SEND IS INVISIBLE (24 Aug 2026, and this one explains a month of confusion).**
+
+This portal has HubSpot's GDPR tools switched on. **A contact with no `hs_legal_basis` value is silently excluded from email tracking.** HubSpot shows a one-line banner at send time ("Because your HubSpot account has GDPR tools enabled, the following email recipient will not be tracked") and then sends the email perfectly normally, with no pixel and no way to ever know it was opened. The BCC still logs the send, so the CRM looks complete and the activity is there. Only the open data is missing, and nothing downstream flags it.
+
+**The measured damage.** Of the ten leads in the August batch, exactly TWO carried a lawful basis: Ralf Gulde and Fabian Riedel, both of whom came in with the original October 2025 import. The eight created since, by enrichment or by hand, had none. So of fourteen cold sends, twelve could never register an open under any circumstances.
+
+**What that did to the diagnosis.** The desk read "1 open in 14" as a catastrophic open rate and concluded the emails themselves were failing. The real denominator is 2, not 14. One of the two trackable sends was opened, which is an ordinary cold-email open rate and says nothing is wrong with the emails at all. **An entire redesign of the A/B test was argued on a number whose denominator was wrong.**
+
+**The rule.** `hs_legal_basis` gets set at the moment the contact is created, in the same call, alongside the email address. It is not an optional field and it is not a compliance afterthought: it is the switch that decides whether anything about that account can ever be measured. A contact created without it is a contact whose outreach is unfalsifiable.
+
+**The value to use is Jacopo's to choose, not Claude's.** It is a declaration about the legal ground for processing someone's data, so it is the controller's call. The value already established on this portal for cold prospects is "Legitimate interest – prospect/lead". NEVER use "Not applicable", which HubSpot documents as exempting the contact from GDPR protections entirely.
+
+**The check that would have caught this in a day.** The daily tracking-health step must now compare, for the previous day's sends, the number of recipients carrying a lawful basis against the number sent. Untracked-by-GDPR is a different failure from Track-box-lapsed and needs naming separately, because the fix is on the contact record rather than in the Gmail extension.
+
 **Screen boards by LOCATION, not just by size (24 Aug 2026).** The velocity diff surfaced 1X as the best lead of the day: 82 roles, +6 in four days, three recruiter searches stuck at 69 days. Every single role was in San Carlos and Hayward, California. The counts were real and the lead was worthless, because Tribe sells EMEA hiring. Any board probe that feeds a lead must print the location distribution, and a board that is majority non-EU gets dropped before anyone writes a word.
 
 **Not every board is on an ATS API (24 Aug 2026).** Synera's careers page is a Webflow page at synera.**ai**/careers, invisible to `index.py` and to every provider probe. When the probes come back empty but the company is clearly hiring, open the careers page in the browser before concluding they have no roles. Record which companies need that treatment so future scans do not repeat the dead end.
