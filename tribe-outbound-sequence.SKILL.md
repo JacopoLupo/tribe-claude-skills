@@ -85,9 +85,28 @@ The full formula lives under **"The conversation after they accept" > Rung 1**, 
 
 When a connect is accepted and the person engages in the thread, touch 2 moves to a LinkedIn DM instead of email, they chose the channel. Accepted in silence keeps the email ladder but lets touch 2 open warmer, they know the name now.
 
-**Log both channels in HubSpot as NOTES on the contact** (`objectType: "notes"`, `hs_note_body`, `hs_timestamp` set to when it happened), carrying the full text sent, the status, and the profile URL. Not tasks: completed tasks sit on the Tasks tab and Jacopo cannot find them there.
+**LOG LINKEDIN NATIVELY THROUGH THE HUBSPOT UI. NOTES FOR LINKEDIN ACTIVITY ARE BANNED (Jacopo, 24 Aug 2026: "don't add anymore notes is creating a mess in every people hubspot").**
 
-**The precise state of the native route (established 24 Aug 2026, supersedes the earlier "not supported" note).** HubSpot's `communications` object with `hs_communication_channel_type: LINKEDIN_MESSAGE` IS the correct home and the REST API fully supports it. It needs only `crm.objects.contacts.read` and `crm.objects.contacts.write`, which are ordinary scopes. What blocks it is narrower than previously written: the MCP connector exposes 30 object types and `COMMUNICATION` is not one of them, so this is a tooling gap and not a permissions gap. No scope grant, and no amount of super admin, changes it. `scripts/linkedin_to_hubspot.py` takes the direct-API route with a private app token that stays on Jacopo's machine. **Until that script has run successfully against the live API, notes remain the logging mechanism**, and notes are not a poor substitute: they land on the Activity feed, which is where he looks.
+HubSpot HAS a native LinkedIn activity type. It sits on the contact record under the **More** button in the activity row, as **Log a LinkedIn message**, alongside Log SMS and Log a WhatsApp message. It renders on the timeline with a LinkedIn icon, it is filterable by channel, and it can be counted in reports. Notes can do none of that.
+
+**How this was missed for a whole day, which is the lesson.** The MCP connector cannot see the `communications` object, so the conclusion drawn was "HubSpot cannot log LinkedIn". That was wrong and it cost an afternoon spent on a REST API route, a private app, a token handoff and a message to an admin, none of which were needed. The connector's blind spot was mistaken for the product's. **When a tool says a thing is impossible, look at what a human sees in the interface before believing it.** Jacopo found it by opening the menu.
+
+**The mechanics, all verified working 24 Aug 2026:**
+
+- Use the host **app-eu1.hubspot.com**. The Chrome extension is denied read permission on `app.hubspot.com` and every call fails with "Permission denied for reading pages on this domain"; the EU host works. `https://app-eu1.hubspot.com/contacts/146748263/record/0-1/{contactId}`
+- Click **More** (aria-label matches `/More activities/`), wait ~1.3s, click **Log a LinkedIn message**, wait ~2.5s.
+- The editor is `[aria-label="Create a Logged LinkedIn message"]`. Focus it and fill with `document.execCommand('insertText', ...)`. **Setting innerHTML does not register with React** and the Log button stays disabled.
+- Element refs from `find` go stale because the menu closes on blur. Drive the whole sequence in ONE `javascript_tool` call instead of find-then-click.
+- The dialog carries its own **"Create a To-do task to follow up in 3 business days"** checkbox. Tick it for PENDING connect requests, where a three-day acceptance check is exactly the right question. Skip it where the contact already has dated tasks, or the list fills with duplicates.
+- **After ticking that checkbox, wait ~1.5s before clicking Log.** Clicking immediately lands mid-rerender and silently does nothing, and the dialog just sits there looking fine.
+- Confirm success by checking the editor is gone from the DOM.
+- The **Activity date defaults to now and React rejects programmatic changes**. If the real send time differs, put it in the body in square brackets rather than fighting the field.
+
+**What goes in the body:** the message text verbatim, then one bracketed line carrying what the text does not say. When it was sent, the current status (pending, accepted, replied), and anything that decides what happens next.
+
+**Connection requests are logged the same way**, as a LinkedIn message carrying the connect-note text plus the bracketed status line. There is no separate "log a connection request" type, and the `Engage on LinkedIn` submenu (Send InMail, Send connection request) sends through Sales Navigator rather than logging something already sent by hand.
+
+`scripts/linkedin_to_hubspot.py` remains in the repo as the API route, and it is now the FALLBACK rather than the plan. It needs a private app token and an admin; this needs a browser. Prefer this.
 
 **Every LinkedIn touch gets a dated follow-up task too, same as an email.** An unanswered email still sits in a visible thread; an unanswered DM leaves no trace anywhere, so without a task it is simply forgotten. Two weeks out: one task to review DMs sent (if silent, do NOT nudge on LinkedIn, the email touch 2 is the next move, one channel at a time), and one to decide on connects never accepted (leave them pending, withdrawing and re-sending reads as pestering, unless LinkedIn is the only route in, in which case the account needs a verified address or it parks).
 

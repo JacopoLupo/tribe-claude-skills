@@ -195,36 +195,28 @@ HubSpot merges and deletions are UI-only, so ghosts and duplicates accumulate. T
 
 ## Logging LinkedIn in HubSpot
 
-LinkedIn reaches HubSpot through nothing automatic, so every connect request and every DM has to be written in by hand or it never existed.
+**LOG LINKEDIN NATIVELY THROUGH THE HUBSPOT UI. NOTES FOR LINKEDIN ACTIVITY ARE BANNED (Jacopo, 24 Aug 2026: "don't add anymore notes is creating a mess in every people hubspot").**
 
-**Use NOTES, associated to the contact.** `objectType: "notes"`, with `hs_note_body` and `hs_timestamp` set to when it actually happened. Notes land on the contact's Activity feed, which is where Jacopo looks. Do NOT use tasks for this: on 24 Aug 2026 ten LinkedIn touches were logged as completed tasks, they were attached correctly and he still could not find them, because completed tasks sit on the Tasks tab and not the activity timeline. All ten had to be redone as notes and the task versions renamed ZZ DELETE.
+HubSpot HAS a native LinkedIn activity type. It sits on the contact record under the **More** button in the activity row, as **Log a LinkedIn message**, alongside Log SMS and Log a WhatsApp message. It renders on the timeline with a LinkedIn icon, it is filterable by channel, and it can be counted in reports. Notes can do none of that.
 
-**Communications do not work on this connector.** `objectType: "communications"` with `hs_communication_channel_type: LINKEDIN_MESSAGE` is HubSpot's own native object for exactly this, and it returns "Requested object type is not supported". That is a server limitation, not a permissions one, and re-authorising does not fix it (tested 24 Aug 2026, before and after a reconnect). Notes write fine once the connection carries notes scope. Try communications first anyway on any future run, in case it starts working, then fall back to notes.
+**How this was missed for a whole day, which is the lesson.** The MCP connector cannot see the `communications` object, so the conclusion drawn was "HubSpot cannot log LinkedIn". That was wrong and it cost an afternoon spent on a REST API route, a private app, a token handoff and a message to an admin, none of which were needed. The connector's blind spot was mistaken for the product's. **When a tool says a thing is impossible, look at what a human sees in the interface before believing it.** Jacopo found it by opening the menu.
 
-**What each note says:** what was sent (the full text, because the exact wording is what gets reused), the date, the current status (pending, accepted, replied), and the profile URL. For an accepted connect, say when it was accepted and whether they wrote anything.
+**The mechanics, all verified working 24 Aug 2026:**
 
-## The 10:00 scanner, and why an acceptance is the whole point
+- Use the host **app-eu1.hubspot.com**. The Chrome extension is denied read permission on `app.hubspot.com` and every call fails with "Permission denied for reading pages on this domain"; the EU host works. `https://app-eu1.hubspot.com/contacts/146748263/record/0-1/{contactId}`
+- Click **More** (aria-label matches `/More activities/`), wait ~1.3s, click **Log a LinkedIn message**, wait ~2.5s.
+- The editor is `[aria-label="Create a Logged LinkedIn message"]`. Focus it and fill with `document.execCommand('insertText', ...)`. **Setting innerHTML does not register with React** and the Log button stays disabled.
+- Element refs from `find` go stale because the menu closes on blur. Drive the whole sequence in ONE `javascript_tool` call instead of find-then-click.
+- The dialog carries its own **"Create a To-do task to follow up in 3 business days"** checkbox. Tick it for PENDING connect requests, where a three-day acceptance check is exactly the right question. Skip it where the contact already has dated tasks, or the list fills with duplicates.
+- **After ticking that checkbox, wait ~1.5s before clicking Log.** Clicking immediately lands mid-rerender and silently does nothing, and the dialog just sits there looking fine.
+- Confirm success by checking the editor is gone from the DOM.
+- The **Activity date defaults to now and React rejects programmatic changes**. If the real send time differs, put it in the body in square brackets rather than fighting the field.
 
-**Scheduled task `trig_01HJEYEZvfTx6EBWtB4uCdVj`, weekdays 10:00 Prague, `requires_local_device`.** It reads the sent-invitations list and the LinkedIn inbox through Jacopo's Chrome, works out who accepted and who replied since the last run, and writes the notes itself. It checks for existing entries first so it never duplicates.
+**What goes in the body:** the message text verbatim, then one bracketed line carrying what the text does not say. When it was sent, the current status (pending, accepted, replied), and anything that decides what happens next.
 
-It runs at 10:00 rather than 08:00 for one reason: acceptances cluster in the two or three hours after the morning batch goes out, so an 08:00 scan reads a list that has not moved yet. Both acceptances on 24 August landed inside four hours of the send.
+**Connection requests are logged the same way**, as a LinkedIn message carrying the connect-note text plus the bracketed status line. There is no separate "log a connection request" type, and the `Engage on LinkedIn` submenu (Send InMail, Send connection request) sends through Sales Navigator rather than logging something already sent by hand.
 
-**An acceptance is the opening of a conversation, not an admin event.** This is the rule the whole scanner exists to serve. The failure it prevents is the quiet one: a connect gets accepted, the scanner logs it neatly, lead status moves to CONNECTED, and nothing is ever said to the person. The accept was the reply, and it went unanswered.
-
-So when the scan finds an acceptance, the DM goes out the same day. If a message was queued when the connect was written, send that. **If none was queued, write one on the spot rather than deferring it**, because the acceptance decays like any other warm signal.
-
-The message has four properties and no others:
-
-1. **Thank them in half a sentence.** Not a paragraph, not gratitude with a subordinate clause hanging off it.
-2. **Do not repeat the email.** They have it. Repeating the hook tells them both channels are the same automation wearing two coats, which is exactly what the double-channel play is trying not to be.
-3. **One new observation, specific to them, computed that day.** Re-scan the board before writing. On 24 August that meant Sereact opening in four countries at once with three roles posted that morning, and Dash0 posting sixteen Solutions Engineer reqs on a single day while an Amsterdam AE sat at 350 days. Neither number was in either email.
-4. **Close with one real question.** Not "would you be open to a chat". A question about their operation that a founder would answer for free, because answering it is more interesting than ignoring it.
-
-Then log it: a note carrying the full DM text and the facts behind it, and a LinkedIn review task about two weeks out.
-
-**On a reply**, the job logs the text, sets lead status to CONNECTED, closes that account's email follow-up as superseded, and raises a same-day "REPLIED, answer today" task. A LinkedIn reply reaches no inbox and no CRM, so without this the most valuable signal in the pipeline is also the one most likely to be missed.
-
-**Acceptance rate is now a tracked number.** Through 24 August 2026 it is 4 of 10 on the double-channel batches (Michael Blicher Soerensen, Fabian Riedel, Ralf Gulde, Mirko Novakovic), against zero replies from roughly thirty-five emails sent alone. Whatever else that says, it says the connect note is currently outperforming the email by an enormous margin, and the acceptances are the conversations worth spending the day on.
+`scripts/linkedin_to_hubspot.py` remains in the repo as the API route, and it is now the FALLBACK rather than the plan. It needs a private app token and an admin; this needs a browser. Prefer this.
 
 ## Follow-ups exist for BOTH channels
 
