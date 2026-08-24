@@ -47,6 +47,8 @@ If the email already went out: **close the task**, and rewrite the body to say w
 
 So: use `search_threads` to find candidate thread IDs, then call **`get_thread`** on each before concluding anything. If the output is too large, dump it and pull dates with `jq`. Never tell him an email was not sent on the strength of a search alone.
 
+**And never trust Jacopo's own report of what he sent either (rule earned 24 Aug 2026).** He said "I did everything apart from Zoe" and the Sent folder showed five of six: the Satispay follow-up had never left the drafts folder. He is not careless, sending six things across two channels in one sitting is simply easy to lose count of. So the reconciliation ALWAYS reads the Sent folder against the plan, item by item, and reports the gap plainly. That same check caught two other things the same morning: an address he had filled himself that did not match the pattern on file (kutylowski@deepl.com, so DeepL is lastname@, not firstname.lastname), and a send to an account owned by a colleague that was deliberate and fine (Filics, Kris's account, his email named her explicitly). None of those would have surfaced from asking him.
+
 ### 1b. Bounce check, named and daily
 
 Search `from:mailer-daemon` since the last run, every day, no exceptions. Stricter rule for manually-sourced addresses (anything a human typed rather than an enrichment tool verifying it "valid"): they get checked the NEXT MORNING after the send, and the send task is not truly settled until that check passes. A bounce found late means a follow-up scheduled against an address that never worked.
@@ -131,6 +133,16 @@ The rules that come out of that:
 
 **Set `hs_lead_status` to `ATTEMPTED_TO_CONTACT`** on everyone emailed, at the moment of sending.
 
+**Task subjects are actions, in one fixed shape: `Company: what to do, who`.** "Satispay: send Emilia the draft, last touch before parking". Not "Satispay: NOT SENT YET, draft is waiting in Gmail", not "amber: touch 2, Philipp Reissel (VARIANT A sent 20 Aug)". No shouting, no status shoved in the title, no metadata trailing in brackets. Jacopo reads this list as a list of things to do, so it has to scan like one. Variant, address, dates and history all live in the body.
+
+**Task bodies are short and structured, not narrative (Jacopo, 24 Aug 2026: "be brief and explain what we did and what to do next, not the entire story").** Three labelled lines, nothing else:
+```
+DONE: what has already happened.
+NEXT: the exact next action, with the fact that decides it.
+RULE: the constraint that must not be broken (ladder position, last touch, do not chase).
+```
+The temptation is to write everything down because future-Claude reads these. Resist it: a body nobody finishes is worse than three lines somebody acts on.
+
 ## Deal hygiene
 
 **Create the deal when they engage, not when they sign.** Cold outreach with no deal record means the pipeline number is invented. As of 11 August 2026 there were 3 deals on this portal, 2 already closed, against 11 open outbound tasks. The pipeline was not empty, it was unrecorded.
@@ -142,6 +154,27 @@ The rules that come out of that:
 ## The merge queue
 
 HubSpot merges and deletions are UI-only, so ghosts and duplicates accumulate. They are NOT to be scattered across task bodies: one standing HubSpot task titled "UI merge queue" holds the complete list, updated IN PLACE the moment a new ghost or duplicate appears (each line: what to merge into what, IDs, which record wins, and why). Jacopo clears it in one sitting when he has ten minutes; whoever updates it removes lines that were done. If the task does not exist, create it, due date far in the future, never marked complete, only rewritten.
+
+## Logging LinkedIn in HubSpot
+
+LinkedIn reaches HubSpot through nothing automatic, so every connect request and every DM has to be written in by hand or it never existed.
+
+**Use NOTES, associated to the contact.** `objectType: "notes"`, with `hs_note_body` and `hs_timestamp` set to when it actually happened. Notes land on the contact's Activity feed, which is where Jacopo looks. Do NOT use tasks for this: on 24 Aug 2026 ten LinkedIn touches were logged as completed tasks, they were attached correctly and he still could not find them, because completed tasks sit on the Tasks tab and not the activity timeline. All ten had to be redone as notes and the task versions renamed ZZ DELETE.
+
+**Communications do not work on this connector.** `objectType: "communications"` with `hs_communication_channel_type: LINKEDIN_MESSAGE` is HubSpot's own native object for exactly this, and it returns "Requested object type is not supported". That is a server limitation, not a permissions one, and re-authorising does not fix it (tested 24 Aug 2026, before and after a reconnect). Notes write fine once the connection carries notes scope. Try communications first anyway on any future run, in case it starts working, then fall back to notes.
+
+**What each note says:** what was sent (the full text, because the exact wording is what gets reused), the date, the current status (pending, accepted, replied), and the profile URL. For an accepted connect, say when it was accepted and whether they wrote anything.
+
+**The morning sync (scheduled task, created 24 Aug 2026, weekdays 08:00 Prague).** A recurring job reads the sent-invitations list and the LinkedIn inbox through Jacopo's Chrome, works out who accepted and who replied since yesterday, and writes the notes itself. It checks for existing entries first so it never duplicates. The signal it exists for is REPLIES: a LinkedIn reply reaches no inbox and no CRM, so without this it gets missed entirely. On a reply the job logs the text, sets lead status to CONNECTED, closes that account's email follow-up as superseded, and raises a same-day "REPLIED, answer today" task.
+
+## Follow-ups exist for BOTH channels
+
+A sent email always gets a dated touch 2. So must a sent LinkedIn message, and the reason is asymmetric: an unanswered email still sits in a thread Jacopo can see, while an unanswered DM leaves no trace anywhere at all. Without a task it is simply forgotten while the email ladder runs on regardless.
+
+Two LinkedIn tasks, both dated about two weeks out:
+
+1. **Review the DMs sent.** If still silent, do NOT nudge on LinkedIn. The email touch 2 is the next move. One channel at a time, never both at once.
+2. **Decide on connects never accepted.** An invite ignored for two weeks is an answer. Leave it pending, do not withdraw and re-send, that reads as pestering, and let the email ladder carry the account. The exception is anyone where LinkedIn is the ONLY route in (no verified address): there, a dead invite means the account needs an address or it parks, and that has to be decided rather than left to drift.
 
 ## The weekly sweep
 
