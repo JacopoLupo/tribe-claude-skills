@@ -93,9 +93,17 @@ Seven checks: stale deals, past-due close dates, overdue tasks, the 14-day dead-
 
 ## Running automatically
 
-**LinkedIn to HubSpot sync**, weekday mornings. Reads your sent-invitations list and inbox, works out who accepted and who replied since yesterday, and writes it into HubSpot as notes. On a reply it logs the text, flips lead status, closes that account's email follow-up as superseded, and raises a same-day "answer today" task.
+**The 10:00 scanner**, weekdays. Reads your sent-invitations list and LinkedIn inbox, works out who accepted and who replied since the last run, and writes it into HubSpot as notes. On a reply it logs the text, flips lead status, closes that account's email follow-up as superseded, and raises a same-day "answer today" task.
+
+It runs at 10:00 and not at 08:00 because acceptances cluster in the hours right after the morning batch goes out. An earlier scan reads a list that has not moved yet.
+
+**Every acceptance comes back with a message already written.** An accepted connect is a stranger opening a door, so the scanner does not just log it: it re-scans that company's board, finds something true today that was not in the email, and hands you a DM to send. Half a sentence of thanks, one new observation, one real question, no pitch.
 
 It exists because a LinkedIn reply reaches no inbox and no CRM. Without it, the most valuable signal in the pipeline is the one most likely to be missed.
+
+### Why this half is now the priority
+
+Through 24 August 2026: **4 acceptances from 10 double-channel sends, against 0 replies from roughly 35 emails sent on their own.** The connect note is outperforming the email by a distance, and an acceptance is the closest thing to a conversation this pipeline has produced. Push there.
 
 ---
 

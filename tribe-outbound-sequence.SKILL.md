@@ -75,6 +75,17 @@ Ship them as one deliverable: the email draft in Gmail, the connect note text re
 
 **The test before any note goes out:** could this sentence be written about any other company in their category? If yes, it is flattery with a name filled in, and it gets rewritten. "I admire what you do" fails instantly, which is why it never gets used even when Jacopo describes the play that way. Second test: does it praise an outcome (round, valuation, growth) rather than a decision? Rewrite.
 
+**THE ACCEPTANCE DM, written the same day (Jacopo, 24 Aug 2026: "multichannel people are accepting, so we need to push on this and keep pushing on getting acceptance and replies").** An acceptance is not an admin event to be logged and filed. It is a stranger opening a door, and the door closes again. Through 24 August the score is 4 acceptances from 10 double-channel sends against 0 replies from roughly 35 emails sent alone, so the accept is currently the strongest signal this system produces and it gets answered the day it arrives.
+
+If a DM was queued when the connect was written, send that. **If nothing was queued, write one on the spot rather than deferring it to a task.** Four properties, and nothing else:
+
+1. **Thank them in half a sentence.** "Thanks for accepting." Then stop. Gratitude that runs to a full paragraph is asking for something.
+2. **Do NOT repeat the email.** They have it. Reusing the hook proves both channels are one automation in two coats, which is the exact impression the double channel exists to avoid.
+3. **One new observation, specific to them, computed that day.** Re-scan the board before writing, always. For Ralf Gulde it was Sereact opening in four countries at once with three roles posted that morning; for Mirko Novakovic it was sixteen Solutions Engineer reqs published on one single day while an Amsterdam AE sat at 350. Neither number appeared in either email. Where they have written something public, bridge from their own sentence to the hiring problem rather than asserting the problem cold: Ralf's line about a robot having to work on the next site without starting over became a process that gets rebuilt the first time someone closes a candidate in Boston.
+4. **Close with ONE real question about their operation.** Not "would you be open to a chat", which is an ask wearing a question mark. "Who is carrying Boston at the moment?" and "is Amsterdam short of candidates, or is it that nobody has the hours to run it" are both things a founder answers for free, because answering is more interesting than ignoring.
+
+No pitch, no Calendly, no Tribe. The email is carrying all of that already. This message is buying a reply, and a reply is what the entire month has failed to produce.
+
 When a connect is accepted and the person engages in the thread, touch 2 moves to a LinkedIn DM instead of email, they chose the channel. Accepted in silence keeps the email ladder but lets touch 2 open warmer, they know the name now.
 
 **Log both channels in HubSpot as NOTES on the contact** (`objectType: "notes"`, `hs_note_body`, `hs_timestamp` set to when it happened), carrying the full text sent, the status, and the profile URL. Not tasks: completed tasks sit on the Tasks tab and Jacopo cannot find them there. HubSpot's own `communications` object with `LINKEDIN_MESSAGE` is the technically correct home and is NOT supported by this connector, so notes are the answer until that changes.

@@ -27,8 +27,11 @@ flowchart TD
     D --> E
     E --> F["<b>HUMAN SENDS</b><br/>Claude never sends"]
     F --> G["<b>LOG</b><br/>email auto-logs via BCC<br/>LinkedIn logged as notes"]
-    G --> H["<b>LADDER</b><br/>touch 2 dated on both channels<br/>in the same motion"]
-    H --> I["<b>DAILY RECONCILE</b><br/>replies, bounces, acceptances"]
+    G --> S{"Connect<br/>accepted?"}
+    S -->|yes| T["<b>SAME-DAY DM</b><br/>a fact computed today,<br/>one real question, no pitch"]
+    S -->|no| H["<b>LADDER</b><br/>touch 2 dated on both channels<br/>in the same motion"]
+    T --> H
+    H --> I["<b>10:00 SCAN</b><br/>acceptances, replies,<br/>bounces, tracking health"]
     I --> A
 ```
 
@@ -91,6 +94,8 @@ Scans 41 European scaleup boards and computes the numbers every email quotes: me
 **Nothing gets sent by Claude.** Every email is a draft until a human presses send. Every address is verified before it touches a To field.
 
 **Every lead gets two channels.** Email and LinkedIn connect ship together, same day, every time. A prep with only an email is incomplete.
+
+**Every acceptance gets answered the same day.** A scanner runs at 10:00 on weekdays, finds who accepted, re-scans their board for something true that was not in the email, and hands over a written message. Through 24 August: 4 acceptances from 10 double-channel sends, against 0 replies from roughly 35 emails sent alone.
 
 **Nothing goes quiet unnoticed.** Every send, on either channel, gets a dated follow-up created the moment the send is confirmed.
 

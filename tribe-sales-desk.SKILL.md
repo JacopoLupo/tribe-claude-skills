@@ -65,7 +65,11 @@ One query against HubSpot's logged emails (the EMAIL engagement object) for the 
 
 Ask every morning: who in the warming queue is ready today? Open tasks with subject "WARMING:" become today's warm sends inside a FRESH-ONLY window (Jacopo, 20 Aug): within 72 hours of the comment, same day or next day if the person replied or reacted. Variant W per the Lead Engine in tribe-outbound-sequence, counted inside the same 2-outbound-tasks-per-day cap, and warm ALWAYS beats cold for a slot because warmth expires and cold leads keep. A WARMING task past 5 days without its send is flagged: window closed, lead falls back to the cold lane.
 
-### 1e. The funding radar
+### 1e. The LinkedIn scan, 10:00
+
+Who accepted since yesterday, who replied. Runs on its own schedule but read the result as part of the day: every acceptance is a same-day DM, every reply is a same-day answer and beats every cold email on the list. Full rules under "The 10:00 scanner" below.
+
+### 1f. The funding radar
 
 Daily, not weekly: one sweep for EU funding rounds announced the previous day. A round announced yesterday is today's best cold lead and next week's worst one. Any hit goes through the Lead Engine (dedupe, Tribester check, board scan) the same morning.
 
@@ -169,7 +173,28 @@ LinkedIn reaches HubSpot through nothing automatic, so every connect request and
 
 **What each note says:** what was sent (the full text, because the exact wording is what gets reused), the date, the current status (pending, accepted, replied), and the profile URL. For an accepted connect, say when it was accepted and whether they wrote anything.
 
-**The morning sync (scheduled task, created 24 Aug 2026, weekdays 08:00 Prague).** A recurring job reads the sent-invitations list and the LinkedIn inbox through Jacopo's Chrome, works out who accepted and who replied since yesterday, and writes the notes itself. It checks for existing entries first so it never duplicates. The signal it exists for is REPLIES: a LinkedIn reply reaches no inbox and no CRM, so without this it gets missed entirely. On a reply the job logs the text, sets lead status to CONNECTED, closes that account's email follow-up as superseded, and raises a same-day "REPLIED, answer today" task.
+## The 10:00 scanner, and why an acceptance is the whole point
+
+**Scheduled task `trig_01HJEYEZvfTx6EBWtB4uCdVj`, weekdays 10:00 Prague, `requires_local_device`.** It reads the sent-invitations list and the LinkedIn inbox through Jacopo's Chrome, works out who accepted and who replied since the last run, and writes the notes itself. It checks for existing entries first so it never duplicates.
+
+It runs at 10:00 rather than 08:00 for one reason: acceptances cluster in the two or three hours after the morning batch goes out, so an 08:00 scan reads a list that has not moved yet. Both acceptances on 24 August landed inside four hours of the send.
+
+**An acceptance is the opening of a conversation, not an admin event.** This is the rule the whole scanner exists to serve. The failure it prevents is the quiet one: a connect gets accepted, the scanner logs it neatly, lead status moves to CONNECTED, and nothing is ever said to the person. The accept was the reply, and it went unanswered.
+
+So when the scan finds an acceptance, the DM goes out the same day. If a message was queued when the connect was written, send that. **If none was queued, write one on the spot rather than deferring it**, because the acceptance decays like any other warm signal.
+
+The message has four properties and no others:
+
+1. **Thank them in half a sentence.** Not a paragraph, not gratitude with a subordinate clause hanging off it.
+2. **Do not repeat the email.** They have it. Repeating the hook tells them both channels are the same automation wearing two coats, which is exactly what the double-channel play is trying not to be.
+3. **One new observation, specific to them, computed that day.** Re-scan the board before writing. On 24 August that meant Sereact opening in four countries at once with three roles posted that morning, and Dash0 posting sixteen Solutions Engineer reqs on a single day while an Amsterdam AE sat at 350 days. Neither number was in either email.
+4. **Close with one real question.** Not "would you be open to a chat". A question about their operation that a founder would answer for free, because answering it is more interesting than ignoring it.
+
+Then log it: a note carrying the full DM text and the facts behind it, and a LinkedIn review task about two weeks out.
+
+**On a reply**, the job logs the text, sets lead status to CONNECTED, closes that account's email follow-up as superseded, and raises a same-day "REPLIED, answer today" task. A LinkedIn reply reaches no inbox and no CRM, so without this the most valuable signal in the pipeline is also the one most likely to be missed.
+
+**Acceptance rate is now a tracked number.** Through 24 August 2026 it is 4 of 10 on the double-channel batches (Michael Blicher Soerensen, Fabian Riedel, Ralf Gulde, Mirko Novakovic), against zero replies from roughly thirty-five emails sent alone. Whatever else that says, it says the connect note is currently outperforming the email by an enormous margin, and the acceptances are the conversations worth spending the day on.
 
 ## Follow-ups exist for BOTH channels
 
