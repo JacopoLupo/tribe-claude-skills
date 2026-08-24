@@ -35,6 +35,10 @@ Every routine below is built to catch one of these.
 
 ## The daily run
 
+**The shape of the day changed on 24 Aug 2026.** Sends moved from mid-morning to **17:00 to 18:00 Prague**, so the day now runs: scan at 10:00 and answer what moved overnight, prep through the middle of the day, send at the end of it. The reconciliation below happens in the morning and covers the PREVIOUS EVENING's batch, not that morning's.
+
+**This makes the morning reconciliation more important, not less.** A send at the end of the day happens when energy is lowest, which is exactly when the Track box goes unticked, the red reminder line survives into a sent email, and an address gets typed wrong. Every one of those has already happened once on a morning send.
+
 Fifteen minutes. Do it in this order, because each step changes what the next one should contain.
 
 ### 1. Reconcile the task list against Sent mail

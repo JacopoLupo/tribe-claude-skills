@@ -60,6 +60,25 @@ Each signal flows to the outreach queue and gets variant A or B, chosen by fit. 
 
 **The red reminder line (restored by Jacopo 20 Aug 2026, format extended same day).** Every draft carries a red bold first line inside the body, and it is his full pre-send checklist at the exact moment he needs it: `[DELETE THIS LINE BEFORE SENDING. VARIANT X. Track box ON, logo in. Check the record: LinkedIn <contact profile link> | HubSpot <contact record link, app.hubspot.com/contacts/146748263/record/0-1/ID>. After you send, tell Claude so the task closes and the follow-up gets scheduled. If you commented on their post, ask Claude for variant W first.]` Add the empty-To warning when the address is unverified. The two links let him verify the person and the record Claude created before anything goes out; the after-you-send sentence is what keeps the follow-up ladder alive, because the close-and-schedule motion only runs when he reports the send. Known risk, accepted: the Corti send went out with a red line still in, so the line always starts with DELETE.
 
+**THE SEND WINDOW IS 17:00 TO 18:00 PRAGUE (Jacopo, 24 Aug 2026: "I'll try to send them later in the day, I'll do it between 17 and 18").**
+
+Batches were going out mid-morning. They now go out at the end of the working day, so the email is at the top of the inbox when a founder opens it the next morning rather than competing with everything that arrived between nine and lunch.
+
+**This reshapes the day, and the new shape is better than the old one.**
+
+| When | What |
+|---|---|
+| 10:00 | The scanner runs. It catches every acceptance and reply from last night's batch, and the DMs go out mid-morning while the prospect is at their desk. |
+| During the day | Prep. Scan the boards, verify addresses, write the emails and the connect notes, create the records. |
+| 17:00 to 18:00 | Jacopo sends. Email and connect note together, same as always. |
+| Overnight | Acceptances land. |
+
+**The scanner stays at 10:00 and fits better than it did.** Under morning sending it was racing the same day; under evening sending it does exactly the job it was built for, which is to open the next morning with everything that moved while nobody was watching. A DM at 10:00 answering an acceptance from 18:00 the night before reads as normal human timing. Answering ten minutes after the accept, which is what morning sending allowed, reads slightly like being watched.
+
+**What this costs, and it is worth saying out loud.** Switching wholesale rather than alternating means there is no internal control, and the August baseline it would be compared against was untracked because of the GDPR gap. So "did evening sending help?" will not have a clean answer. What CAN be answered, now that lawful basis is set on every contact, is whether the absolute open rate is healthy. If evening sends come back at 30 to 50%, that is a good number on its own terms and no comparison is needed. If they come back near zero, the problem was never the timing.
+
+**One thing that must not slip.** Sending at the end of the day means the send happens when energy is lowest, and that is exactly when the red reminder line gets skipped, the Track box goes unticked and an address gets typed wrong. The post-send reconciliation the next morning is now MORE important, not less.
+
 **THE DOUBLE CHANNEL IS MANDATORY, NOT OPTIONAL (Jacopo hardened this on 24 Aug 2026: "for every email I want the connection messages to go out in parallel, I want multiple touch points for every possible lead").** Every single email drafted for a lead ships WITH its LinkedIn connect note, written at the same time, in the same batch, handed over together. A prep that produces an email and no connect note is INCOMPLETE and must not be presented as finished. This applies to cold first touches, follow-ups, and any new name on an existing account. There is no seniority filter and no "worth it" judgement: if they are worth an email they are worth the second channel, because the whole point is that one prospect gets two chances to notice, on two surfaces, the same day.
 
 Ship them as one deliverable: the email draft in Gmail, the connect note text ready to paste, and the HubSpot task naming both. When a lead has no email address at all, the connect note is not a supplement, it is the primary channel and says so in its own words.
