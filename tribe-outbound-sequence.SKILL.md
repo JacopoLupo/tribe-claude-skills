@@ -424,6 +424,22 @@ So the message runs six short paragraphs and roughly 180 words, in this fixed or
 
 **Rung 3, the call, and only now.** It comes as a consequence of the model having been read and not argued with, never as the ask that carried it. "Easier to walk you through how the per-hire part works than to type it, fifteen minutes?" A call proposed after the model is a logistics question. A call proposed before it is a request for free time from a stranger.
 
+### The live experiment, and how to know if it worked
+
+**Everything above is a hypothesis until it has replies behind it. Do not let it harden into folklore.**
+
+**What actually went out, 24 August 2026 at 14:22 Prague.** Ralf Gulde at Sereact and Mirko Novakovic at Dash0, both verified in the LinkedIn threads, both carrying the commercial model in the first message after an acceptance. On the Dash0 account the whole sequence ran cold to pricing in under four hours on a record nobody at Tribe had ever touched: transferred from an inactive owner that morning, email at 10:36, connect note at 13:00, accepted inside the hour, model at 14:22.
+
+**The hypothesis under test, in one sentence.** That naming the price in the first message after an acceptance, while asking for nothing, produces replies where thirty-five pitched cold emails produced none.
+
+**What would prove it wrong.** Silence on both. Or worse, a polite "thanks, we are covered" that a softer opener might not have triggered, which would mean the model closed the door rather than opened it.
+
+**What would prove it right.** Any reply engaging with the STRUCTURE rather than the service. "How low is low", "what counts as a hire", "what happens if someone leaves in three months" are all buying questions dressed as arithmetic, and none of them can be asked of a message that never mentioned pricing.
+
+**Read it on 7 September, not before, and not from one reply.** Two sends decide nothing. The honest read needs six or eight acceptance messages of this shape, which is roughly what the six pending invitations will produce if the acceptance rate holds. Until then it is the current best guess, not a finding.
+
+**The comparison sitting right next to it, free.** Michael Blicher Soerensen and Fabian Riedel got the OLD shape on the same day: generic market median, an offer of a data cut, a question, no pricing. Same channel, same week, same sender. If the four threads diverge, that is the closest thing to a controlled read this desk will ever get without waiting a year for volume.
+
 ### When they do not answer
 
 **No nudge on LinkedIn. Ever.** The email ladder carries the account, and one channel runs at a time. The connection is kept, they go on the index distribution, and the account waits for a better pretext than persistence: their next round, one of their roles crossing 90 or 180 days, or their own comment on an index post.

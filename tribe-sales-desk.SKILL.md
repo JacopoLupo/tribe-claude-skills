@@ -225,12 +225,14 @@ The script prints an operator note under the post with the fastest-moving board 
 
 ```
 connects sent      ->  accepted        (10 -> 4, 40%)
-accepted           ->  message sent    (4 -> 4, carries the model)
-message sent       ->  answered        (4 -> ?, too early)
+accepted           ->  message sent    (4 -> 4, all verified in thread)
+message sent       ->  answered        (4 -> 0 so far, read on 7 Sep)
 answered           ->  call booked
 emails sent        ->  opened          (needs the Track box)
 opened             ->  replied
 ```
+
+**Two shapes are in the field at once and must be scored separately.** Michael Blicher Soerensen and Fabian Riedel got the old acceptance message (market median, offer of a data cut, a question, no pricing) on 24 Aug at 12:41. Ralf Gulde and Mirko Novakovic got the new one (their own board, then the commercial model, no ask) at 14:22 the same day. Same channel, same week, same sender, four threads. Report them as two rows, never as one, because collapsing them throws away the only controlled comparison this desk has.
 
 **Read it as a diagnosis, not a report.** Acceptance at 40% says the connect note works and needs nothing. The next unknown is the DM answer rate, so that is the only stage worth optimising until it has a number. Email opens are still unmeasurable while the Track box is off, which is why that check is a hard gate and not a nicety.
 
