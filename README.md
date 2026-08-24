@@ -63,6 +63,17 @@ Sweeps 7 European funding-press RSS feeds, extracts every company that raised, t
 
 **Money + a board opening roles fast + no recruiters = the lead.** Zero credits, no paid data.
 
+### `index_post.py`, the weekly benchmark
+
+```bash
+python3 index_post.py            # this week's LinkedIn post
+python3 index_post.py --raw      # plus the numbers as JSON
+```
+
+Turns the same scan into a paste-ready public benchmark: role count, medians by function with week-over-week movement, the >90 and >300 day counts. **This is the compounding half of the system.** Outbound is linear, one email to one prospect. A published index gets read by founders who would delete a cold email, and it is the only part nobody can copy without building the scanner first.
+
+Anyone who comments is an inbound lead, and the reply is the outreach.
+
 ### `index.py`, the Tribe Board Index
 
 ```bash
@@ -85,7 +96,7 @@ Scans 41 European scaleup boards and computes the numbers every email quotes: me
 
 **Every number is fresh.** No email quotes a figure that wasn't computed that week from a live board.
 
-**Design choices get tested, not argued.** The two cold variants run as a live A/B test with replies as the metric.
+**Design choices get tested honestly.** The A/B test measures one variable at a time on opens, not whole emails on replies, because at this volume the second design can never conclude anything.
 
 ---
 

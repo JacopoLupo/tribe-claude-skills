@@ -53,7 +53,11 @@ So: use `search_threads` to find candidate thread IDs, then call **`get_thread`*
 
 Search `from:mailer-daemon` since the last run, every day, no exceptions. Stricter rule for manually-sourced addresses (anything a human typed rather than an enrichment tool verifying it "valid"): they get checked the NEXT MORNING after the send, and the send task is not truly settled until that check passes. A bounce found late means a follow-up scheduled against an address that never worked.
 
-### 1c. Tracking health check
+### 1c. Tracking health check, now a hard gate
+
+**This is no longer a nice-to-have (24 Aug 2026).** The Track box lapsed across the entire August cohort, which is exactly why thirty-plus sends producing zero replies was unreadable: three failure points (delivered, opened, replied) collapsed into one number that could not be diagnosed. Domain auth was checked and is clean, so the silence was never deliverability.
+
+Every morning, check the previous day's sends for tracker keys on the EMAIL engagement objects. **A send with no tracker key is EXCLUDED from the A/B test rather than counted**, and gets reported as excluded, because an untracked send is a data point that cannot be read. If a whole batch went out untracked, say so plainly and tell Jacopo to fix "track by default" in the HubSpot Sales extension before the next batch.
 
 One query against HubSpot's logged emails (the EMAIL engagement object) for the most recent sends: do they carry a tracker key? If the latest sends have none, the Track box in the Gmail extension has lapsed (signed out, unticked, or sent outside desktop Chrome) and the morning report says "Track box lapsed, opens are not being recorded" the same day. The BCC keeps logging regardless, so this is about open data, not CRM history. Found the hard way on 20 August 2026: six sends went out untracked and nobody knew until the day was over.
 
@@ -175,6 +179,18 @@ Two LinkedIn tasks, both dated about two weeks out:
 
 1. **Review the DMs sent.** If still silent, do NOT nudge on LinkedIn. The email touch 2 is the next move. One channel at a time, never both at once.
 2. **Decide on connects never accepted.** An invite ignored for two weeks is an answer. Leave it pending, do not withdraw and re-send, that reads as pestering, and let the email ladder carry the account. The exception is anyone where LinkedIn is the ONLY route in (no verified address): there, a dead invite means the account needs an address or it parks, and that has to be decided rather than left to drift.
+
+## Publish the index, every Monday
+
+The highest-leverage thing on this desk is not another email. It is that **nobody else in European recruiting has the index**, and until 24 Aug 2026 it existed only as a private script used to write cold emails to twenty people at a time.
+
+Every Monday, run `scripts/index_post.py`. It produces a paste-ready LinkedIn post from that morning's scan: role count, boards, medians by function with week-over-week movement, the >90 and >300 day counts, and the line that does the work ("recruiting roles themselves take 36 days to fill, so the companies that most need to hire are the slowest at hiring the people who do the hiring").
+
+**Why this matters more than the outbound.** Outbound is linear: one email, one prospect, one chance. The index compounds. Founders who delete a cold email will still read a benchmark about their own market, and once they have seen it, "I track 41 boards" stops being a claim in an email and becomes something they recognise. It is also the only part of this system a competitor cannot copy without building the scanner first.
+
+**Anyone who comments or DMs about the index is an inbound lead and gets handled as one:** check them against HubSpot before replying, and if they are clean, the reply IS the outreach. No cold email, no variant, no ladder. Someone who asked for the cut has already opted in, so send it, and follow up on the conversation rather than on a schedule.
+
+The script prints an operator note under the post with the fastest-moving board and the oldest role in the index. Those are the week's two best cold-lead tips, free, as a side effect of publishing.
 
 ## The weekly sweep
 

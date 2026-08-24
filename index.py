@@ -20,6 +20,23 @@ TODAY = datetime.date.today()
 HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "board_history.json")
 TA_WORDS = ("recruit", "talent", "people", "hr ")
 
+# Evergreen postings are permanently open by design (speculative applications,
+# talent pools, "don't see your role?"). They are not stuck roles, and leaving
+# them in inflates every median, the >300 club, and the TA-pressure count.
+# Caught 24 Aug 2026: the "oldest role in the index" was a 1,852-day
+# Initiativbewerbung at Flip, and n8n's "Leadership roles (Talent Pool)" was
+# being counted as an open recruiter req.
+EVERGREEN = ("initiativbewerbung", "talent pool", "talent community",
+             "expression of interest", "general application", "open application",
+             "speculative", "future opportunit", "perfect role", "spontan",
+             "candidature spontan", "join our talent", "other roles",
+             "didn't find", "did not find", "can't find", "cannot find")
+
+def is_evergreen(title):
+    t = (title or "").lower()
+    return any(k in t for k in EVERGREEN)
+
+
 # The 40-board universe. Add new boards here so week-over-week numbers stay
 # comparable; note the change in the skill when you do.
 SLUGS = """peec wordsmith aveni olix monumental jupus kittl choco kombo langdock
@@ -59,6 +76,8 @@ with cf.ThreadPoolExecutor(20) as ex:
             if not pub:
                 continue
             age = (TODAY - datetime.date(*map(int, pub.split("-")))).days
+            if is_evergreen(j.get("title")):
+                continue
             rows.append((slug, j.get("title"), age, categorize(j.get("title")),
                          j.get("location")))
 

@@ -32,9 +32,20 @@ Added 20 August 2026, Jacopo's design: every prospect enters through ONE pipelin
 2. **The first recruiter role.** When a company posts its first Talent/Recruiter/People role, they have just decided to build a hiring function and have nobody running it yet. This is the single best-timed signal Tribe can act on, the diff flags it explicitly.
 3. **TA pressure (the highest-conversion signal).** The scan computes, per board, the ratio of open TA roles to total roles and prints a "TA PRESSURE" section: 2+ open recruiter roles, or one TA role making up 10%+ of a meaningful board, means the company publicly cannot hire fast enough to hire. They know they have the problem, they are paying to fix it, and Tribe's pitch ("a recruiter inside your team next week, while your recruiter search runs") lands on a prepared mind. These leads jump the queue and get the 4,300+/€3,300 numbers as primary proof, because for TA-strained companies the numbers ARE the pitch.
 4. **Funding rounds: triangulated, never single-source (Jacopo's rule, 20 Aug 2026).** No single funding feed catches everything, so the sweep TRIANGULATES: (a) the funding press: EU-Startups homepage, Tech.eu homepage, Sifted, Crunchbase News; (b) web search for rounds announced in the last 48 hours; (c) VC-side announcements when a specific fund matters (Atomico, Index, Creandum, HV, Speedinvest and the like announce their investments before some press picks them up). Cross-checking sources also catches number discrepancies (the first test found the press reporting €172M for a round the founder's own post announced as $200M; the founder's number wins). Then, before ANY funding find becomes a lead, run the second leg: **check their live open roles** (Ashby first, then Lever `api.lever.co/v0/postings/<slug>?mode=json`, then Greenhouse `boards-api.greenhouse.io/v1/boards/<slug>/jobs`, then the careers page). Funding alone is press; funding + a live board opening roles is a scale-up that needs attention. A company that posts a batch of roles the same day it announces the round, with zero TA roles among them, is scaling with nobody to run the hiring, the single best cold lead the engine produces. The Flip send proved the daily timing: round announced the 19th, email referencing it sent the 20th, no cold email is warmer than "your round closed yesterday". A round older than a week has already been pitched by every agency in Europe, so late finds get the board-data opener, not the funding opener.
+**Evergreen postings are excluded from every number (fix of 24 Aug 2026).** Speculative applications, talent pools and "don't see your perfect role?" listings never close, because they are not real reqs. Left in, they poisoned everything: the oldest role in the index read as a 1,852-day Initiativbewerbung at Flip, n8n's "Leadership roles (Talent Pool)" was counted as an open recruiter req in the TA-pressure ranking, and the >300 day club was inflated by six. Both `index.py` and `index_post.py` now filter them via a shared `EVERGREEN` list. Any number quoted in an email or a post comes from the filtered set, and if a new evergreen phrasing shows up, add it to the list rather than eyeballing it out.
+
 5. **The free bulk net: `scripts/funding_radar.py` (built and proven 20 Aug 2026, the quickest single step the engine has).** One command, zero credits: it sweeps 7 European funding-press RSS feeds (EU-Startups, Tech Funding News, ArcticStartup, Silicon Canals, Tech.eu, Startup Rise, FinSMEs Europe) for rounds announced in the last N days, extracts company + amount from the headlines, then auto-probes 7 ATS providers per company (Ashby, Lever, Greenhouse, Workable, Recruitee, SmartRecruiters, Personio) and scores each live board: total roles, roles posted in the last 14 days, TA-role count. Money + a board opening many roles fast + no recruiters = the Fonio profile (calibration: Fonio raised a $17M seed and its Ashby board holds 71 roles). Run `python3 funding_radar.py --days 3` daily and `--days 7` on the Monday harvest. Two output sections: scored board hits ready to draft, and "no public board found" names for a by-hand careers-page check. Respect the `[VERIFY SLUG]` tag: a board matched only on the first word of a multi-word name can be a same-named stranger (first run: "singular" resolved to a Tel Aviv company, not Singular Photonics; the tag caught it). Screen out staffing/recruitment agencies, they raise rounds too but are competitors, not clients. **Vibe/Explorium credits are reserved for email enrichment only (Jacopo's rule, 20 Aug 2026)**, never for lead discovery; the radar does discovery for free. The Explorium events filter (`new_funding_round`, last 30 days, EU, 11-500 employees) remains documented as a fallback bulk net, but running or exporting it needs Jacopo's explicit ok.
 
-Each signal flows to the outreach queue and gets variant A or B, alternating, counted in the A/B test. A company hitting TWO signals in the same week (round + board velocity, or velocity + first recruiter role) jumps the queue.
+**RANK BY URGENCY, NOT BY STALENESS (added 24 Aug 2026).** The engine was optimising for the wrong thing. A role stuck 350 days is a striking number, but it is a TA person's problem and it has been true for a year, so nothing about today forces a decision. Score leads on how soon the pain becomes the founder's:
+
+1. **Funded in the last 30 days + board growing + zero recruiters.** Highest urgency that exists. They have money, a plan, and nobody to execute it, and they will feel it within a month. Callosum and Legora both scored here and were the best leads of the week.
+2. **First recruiter req just appeared.** They have accepted the problem and are spending on it. Highest intent, because the budget conversation already happened internally.
+3. **Board velocity spike with a thin TA function.** The problem is arriving.
+4. **A single very old role, everything else static.** Lowest. Quotable, but nothing changed this week, so there is no reason for them to act now.
+
+The old scoring inverted 1 and 4 because a 350-day role reads more dramatic than a fresh round. Sort by urgency first, then use the dramatic number as the subject line once they qualify.
+
+Each signal flows to the outreach queue and gets variant A or B, chosen by fit. A company hitting TWO signals in the same week (round + board velocity, or velocity + first recruiter role) jumps the queue.
 
 **Feed 2, the commenting radar (WARM).** Clarified by Jacopo on 20 Aug 2026, first live test of the engine: the warm feed runs on FRESH LEADS, not the account list. Every company the cold feed surfaces gets its decision-maker checked for recent LinkedIn activity, and a founder who announced a round this week has ALWAYS posted about it. That announcement post is the best commenting surface that exists: comment there first, cold email never, variant W within the window. The engine's first test proved it three for three: all three founders found by the funding sweep (Gravis, Oceanloop, amber) had posted their round in the previous 72 hours. The account-list sheet is NOT a harvest source; commenting on account-list people is relationship maintenance Jacopo does on the side, and it only produces outreach when he says he commented and wants the follow-through. Jacopo comments on 2 to 3 posts a day. EVERY comment gets logged the same day as a HubSpot task on that contact: subject "WARMING: [name]", body naming the post topic, the comment date, and the outreach-ready date. THE WINDOW IS FRESH ONLY (Jacopo tightened it 20 Aug): outreach goes out WITHIN 72 HOURS of the comment, and SAME DAY OR NEXT DAY if the person replied or reacted, while the exchange is still on their mind. Past 5 days the warmth is spent and the lead falls back to the cold lane. Fresh comment, fresh interaction, fresh email: the whole point is that they still remember the exchange when the email lands.
 
@@ -200,7 +211,25 @@ Ordering that works when both exist: **People or TA leader (Head-of or above) fi
 4. **The artifact, offered before any commitment**: a concrete piece of work they get whether or not they ever pay. The relevant index cut, or the first shortlist inside five days before any contract. Named specifically ("the Dutch robotics cut", "three profiles by Friday"), never "some insights".
 5. **The close per the close rules below**: coffee line for founders, one soft concrete question for Heads of People. If a call is already booked or offered, beat 4 lands "ahead of our call", which gives the meeting a reason to exist before it starts.
 
-**THE TWO EMAILS. Locked by Jacopo on 19 August 2026: every first-touch cold email is variant A or variant B, nothing else.**
+## THE REWRITE OF 24 AUGUST 2026, and why
+
+Thirty to forty cold first-touches went out across August. **Zero replies.** Not one, across every variant, sector and seniority. Domain auth was checked and is clean (SPF, DKIM, DMARC at p=reject), so delivery was never the problem. The diagnosis and Jacopo's approved fixes are below, and they OVERRIDE the earlier template rules wherever they conflict.
+
+**Statistical honesty first.** Zero out of ~35 is consistent with a true reply rate anywhere between 0% and roughly 8%, so it is weak evidence on its own. What it does prove is that the measurement was useless: no open tracking meant three failure points (delivered, opened, replied) collapsed into one unreadable number.
+
+**THE FIVE FIXES.**
+
+**1. Subject lines carry a fact, never the company name.** The archive already proved this. "127 days against a market median of 33", "still 313", "8 roles in New York" are specific and about them. "Tribe / Legora" and "Tribe / RPO comparison" are a vendor announcing itself. THE `Tribe /` PATTERN IS DEAD, do not use it again. Build the subject from the single hardest number in the email, lowercase, no company name, under 45 characters so it survives a phone preview.
+
+**2. The first seven words are about THEM.** "This week I checked Legora against the 40 boards I track" opens I, I, I. Flip it: "Your Talent Acquisition Partner has been open 278 days." The index is how Jacopo knows, not what the email is about, so it moves to the second clause or the second line.
+
+**3. One ask. One.** The old template asked for the index cut, offered a five-day shortlist AND proposed a coffee, which is three asks and therefore none. **Close on a real question they can answer in one line**, the way the LinkedIn DMs do: "Who is covering the searches until that Director starts?" A question gets a reply; an offer gets ignored. The answer also qualifies the deal, which a coffee line never does.
+
+**4. Eighty words, not two hundred.** Founders triage on a phone. Cut the paragraph that explains embedded recruiting, cut the second proof story, keep one client trio and one number.
+
+**5. Founder framing, not TA framing.** A stuck role is a TA person's problem. Founders feel burn, slipped roadmap and board pressure. Translate the same fact: not "your AE has been open 146 days" but "that BeNeLux seat has been empty five months, which is two quarters of pipeline nobody built." Same data, their language. For Heads of People and TA leaders, keep the raw metric, it IS their language.
+
+**THE TWO EMAILS. Every first-touch cold email is variant A or variant B, nothing else.**
 
 **VARIANT A, the index email.** The JUPUS send is the canonical text. Structure, fixed: the "This week I checked [company]" opener with the category median, the flat gap with a short verified board punch ("Twelve roles, no recruiter among them"), the solvable line with role-matched proof, first shortlist within five days, the index-cut give, the coffee close. Slot template below.
 
@@ -225,37 +254,60 @@ Ordering that works when both exist: **People or TA leader (Head-of or above) fi
 > Best,
 > Jacopo
 
-Rules for B: RUN THE PROMPT IN CLAUDE ONCE BEFORE EACH BATCH, if Tribe appears in the results the email is dead and the fact changes; [company] slots must never be wrong; and the opening block is identical across sends, so never use it twice in overlapping networks (two Berlin founders who know each other get different emails). OPEN QUESTION for Jacopo: the 20 Aug sends said "across five markets" (Alan) and "across 25 markets" (Medly) for Wolt, confirm the real number and standardize, a prospect who asks on a call must get the same answer the email gave.
+**VARIANT B'S IDENTICAL BLOCK IS A LIABILITY, fixed 24 Aug 2026.** Roughly 80 words of B were byte-for-byte identical in every send: the Claude test, the "Tribe was nowhere", the budget line, the client list. Two problems. Mail providers cluster on repeated blocks even when SPF, DKIM and DMARC are perfect, and two founders in the same city who compare notes see a template instantly. **So the FIRST paragraph must now carry a per-recipient variable**, something only true of them, before the identical block starts: "I ran a quick test in Claude, asking which RPOs it recommends for companies scaling in Europe. Yours came up, mine did not." or a sector-specific framing of the question asked. If nothing recipient-specific can be woven into the opening, send variant A instead.
+
+Rules for B: RUN THE PROMPT IN CLAUDE ONCE BEFORE EACH BATCH, if Tribe appears in the results the email is dead and the fact changes; [company] slots must never be wrong; and never use the same opening twice in overlapping networks (two Berlin founders who know each other get different emails). OPEN QUESTION for Jacopo: the 20 Aug sends said "across five markets" (Alan) and "across 25 markets" (Medly) for Wolt, confirm the real number and standardize, a prospect who asks on a call must get the same answer the email gave.
 
 (Parked for after the test, not to be used while it runs: diagnostic, weekly-scan-callout, 300 Club and competitor-pool openers.)
 
 ### The A/B test, started 19 August 2026
 
-**Variant A** is the index email. **Variant B** is the Claude candor email. Rules until the test is called:
+**RESCOPED 24 AUGUST 2026. The original design could never have concluded anything and was retired before it produced a false verdict.**
 
-- Alternate variants across new prospects, half the batch each, founder recipients only for B.
-- Tag every send in its HubSpot task body: "VARIANT A" or "VARIANT B". No untagged sends.
-- Everything downstream stays identical (follow-up cadence, day-after call, BCC logging), so the only difference measured is the email itself.
-- The metric is replies within 14 days of send. Opens need the HubSpot extension Track box ticked at send, so tick it on every A/B send.
-- Call the test at 10 sends per arm or end of September, whichever comes first. Until then neither variant changes, an edited variant restarts its count.
-- **The scoreboard, every daily run:** count sends per variant from the "VARIANT A/B" tags in HubSpot task subjects and bodies, count replies per variant from the inbox reconciliation, and report the standing in one line ("A: 3 sends 1 reply, B: 3 sends 0 replies"). The tally lives in the tags and the inbox, nowhere else, so it can always be recomputed from scratch. When the call date arrives, the verdict gets written into this file: winner, numbers, and what replaces the loser.
+**Why it was broken.** To distinguish a 3% reply rate from a 6% one at any confidence you need several hundred sends per arm. The test was calling it at TEN. At Jacopo's volume, measuring whole emails on replies is decorative: the verdict would have been indistinguishable from a coin flip, and it would have been believed.
 
-The variant A slot template:
+**The new design. Three rules.**
 
-> Hi [first name],
+**1. Test ONE variable at a time, and test the subject line first.** Not two whole emails. The subject is the biggest single lever and the cheapest thing to change. Everything below the subject stays identical across the arms, or the comparison means nothing.
+
+**2. Measure OPENS, not replies.** Open rates run 40 to 60%, so 40 sends per arm produces readable signal inside two weeks. Reply rate stays the north star of the whole desk, it is simply not the test metric, because it is too rare to move a test at this volume.
+
+**3. THE TRACK BOX IS NOW A HARD GATE.** It lapsed through the entire August cohort and that is precisely why zero replies was unreadable. No Track box means no open data means the test does not run at all. If a batch goes out untracked, it is EXCLUDED from the test rather than counted, and the daily run flags it.
+
+**The first test, live from 25 August 2026:** subject line style. Arm 1 is the number-fact subject (`111 days for a head of people`). Arm 2 is the consequence subject (`forty-five roles waiting on one hire`). 40 sends per arm, alternating, everything below the subject identical. Metric: open rate. Verdict when both arms reach 40, not on a calendar date.
+
+**Variants A and B are no longer test arms.** They are two different plays for two different moments: A when the board gives a hard number, B when the prospect is a founder and the candor angle fits. Choose by fit, not by alternation, and keep tagging every send so the data stays reconstructible.
+
+**The scoreboard, every daily run:** report sends, opens and replies per arm in one line ("subject A: 12 sends 7 opens, subject B: 11 sends 4 opens, 0 replies either"). Untracked sends are reported separately as excluded. The tally lives in the HubSpot tags and the inbox, so it can always be rebuilt from scratch.
+
+**THE VARIANT A TEMPLATE, rewritten 24 Aug 2026. Target 80 words. Four beats.**
+
+> **Subject:** [the hardest number, lowercase, no company name, under 45 chars]
+> Examples that work: `111 days for a head of people` / `278 days to hire a recruiter` / `350 days for one AE seat` / `12 roles posted, no recruiter`
 >
-> This week I checked [company] against the 40 European scaleup job boards I track, [total] open roles in total. The median [their role category] role closes in [category median] days.
+> [First name], your [role] has been open [X] days. Across the 41 European scaleup boards I track that is [the percentile fact: "the slowest ten percent of all recruiting hires" / "older than 98% of every role I see"].
 >
-> Your [their stuck roles] are at [their days], older than [computed share] of [category] roles in that index, and [competing roles or second board fact]. [Short punch, verified from the board: "Twelve roles, no recruiter among them." / "All four compete for the same Paris fullstack pool."]
+> [The consequence in THEIR language. Founder: "that is two quarters of pipeline nobody built" / "forty-five roles are waiting on that person". Head of People: the raw second metric.]
 >
-> That is a solvable problem, and it is the [same/exact] work we did [role-matched proof story, per the proof rules below]: a recruiter placed inside your team, working in your ATS, reporting to you, owning each search from sourcing to signed offer. First shortlist within five days, before any contract is signed.
+> We put a recruiter inside teams in exactly that spot, working in your ATS, first shortlist in five days. [One client trio, role-matched: Zalando, Spotify and Kayak for engineering; Wolt and Glovo for commercial.]
 >
-> Happy to send you the index cut for [their segment], it is a useful benchmark either way.
+> [ONE question, answerable in a line: "Who is covering the searches until that Director starts?" / "Is the plan to hire a recruiter or bring in outside capacity?"]
+
+**Worked example (Sereact, 24 Aug), 72 words:**
+
+> **Subject:** 111 days for a head of people
 >
-> I'm always happy to connect with other founders building in [their city], even if not for collaborations, just for a coffee chat.
+> Ralf, your Director People & Culture has been open 111 days. Across the 41 European scaleup boards I track that is the slowest ten percent of all recruiting hires.
 >
-> Best,
-> Jacopo
+> Forty-five roles are waiting on that person, twenty-six in Stuttgart.
+>
+> We drop a recruiter inside teams in exactly that spot, working in your ATS, first shortlist in five days. Zalando, Spotify and Kayak while they scaled.
+>
+> Who is covering the searches until that Director starts?
+
+**What was deliberately removed and must not creep back:** the "This week I checked" opener, the paragraph explaining what embedded recruiting is, the index-cut offer, the coffee-chat close, the second proof story, and the `Tribe /` subject. Every one of them was in the zero-reply cohort.
+
+**What survives:** the signature block (always), the BCC (always), the red reminder line (always), and the rule that every number comes from a scan run that week.
 
 The canonical reference is JUPUS (sales, 36d median, Wolt five-markets proof, drafted 19 August): Jacopo picked it over the heavier variants, so match its weight. Paragraph two ends on a short verified punch from their board. Paragraph three carries no pricing, but for engineering and founder emails it closes with the one-line efficiency proof ("Across our clients: 4,300+ hires at an average cost per hire of 3,300 euros"), Jacopo restored it on 20 August as the scale-and-efficiency push. For TA and recruiter roles those numbers ARE the main proof. Every slot is filled from a real scan run that week, never from memory. For Heads of People, swap the coffee line for the soft concrete question per the close rules, everything else holds.
 
