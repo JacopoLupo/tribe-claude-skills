@@ -161,6 +161,18 @@ The temptation is to write everything down because future-Claude reads these. Re
 
 **When a deal closes, close its tasks in the same motion.** Both directions: closing the deal without closing the tasks leaves ghosts, and closing tasks without moving the deal leaves a phantom number in the forecast.
 
+## Playbook changes get logged in HubSpot too
+
+**Jacopo, 24 Aug 2026: "all of this of course needs to be logged in HubSpot."** He said it about a day in which the way the desk sells was rewritten, and the only record was a GitHub repo and a chat thread. HubSpot had four LinkedIn notes and no explanation of why two of them looked completely different from the other two.
+
+**A change to how the desk sells goes on the Tribe company record (263380950244) as a note**, not only into the skill. The skill is how Claude behaves. The note is how a human, or a colleague, or Jacopo in November, finds out why an account was worked the way it was. A rule that exists only in a repo is invisible to everyone who opens the CRM, which is where the work actually looks like it happened.
+
+**What the note carries:** the problem it solves with the number behind it, what changed, why it was chosen over the obvious alternative, what else changed the same day, and a read date if it is a hypothesis. Link the repo at the bottom for the full version.
+
+**A hypothesis gets a dated task, not a paragraph of intent.** The acceptance play went out to two people on the day it was invented, so it is two data points, and two data points become doctrine unless something forces the question. The task 'Playbook: score the acceptance experiment' sits on 7 September and names what would falsify it. Write the falsifier down while you still believe the idea, because that is the only moment you will write it honestly.
+
+**Score deliberate variations separately, and never collapse them.** Four acceptance messages went out on 24 Aug in two shapes, two hours apart, same channel and same sender. That is a controlled comparison this desk would otherwise wait a year of volume to get, and reporting them as one number throws it away.
+
 ## The merge queue
 
 HubSpot merges and deletions are UI-only, so ghosts and duplicates accumulate. They are NOT to be scattered across task bodies: one standing HubSpot task titled "UI merge queue" holds the complete list, updated IN PLACE the moment a new ghost or duplicate appears (each line: what to merge into what, IDs, which record wins, and why). Jacopo clears it in one sitting when he has ten minutes; whoever updates it removes lines that were done. If the task does not exist, create it, due date far in the future, never marked complete, only rewritten.
