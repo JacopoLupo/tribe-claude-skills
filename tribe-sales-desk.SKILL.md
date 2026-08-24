@@ -63,6 +63,8 @@ Every morning, check the previous day's sends for tracker keys on the EMAIL enga
 
 That is why "35 sends, 0 replies" was unreadable, and it is why "1 open in 14" was ALSO wrong: the real denominator was 2. An entire redesign of the A/B test was argued from a number whose denominator was an artefact. **Two different failures both present as an empty open count and they have different fixes**, so name which one it is: Track box lapsed is fixed in the Gmail extension, no lawful basis is fixed on the contact record.
 
+**Close it at the source if HubSpot allows it.** Backfilling forty contacts fixed the past; setting the basis at creation fixes the future one record at a time. Better than both is a portal-level default applied on import and on contact creation, which would make the per-record rule a backstop rather than the only defence. Worth one look in Settings, and if it exists, turn it on and say so here.
+
 The daily check compares, for yesterday's sends, recipients carrying a lawful basis against recipients sent to. Any gap is reported by name, and those sends are excluded from the test rather than counted as unopened.
 
 One query against HubSpot's logged emails (the EMAIL engagement object) for the most recent sends: do they carry a tracker key? If the latest sends have none, the Track box in the Gmail extension has lapsed (signed out, unticked, or sent outside desktop Chrome) and the morning report says "Track box lapsed, opens are not being recorded" the same day. The BCC keeps logging regardless, so this is about open data, not CRM history. Found the hard way on 20 August 2026: six sends went out untracked and nobody knew until the day was over.
@@ -239,7 +241,7 @@ The highest-leverage thing on this desk is not another email. It is that **nobod
 
 Every Monday, run `scripts/index_post.py`. It produces a paste-ready LinkedIn post from that morning's scan: role count, boards, medians by function with week-over-week movement, the >90 and >300 day counts, and the line that does the work ("recruiting roles themselves take 36 days to fill, so the companies that most need to hire are the slowest at hiring the people who do the hiring").
 
-**Why this matters more than the outbound.** Outbound is linear: one email, one prospect, one chance. The index compounds. Founders who delete a cold email will still read a benchmark about their own market, and once they have seen it, "I track 41 boards" stops being a claim in an email and becomes something they recognise. It is also the only part of this system a competitor cannot copy without building the scanner first.
+**Why this matters more than the outbound.** Outbound is linear: one email, one prospect, one chance. The index compounds. Founders who delete a cold email will still read a benchmark about their own market, and once they have seen it, "I track 45 boards" stops being a claim in an email and becomes something they recognise. It is also the only part of this system a competitor cannot copy without building the scanner first.
 
 **Anyone who comments or DMs about the index is an inbound lead and gets handled as one:** check them against HubSpot before replying, and if they are clean, the reply IS the outreach. No cold email, no variant, no ladder. Someone who asked for the cut has already opted in, so send it, and follow up on the conversation rather than on a schedule.
 

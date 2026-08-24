@@ -117,7 +117,7 @@ This portal has HubSpot's GDPR tools switched on. **A contact with no `hs_legal_
 
 > Hi [name], good exchange under your post on [topic] the other day.
 >
-> It got me looking at [company]'s board: your [role] has been open [X] days, and the median [category] role across the 40 scaleup boards I track closes in [Y].
+> It got me looking at [company]'s board: your [role] has been open [X] days, and the median [category] role across the 45 scaleup boards I track closes in [Y].
 >
 > [continue with the variant A skeleton from the solvable line onward]
 
@@ -225,11 +225,11 @@ Ordering that works when both exist: **People or TA leader (Head-of or above) fi
 
 ## Writing the email
 
-**The first touch leads with the Tribe Board Index, data nobody else has.** Candidate-profile teasers were tried by Martin and did not convert, so the primary hook is the index instead: a weekly scan of ~40 European scaleup job boards via the Ashby posting API. THE SCAN IS BUNDLED: run `python3 scripts/index.py` from this skill's directory before every batch (add a company slug to also dump that board's roles, `--probe N` for a specific age's percentile). The slug universe lives at the top of that script; add new boards there and note the change here, so week-over-week numbers stay comparable. Never rebuild the scan from memory. On 18 August 2026 the index held 1,613 live roles, median age 46 days, engineering median 57, sales median 36, TA median 41, with 27% of all roles past 90 days, 9% past 180, and 30 roles past 300. The email states the prospect's number against the market: "Your AE role is at 140 days, older than 87 percent of the 1,613 roles I track." Nobody else can send that sentence, it is verifiable, and it makes the sender the person with the data rather than the person with the pitch. Offer the relevant index cut ("the Dutch robotics cut", "the German-speaking SaaS sales cut") as the give, it earns a reply that costs the prospect nothing. REFRESH THE NUMBERS before each batch, stale index numbers are worse than none, and never quote a percentile that was not computed from a real scan.
+**The first touch leads with the Tribe Board Index, data nobody else has.** Candidate-profile teasers were tried by Martin and did not convert, so the primary hook is the index instead: a weekly scan of 45 European scaleup job boards via the Ashby posting API. THE SCAN IS BUNDLED: run `python3 scripts/index.py` from this skill's directory before every batch (add a company slug to also dump that board's roles, `--probe N` for a specific age's percentile). The slug universe lives in `scripts/board_common.py`, shared by index.py and index_post.py. Add new boards THERE and nowhere else, and note the change here so week-over-week numbers stay comparable. It was duplicated in both scripts until 24 Aug 2026 and they had drifted to 41 and 45, publishing two different role counts for the same index on the same morning. Never rebuild the scan from memory. On 18 August 2026 the index held 1,613 live roles, median age 46 days, engineering median 57, sales median 36, TA median 41, with 27% of all roles past 90 days, 9% past 180, and 30 roles past 300. The email states the prospect's number against the market: "Your AE role is at 140 days, older than 87 percent of the 1,613 roles I track." Nobody else can send that sentence, it is verifiable, and it makes the sender the person with the data rather than the person with the pitch. Offer the relevant index cut ("the Dutch robotics cut", "the German-speaking SaaS sales cut") as the give, it earns a reply that costs the prospect nothing. REFRESH THE NUMBERS before each batch, stale index numbers are worse than none, and never quote a percentile that was not computed from a real scan.
 
 **The five-beat structure.** Adopted 19 August 2026 from a cold email Jacopo flagged (203K views on X, the recipient called it the best pitch he got all year). The beats, in order, none skipped and none reordered:
 
-1. **The opener, always this exact shape, Jacopo's final call on 19 August**: "This week I checked [company] against the 40 European scaleup job boards I track, [total] open roles in total. The median [their role category] role closes in [X] days." The company name sits in the first sentence, and the median quoted is THEIR role category (engineering 57, sales 36, TA 41 on the 18 Aug scan), never the overall median. Do not swap in portfolio phrasings like "out of all the boards and clients we track", that variant was tried on 19 August and Jacopo overruled it the same day. This opener, all the time.
+1. **The opener, always this exact shape, Jacopo's final call on 19 August**: "This week I checked [company] against the 45 European scaleup job boards I track, [total] open roles in total. The median [their role category] role closes in [X] days." The company name sits in the first sentence, and the median quoted is THEIR role category (engineering 57, sales 36, TA 41 on the 18 Aug scan), never the overall median. Do not swap in portfolio phrasings like "out of all the boards and clients we track", that variant was tried on 19 August and Jacopo overruled it the same day. This opener, all the time.
 2. **The result, stated flat**: their number against the market, no adjectives. "Your two autonomy roles are at 242 days. The median across the index is 46." The gap does the selling.
 3. **"That's solvable, and it's exactly what we did for X, Y, Z"**: one sentence that turns the bad news into a fixed problem, with role-matched client names as the proof (proof rules below apply in full). This beat is why the email reads as help rather than criticism, do not soften the result in beat 2 to compensate, the rescue only works if the gap was stated plainly.
 4. **The artifact, offered before any commitment**: a concrete piece of work they get whether or not they ever pay. The relevant index cut, or the first shortlist inside five days before any contract. Named specifically ("the Dutch robotics cut", "three profiles by Friday"), never "some insights".
@@ -245,7 +245,7 @@ Thirty to forty cold first-touches went out across August. **Zero replies.** Not
 
 **1. Subject lines carry a fact, never the company name.** The archive already proved this. "127 days against a market median of 33", "still 313", "8 roles in New York" are specific and about them. "Tribe / Legora" and "Tribe / RPO comparison" are a vendor announcing itself. THE `Tribe /` PATTERN IS DEAD, do not use it again. Build the subject from the single hardest number in the email, lowercase, no company name, under 45 characters so it survives a phone preview.
 
-**2. The first seven words are about THEM.** "This week I checked Legora against the 40 boards I track" opens I, I, I. Flip it: "Your Talent Acquisition Partner has been open 278 days." The index is how Jacopo knows, not what the email is about, so it moves to the second clause or the second line.
+**2. The first seven words are about THEM.** "This week I checked Legora against the 45 boards I track" opens I, I, I. Flip it: "Your Talent Acquisition Partner has been open 278 days." The index is how Jacopo knows, not what the email is about, so it moves to the second clause or the second line.
 
 **3. One ask. One.** The old template asked for the index cut, offered a five-day shortlist AND proposed a coffee, which is three asks and therefore none. **Close on a real question they can answer in one line**, the way the LinkedIn DMs do: "Who is covering the searches until that Director starts?" A question gets a reply; an offer gets ignored. The answer also qualifies the deal, which a coffee line never does.
 
@@ -309,7 +309,7 @@ Rules for B: RUN THE PROMPT IN CLAUDE ONCE BEFORE EACH BATCH, if Tribe appears i
 > **Subject:** [the hardest number, lowercase, no company name, under 45 chars]
 > Examples that work: `111 days for a head of people` / `278 days to hire a recruiter` / `350 days for one AE seat` / `12 roles posted, no recruiter`
 >
-> [First name], your [role] has been open [X] days. Across the 41 European scaleup boards I track that is [the percentile fact: "the slowest ten percent of all recruiting hires" / "older than 98% of every role I see"].
+> [First name], your [role] has been open [X] days. Across the 45 European scaleup boards I track that is [the percentile fact: "the slowest ten percent of all recruiting hires" / "older than 98% of every role I see"].
 >
 > [The consequence in THEIR language. Founder: "that is two quarters of pipeline nobody built" / "forty-five roles are waiting on that person". Head of People: the raw second metric.]
 >
@@ -321,7 +321,7 @@ Rules for B: RUN THE PROMPT IN CLAUDE ONCE BEFORE EACH BATCH, if Tribe appears i
 
 > **Subject:** 111 days for a head of people
 >
-> Ralf, your Director People & Culture has been open 111 days. Across the 41 European scaleup boards I track that is the slowest ten percent of all recruiting hires.
+> Ralf, your Director People & Culture has been open 111 days. Across the 45 European scaleup boards I track that is the slowest ten percent of all recruiting hires.
 >
 > Forty-five roles are waiting on that person, twenty-six in Stuttgart.
 >
@@ -359,7 +359,7 @@ So variant C is variant A with the pitch removed and the connect note's opener b
 >
 > That is an expensive thing to walk away from on purpose and I think it is the right call.
 >
-> The hiring version is less comfortable. Your Commercial AE in Amsterdam has been open 350 days, older than 98% of every role across the 41 European boards I track.
+> The hiring version is less comfortable. Your Commercial AE in Amsterdam has been open 350 days, older than 98% of every role across the 45 European boards I track.
 >
 > Is that a candidate supply problem, or does nobody have the hours to run it?
 
@@ -402,7 +402,7 @@ So the message runs six short paragraphs and roughly 180 words, in this fixed or
 
 > Ciao [First name], thanks for accepting.
 >
-> [THE PRACTICE LINE: that he reads the job boards of 41 European scaleups every week, and why. Wording varied per person.] [THEN the observation from their board, scanned that morning, unique to them always. Around 55 words for the pair.]
+> [THE PRACTICE LINE: that he reads the job boards of 45 European scaleups every week, and why. Wording varied per person.] [THEN the observation from their board, scanned that morning, unique to them always. Around 55 words for the pair.]
 >
 > [A bridge line, VARIED per person, saying he would rather be plain than dance around it.]
 >
@@ -414,11 +414,11 @@ So the message runs six short paragraphs and roughly 180 words, in this fixed or
 
 **NEVER OPEN ON THE BARE FACT. Say how he knows it first (Jacopo, 24 Aug 2026: "I like more I'm monitoring the startups website bla bla bla and I noticed etc, like this is too direct").**
 
-"Three roles went up on your board this morning" stated cold is a fact about a stranger's company with no explanation of where it came from, and that reads as surveillance. The same fact behind "I track the job boards of 41 European scaleups every week, mostly so I know how the market is moving instead of guessing at it" reads as a person with a systematic view of the market who happened to notice them.
+"Three roles went up on your board this morning" stated cold is a fact about a stranger's company with no explanation of where it came from, and that reads as surveillance. The same fact behind "I track the job boards of 45 European scaleups every week, mostly so I know how the market is moving instead of guessing at it" reads as a person with a systematic view of the market who happened to notice them.
 
 **This is the index earning its keep inside the DM.** The practice line is the only place in the whole first message where Tribe's genuine advantage appears, and it appears as a credential rather than a pitch. It also makes the later "happy to send you the cut for your segment" land as an obvious next step instead of a bribe, because he has already told them the data exists.
 
-**The practice line varies in wording every time.** It describes the same habit for every recipient, so sent identically it becomes the next "59 days" line. Two that worked on 24 Aug: "I track the job boards of 41 European scaleups every week, mostly so I know how the market is moving instead of guessing at it" and "Part of my week goes on reading the job boards of 41 European scaleups, which is how I keep an honest picture of the market rather than a guessed one." The habit is fixed. The sentence is not.
+**The practice line varies in wording every time.** It describes the same habit for every recipient, so sent identically it becomes the next "59 days" line. Two that worked on 24 Aug: "I track the job boards of 45 European scaleups every week, mostly so I know how the market is moving instead of guessing at it" and "Part of my week goes on reading the job boards of 45 European scaleups, which is how I keep an honest picture of the market rather than a guessed one." The habit is fixed. The sentence is not.
 
 **Bridge into the observation, do not just append it.** "Sereact stood out this morning" and "Dash0 caught my eye for an odd reason" both hand over the fact as something noticed rather than something compiled. The second is stronger where the observation contains a contrast, because it promises the reader a small payoff.
 
@@ -458,7 +458,7 @@ So the message runs six short paragraphs and roughly 180 words, in this fixed or
 
 ### Two bans, both earned on 24 August 2026
 
-**No sentence may appear in two people's DMs.** The DMs to Michael Blicher Soerensen and Fabian Riedel both carried the identical clause "the median engineering role across the 40 European boards I track takes 59 days", in the same position. Two founders comparing notes see a mail merge. The market median may appear at most once per person and NEVER as the opening fact. **The opening fact always comes from their own board.**
+**No sentence may appear in two people's DMs.** The DMs to Michael Blicher Soerensen and Fabian Riedel both carried the identical clause "the median engineering role across the 45 European boards I track takes 59 days", in the same position. Two founders comparing notes see a mail merge. The market median may appear at most once per person and NEVER as the opening fact. **The opening fact always comes from their own board.**
 
 **No inbound message waits.** Anything that arrives in the LinkedIn inbox gets an answer or a decision the same day, including messages that are not sales leads. On 24 August three sat unanswered, two of them for three days with LinkedIn itself prompting "Reply?": a recruiter networking, a candidate following up, and a former Nexi colleague asking whether Tribe had work for her. None were prospects and all three were reputational. The desk cannot claim to be good at the conversation after first contact while the inbox has a three-day queue in it.
 
