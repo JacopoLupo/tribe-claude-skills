@@ -173,6 +173,14 @@ The temptation is to write everything down because future-Claude reads these. Re
 
 **Score deliberate variations separately, and never collapse them.** Four acceptance messages went out on 24 Aug in two shapes, two hours apart, same channel and same sender. That is a controlled comparison this desk would otherwise wait a year of volume to get, and reporting them as one number throws it away.
 
+## Every account in a batch carries a dated task, including the failures
+
+**Found by an end-to-end audit on 24 Aug 2026.** Nine of the ten leads in the August batch had a dated touch-2 task. Humanoid had none at all: only the shared "decide on the connects still unaccepted" task, which names six companies and belongs to no account.
+
+The reason is the interesting part. **The follow-up task is created when a send is confirmed, so an account whose send FAILED never gets one.** Humanoid's email bounced and its connect is still pending, which means nothing ever succeeded, which means nothing ever scheduled anything. The accounts most likely to be forgotten are exactly the ones this rule was leaving out, and it was the busiest board in the whole index.
+
+So: at the end of every batch, list the accounts touched and check each one has at least one dated task of its own. A bounced send gets a "find an address or park" task on the spot, dated. A shared task naming six companies is a reminder, not ownership, and it will be read once and snoozed.
+
 ## The merge queue
 
 HubSpot merges and deletions are UI-only, so ghosts and duplicates accumulate. They are NOT to be scattered across task bodies: one standing HubSpot task titled "UI merge queue" holds the complete list, updated IN PLACE the moment a new ghost or duplicate appears (each line: what to merge into what, IDs, which record wins, and why). Jacopo clears it in one sitting when he has ten minutes; whoever updates it removes lines that were done. If the task does not exist, create it, due date far in the future, never marked complete, only rewritten.

@@ -14,36 +14,19 @@ Usage:
     python3 index.py --probe 127     # percentile for a 127-day-old role
 """
 import json, sys, os, datetime, statistics as st, concurrent.futures as cf
+from collections import Counter
 import urllib.request
 
 TODAY = datetime.date.today()
 HISTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "board_history.json")
-TA_WORDS = ("recruit", "talent", "people", "hr ")
 
-# Evergreen postings are permanently open by design (speculative applications,
-# talent pools, "don't see your role?"). They are not stuck roles, and leaving
-# them in inflates every median, the >300 club, and the TA-pressure count.
-# Caught 24 Aug 2026: the "oldest role in the index" was a 1,852-day
-# Initiativbewerbung at Flip, and n8n's "Leadership roles (Talent Pool)" was
-# being counted as an open recruiter req.
-EVERGREEN = ("initiativbewerbung", "talent pool", "talent community",
-             "expression of interest", "general application", "open application",
-             "speculative", "future opportunit", "perfect role", "spontan",
-             "candidature spontan", "join our talent", "other roles",
-             "didn't find", "did not find", "can't find", "cannot find")
-
-def is_evergreen(title):
-    t = (title or "").lower()
-    return any(k in t for k in EVERGREEN)
-
-
-# The 40-board universe. Add new boards here so week-over-week numbers stay
-# comparable; note the change in the skill when you do.
-SLUGS = """peec wordsmith aveni olix monumental jupus kittl choco kombo langdock
-legora lovable taktile pleo the-exploration-company proxima-fusion tacto
-black-forest-labs enpal pennylane alan deepl sereact n8n qonto dust photoroom
-nabla forto juro sylvera 1x sanity multiverse nelly corti sorare ledger
-knowunity upvest flip""".split()
+# SLUGS, EVERGREEN, TA_WORDS, categorize() and the filter version now live in
+# board_common.py, shared with index_post.py. They used to be duplicated here
+# and had drifted: this file tracked 41 boards, the public post tracked 45, and
+# the two published different role counts for the same index on the same
+# morning. Do not redefine any of them locally again.
+from board_common import (SLUGS, EVERGREEN, TA_WORDS, FILTER_VERSION,
+                          is_evergreen, categorize, age_days)
 
 def get(slug):
     url = "https://api.ashbyhq.com/posting-api/job-board/" + slug
@@ -53,33 +36,32 @@ def get(slug):
         with urllib.request.urlopen(req, timeout=15) as r:
             return (slug, json.load(r).get("jobs", []))
     except Exception:
-        return (slug, [])
+        return (slug, None)   # None = the board FAILED, [] = genuinely empty
 
-def categorize(title):
-    t = (title or "").lower()
-    if any(k in t for k in ("engineer", "developer", "scientist", "devops",
-                            "architect", "physicist", "technician")):
-        return "eng"
-    if any(k in t for k in ("sales", "account executive", "sdr", "bdr",
-                            "revenue", "business development", "gtm",
-                            "partnership")):
-        return "sales"
-    if any(k in t for k in ("recruit", "talent", "people", "hr ")):
-        return "ta"
-    return "other"
 
-rows = []
+rows, failed = [], []
 with cf.ThreadPoolExecutor(20) as ex:
     for slug, jobs in ex.map(get, sorted(set(SLUGS))):
+        if jobs is None:
+            failed.append(slug)
+            continue
         for j in jobs:
-            pub = (j.get("publishedAt") or "")[:10]
-            if not pub:
+            # age_days returns None rather than raising. A single malformed
+            # publishedAt used to kill the whole run with a ValueError.
+            age = age_days(j.get("publishedAt"), TODAY)
+            if age is None:
                 continue
-            age = (TODAY - datetime.date(*map(int, pub.split("-")))).days
             if is_evergreen(j.get("title")):
                 continue
             rows.append((slug, j.get("title"), age, categorize(j.get("title")),
                          j.get("location")))
+
+if not rows:
+    sys.exit("No data returned at all. Check network access.")
+if failed:
+    print(f"!!! {len(failed)} boards failed to respond and are MISSING from every "
+          f"number below: {', '.join(failed)}")
+    print("!!! Do not quote these figures in an email until a clean scan runs.\n")
 
 ages = sorted(r[2] for r in rows)
 print(f"SCAN DATE: {TODAY}")
@@ -131,35 +113,63 @@ if not pressure:
 current = {}
 for s, t, d, c, loc in rows:
     current.setdefault(s, []).append(t)
-prev, prev_date = {}, None
+prev, prev_date, prev_filter = {}, None, None
 if os.path.exists(HISTORY):
     try:
         h = json.load(open(HISTORY))
         prev_date = h.get("date")
         prev = h.get("boards", {})
+        prev_filter = h.get("filter_version")
     except Exception:
         pass
-if prev:
+
+# A history file written under a different filter version cannot be diffed.
+# Found 24 Aug 2026: board_history.json predated the evergreen filter, so its
+# stored titles still contained 14 talent pools. Diffing against it reported
+# "n8n slowdown or hiring freeze: -5 roles" when n8n had closed ZERO roles.
+# All five "closures" were talent pools the new filter had simply stopped
+# counting. The mirror-image failure is worse: first_ta suppresses the
+# highest-value signal in the whole script, "FIRST RECRUITER ROLE posted", for
+# any board whose stored history contains a "Talent Pool" title, because those
+# match TA_WORDS and make the role look like it was never the first.
+if prev and prev_filter != FILTER_VERSION:
+    print(f"--- VELOCITY SKIPPED: history was written under filter version "
+          f"{prev_filter}, this scan is version {FILTER_VERSION}. Diffing across "
+          f"a filter change reports filter edits as hiring activity. Baseline "
+          f"rewritten now, diffs resume next run. ---")
+    prev = {}
+elif prev:
     print(f"--- VELOCITY vs previous scan ({prev_date}) ---")
     alerts = []
     for slug in sorted(current):
         if slug not in prev:
             alerts.append((slug, f"NEW BOARD with {len(current[slug])} roles"))
             continue
-        added = [t for t in current[slug] if t not in prev[slug]]
-        closed = [t for t in prev[slug] if t not in current[slug]]
-        first_ta = [t for t in added
+        # MULTISET, not list membership (24 Aug 2026 audit). 14 of 45 boards
+        # carry duplicate titles: legora had 269 roles under 207 distinct
+        # titles, enpal 144 under 119. With `t not in prev`, going from one
+        # copy of "Legal Engineer" to seven registered as zero added, and
+        # legora's true movement of +1/-2 was reported as +1/-0, hiding two
+        # closures. It also printed the same duplicated title four times in a
+        # single alert, which is how it was spotted.
+        cur_c, prev_c = Counter(current[slug]), Counter(prev[slug])
+        added_c, closed_c = cur_c - prev_c, prev_c - cur_c
+        n_added, n_closed = sum(added_c.values()), sum(closed_c.values())
+        added_titles = sorted(added_c)
+        prev_has_ta = any(any(k in (p or "").lower() for k in TA_WORDS)
+                          for p in prev[slug])
+        first_ta = [t for t in added_titles
                     if any(k in (t or "").lower() for k in TA_WORDS)
-                    and not any(any(k in (p or "").lower() for k in TA_WORDS)
-                                for p in prev[slug])]
-        if len(added) >= 3:
-            alerts.append((slug, f"SCALING: +{len(added)} roles "
-                                 f"({', '.join(added[:4])}{'...' if len(added) > 4 else ''})"))
+                    and not prev_has_ta]
+        if n_added >= 3:
+            shown = ", ".join(added_titles[:4])
+            alerts.append((slug, f"SCALING: +{n_added} roles "
+                                 f"({shown}{'...' if len(added_titles) > 4 else ''})"))
         if first_ta:
             alerts.append((slug, f"FIRST RECRUITER ROLE posted: {first_ta[0]} "
                                  f"(they are building a hiring function NOW)"))
-        if len(closed) >= 4:
-            alerts.append((slug, f"slowdown or hiring freeze: -{len(closed)} roles"))
+        if n_closed >= 4:
+            alerts.append((slug, f"slowdown or hiring freeze: -{n_closed} roles"))
     if alerts:
         for slug, msg in alerts:
             print(f"  {slug:<22} {msg}")
@@ -167,7 +177,15 @@ if prev:
         print("  no significant board movement since last scan")
 else:
     print("--- VELOCITY: first scan recorded, diffs start next run ---")
-json.dump({"date": str(TODAY), "boards": current}, open(HISTORY, "w"))
+
+# Never write a baseline from a scan with missing boards: every absent board
+# would look like it closed its entire req list on the next run.
+if failed:
+    print(f"\n!!! History NOT written, {len(failed)} boards were missing. "
+          f"Next run still diffs against {prev_date}.")
+else:
+    json.dump({"date": str(TODAY), "filter_version": FILTER_VERSION,
+               "boards": current}, open(HISTORY, "w"))
 
 for slug in [a for a in args if not a.startswith("--") and not a.isdigit()]:
     print(f"--- full board: {slug} ---")

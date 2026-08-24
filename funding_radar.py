@@ -86,14 +86,53 @@ def parse_feed(url):
         name = " ".join(name.split()[:4]).strip(" '\"")
         if not name or len(name) < 2:
             continue
-        # junk guard: headline fragments, not names ("A year after their")
-        w0 = name.split()[0]
-        if w0.lower() in ("a", "an", "the", "this", "year", "after", "how",
-                          "why", "what", "exclusive", "infrastructure",
-                          "startup", "scaleup") and w0[0].islower() or \
-           w0.lower() in ("a", "an", "the", "this", "how", "why", "what"):
+        # JUNK GUARD, rewritten 24 Aug 2026 after an audit found it broken in
+        # BOTH directions. The old condition was
+        #     w0 in BIG_TUPLE and w0[0].islower() or w0 in SMALL_TUPLE
+        # and `and` binds tighter than `or`, so islower() gated only the first
+        # operand. Effects: "Year in review, Northvolt raises 200M" and
+        # "After a brutal quarter Klarna raises 800M" both passed (the second
+        # losing Klarna entirely), while the case-insensitive small tuple
+        # silently dropped every company starting with The or A, including
+        # The Exploration Company, which is in Tribe's own tracked board list.
+        # A round for a company they actively follow could never have surfaced.
+        parts = name.split()
+        if not parts:
             continue
-        amt = m.group("amt").replace(",", "")
+        # 1. Headlines title-case company names. A lowercase opener is prose.
+        #    Kills "financial data startup Quartr" and "youngest IPO founder",
+        #    both of which were live in the feed and both got ATS-probed.
+        if parts[0][0].islower():
+            continue
+        # 2. A leading article is fine when it belongs to the name. Decide on
+        #    the SECOND word, which is what tells The Exploration Company apart
+        #    from "The round was led by".
+        if parts[0].lower() in ("the", "a", "an"):
+            if len(parts) < 2 or not parts[1][0].isupper():
+                continue
+        # 3. Words that do not appear inside a company name. Deliberately does
+        #    NOT include "of", because The Bank of London is real.
+        NEVER_IN_NAME = {"in", "after", "before", "that", "which", "who",
+                         "when", "its", "their", "review", "report", "quarter",
+                         "year", "how", "why", "what", "this", "youngest",
+                         "oldest", "biggest", "latest"}
+        if any(w.strip(",.:;").lower() in NEVER_IN_NAME for w in parts):
+            continue
+
+        # AMOUNT PARSING. The old line was amt.replace(",", ""), which treats a
+        # comma as a thousands separator unconditionally. The European press
+        # writes "EUR 1,5 million", which became "15" and was reported as a
+        # 15M round instead of 1.5M. A 10x error, silent, in a field used to
+        # rank leads.
+        raw_amt = m.group("amt").strip(".,")
+        if "," in raw_amt and "." in raw_amt:
+            amt = raw_amt.replace(",", "")            # 1,234.5 -> 1234.5
+        elif re.fullmatch(r"\d{1,3}(,\d{3})+", raw_amt):
+            amt = raw_amt.replace(",", "")            # 1,200   -> 1200
+        elif "," in raw_amt:
+            amt = raw_amt.replace(",", ".")           # 1,5     -> 1.5
+        else:
+            amt = raw_amt
         unit = m.group("unit").lower()[0]
         try:
             meur = float(amt) * (1000 if unit == "b" else 1)
@@ -241,18 +280,28 @@ for r in rounds:
     (hot if r["board"] else cold).append(r)
 
 def score(r):
+    """Rank a lead. Workable, Recruitee, SmartRecruiters and Personio do not
+    expose a per-role publish date, so `recent` is None for them. Treating that
+    as 0 (the old `b["recent"] or 0`) meant those four providers could never
+    outrank an Ashby board, regardless of how good the lead was. Estimate from
+    the board size instead, and mark it so the operator knows it is an estimate."""
     b = r["board"]
-    return (b["roles"] + 3 * (b["recent"] or 0)) * (2 if b["ta"] == 0 else 1)
+    recent = b["recent"]
+    if recent is None:
+        recent = b["roles"] * 0.25   # neutral assumption, not a zero penalty
+    return (b["roles"] + 3 * recent) * (2 if b["ta"] == 0 else 1)
 
 for r in sorted(hot, key=score, reverse=True):
     b = r["board"]
     rec = f", {b['recent']} posted <=14d" if b["recent"] is not None else ""
     ta = "NO TA ROLES" if b["ta"] == 0 else f"{b['ta']} TA roles"
     v = " [VERIFY SLUG]" if b.get("verify") else ""
-    print(f"*{v} {r['company']:<24} {r['cur']}{r['amount']:.0f}M  {r['date']}  "
+    amt_s = f"{r['amount']:.1f}" if r['amount'] < 10 else f"{r['amount']:.0f}"
+    print(f"*{v} {r['company']:<24} {r['cur']}{amt_s}M  {r['date']}  "
           f"{b['ats']}: {b['roles']} roles{rec}, {ta}")
     print(f"    {r['title'][:74]}")
 print("-" * 78)
 print("no public board found (check careers page by hand, or park):")
 for r in cold:
-    print(f"  {r['company']:<24} {r['cur']}{r['amount']:.0f}M  {r['date']}  [{r['src']}]")
+    amt_s = f"{r['amount']:.1f}" if r['amount'] < 10 else f"{r['amount']:.0f}"
+    print(f"  {r['company']:<24} {r['cur']}{amt_s}M  {r['date']}  [{r['src']}]")
