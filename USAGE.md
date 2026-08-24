@@ -111,7 +111,7 @@ Through 24 August 2026: **4 acceptances from 10 double-channel sends, against 0 
 
 The connect gets the door open. This is what happens once you are through it, and it is the part that used to have nothing written down.
 
-**Rung 1, the same day they accept.** One message, two halves. First an observation from their own board scanned that morning, unique to them. Then how Tribe actually charges: a low fixed fee plus a fee per hire, the fixed part small on purpose because the recruiters are good enough to be paid on outcomes. It ends "no ask attached" and means it.
+**Rung 1, the same day they accept.** One message, **90 words, three paragraphs, hard cap.** An observation from their own board scanned that morning, then how Tribe charges (small fixed fee plus a fee per hire, small on purpose), then "no ask attached". Longer than 90 words and LinkedIn hides it behind "see more" on a phone, which makes a thorough message an unread one. The full-length version of the model exists too, and it comes out only when someone replies asking how it works.
 
 Leading with the pricing sounds backwards and is not. What burns an acceptance is the ask, never the mention of Tribe. They accepted a connection from someone whose headline says Head of Talent Acquisition, so nobody is surprised you sell. A message that explains what you are and wants nothing is a disclosure, and almost no competitor opens that way.
 

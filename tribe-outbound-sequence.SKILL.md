@@ -382,17 +382,23 @@ The first draft of this ladder held the commercial model back until they had eng
 
 It is also differentiated in the only place that counts. Almost every competitor opens with what they do ("we embed recruiters in scaling teams"). Opening with **how you charge** is rare, and it is a filter: people who want that arrangement answer, people who do not, do not, and both outcomes beat silence.
 
-**The message, one per accepted connect, both halves required:**
+**HARD CAP: 90 WORDS, THREE PARAGRAPHS (Jacopo, 24 Aug 2026: "is not too long the message itself?").** The first draft ran 175 words over five paragraphs. On a phone LinkedIn truncates after roughly one line and hides the rest behind "see more", so a long first message is not a thorough first message, it is an unread one. Count the words before handing it over. If it is over 90, something in it is announcing rather than saying.
 
-> [Thanks in half a sentence, then ONE observation from their own board, scanned that morning. This half must be unique to them.]
+**The short model, which is the DEFAULT and goes in the DM:**
+
+> [Thanks in half a sentence, then ONE observation from their own board, scanned that morning. Unique to them. Around 25 words.]
 >
-> [A bridge line, varied per person, saying he would rather be plain than dance around it.]
+> What we are, briefly. Tribe only works with scaleups. Most RPOs take a big retainer whether or not anyone joins; we take a small fixed fee and then a fee per hire. Small on purpose, because I would rather be paid when people start than paid for the attempt.
 >
+> No ask attached. If it is the wrong shape, say so and I will leave it.
+
+**The long model, which comes out ONLY when someone asks how it actually works.** Same content, room to breathe, and it belongs in a reply where they have already opted in:
+
 > Tribe is a startup and we only work with scaleups. Most RPOs are built for enterprise hiring and priced that way, a big retainer that gets paid whether or not anyone joins. We do the opposite. A low fixed fee, then a fee on each hire we make.
 >
 > The fixed part is small on purpose. I have spent years making our recruiters genuinely good rather than merely available, so I would rather be paid when people start than paid for the attempt. It puts us on the same side of the problem as you, and it is the only version of this I have seen work at your stage.
->
-> No ask attached. If it is the wrong shape, tell me and I will leave it.
+
+**The four things cut from the short version, and the general lesson in each.** "Since we are connected I would rather say what we are plainly than dance around it" was sixteen words announcing that a statement was coming, and an announcement is the first thing a reader skips. "It puts us on the same side of the problem as you" and "the only version of this I have seen work at your stage" make the same point twice, so one goes. "Genuinely good rather than merely available" is a good line and it is still Jacopo praising his own team, while "paid when people start rather than paid for the attempt" proves the same thing structurally. **Anything that describes the message instead of being the message is cut first.**
 
 **"No ask attached" is load-bearing and must not be softened into an ask.** No Calendly, no "worth a chat?", no "happy to explore". The whole reason this message can carry pricing is that it demands nothing in return. The moment it asks, it becomes the cold email that got zero replies, only now on a channel where he was welcome.
 
