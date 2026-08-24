@@ -382,23 +382,27 @@ The first draft of this ladder held the commercial model back until they had eng
 
 It is also differentiated in the only place that counts. Almost every competitor opens with what they do ("we embed recruiters in scaling teams"). Opening with **how you charge** is rare, and it is a filter: people who want that arrangement answer, people who do not, do not, and both outcomes beat silence.
 
-**HARD CAP: 90 WORDS, THREE PARAGRAPHS (Jacopo, 24 Aug 2026: "is not too long the message itself?").** The first draft ran 175 words over five paragraphs. On a phone LinkedIn truncates after roughly one line and hides the rest behind "see more", so a long first message is not a thorough first message, it is an unread one. Count the words before handing it over. If it is over 90, something in it is announcing rather than saying.
+**THE SHAPE, SETTLED 24 AUGUST 2026 AFTER TWO ROUNDS OF JACOPO'S EDITS. Do not re-litigate it.**
 
-**The short model, which is the DEFAULT and goes in the DM:**
+He asked "is not too long the message itself?", was shown a 90-word cut, and chose the LONG version back with one addition: **it opens `Ciao [First name], thanks for accepting.` on its own line.** That greeting is the whole reason the length works, and the reason is mechanical. LinkedIn truncates the preview after roughly the first line. With the greeting on top, the visible line is a warm personal hello that costs nothing to read, which is what earns the tap on "see more". With a dense line of board numbers on top, the preview is a wall and gets scrolled past. **The greeting buys back the length. Never merge it into the paragraph below it, and never drop it to save words.**
 
-> [Thanks in half a sentence, then ONE observation from their own board, scanned that morning. Unique to them. Around 25 words.]
+So the message runs six short paragraphs and roughly 180 words, in this fixed order:
+
+> Ciao [First name], thanks for accepting.
 >
-> What we are, briefly. Tribe only works with scaleups. Most RPOs take a big retainer whether or not anyone joins; we take a small fixed fee and then a fee per hire. Small on purpose, because I would rather be paid when people start than paid for the attempt.
+> [ONE observation from their own board, scanned that morning. Unique to them, always. Around 35 words.]
 >
-> No ask attached. If it is the wrong shape, say so and I will leave it.
-
-**The long model, which comes out ONLY when someone asks how it actually works.** Same content, room to breathe, and it belongs in a reply where they have already opted in:
-
+> [A bridge line, VARIED per person, saying he would rather be plain than dance around it.]
+>
 > Tribe is a startup and we only work with scaleups. Most RPOs are built for enterprise hiring and priced that way, a big retainer that gets paid whether or not anyone joins. We do the opposite. A low fixed fee, then a fee on each hire we make.
 >
 > The fixed part is small on purpose. I have spent years making our recruiters genuinely good rather than merely available, so I would rather be paid when people start than paid for the attempt. It puts us on the same side of the problem as you, and it is the only version of this I have seen work at your stage.
+>
+> No ask attached. If it is the wrong shape, tell me and I will leave it.
 
-**The four things cut from the short version, and the general lesson in each.** "Since we are connected I would rather say what we are plainly than dance around it" was sixteen words announcing that a statement was coming, and an announcement is the first thing a reader skips. "It puts us on the same side of the problem as you" and "the only version of this I have seen work at your stage" make the same point twice, so one goes. "Genuinely good rather than merely available" is a good line and it is still Jacopo praising his own team, while "paid when people start rather than paid for the attempt" proves the same thing structurally. **Anything that describes the message instead of being the message is cut first.**
+**"Ciao" is his, not a translation error.** It is how he opens LinkedIn messages to people of every nationality and it has been in his sent invitations for months. Keep it in English-language messages to Germans, Danes and Swedes alike.
+
+**The lesson from being wrong about this.** The 90-word cut was defended with a real mechanic (mobile truncation) and it still lost, because it treated word count as the variable when the variable was what sits in the truncated line. **Shorten the FIRST line, not the message.** A long message with a warm opening line outperforms a short message that opens on data, and no word count survives contact with that.
 
 **"No ask attached" is load-bearing and must not be softened into an ask.** No Calendly, no "worth a chat?", no "happy to explore". The whole reason this message can carry pricing is that it demands nothing in return. The moment it asks, it becomes the cold email that got zero replies, only now on a channel where he was welcome.
 
