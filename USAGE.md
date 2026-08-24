@@ -111,7 +111,7 @@ Through 24 August 2026: **4 acceptances from 10 double-channel sends, against 0 
 
 The connect gets the door open. This is what happens once you are through it, and it is the part that used to have nothing written down.
 
-**Rung 1, the same day they accept.** One message, six short paragraphs, opening `Ciao [name], thanks for accepting.` on its own line. Then an observation from their own board scanned that morning, then how Tribe charges (small fixed fee plus a fee per hire, small on purpose, because being paid when people start beats being paid for the attempt), then "no ask attached".
+**Rung 1, the same day they accept.** One message, six short paragraphs, opening `Ciao [name], thanks for accepting.` on its own line. Then how he knows what he knows (he reads 41 European scaleup boards every week) and only then the observation from their board, because a fact about a stranger's company with no source attached reads as surveillance and the same fact with a source attached reads as a credential. Then how Tribe charges (small fixed fee plus a fee per hire, small on purpose, because being paid when people start beats being paid for the attempt), then "no ask attached".
 
 The greeting on its own line is not decoration. LinkedIn truncates the preview after roughly the first line, so that greeting is all a phone shows until someone taps. A warm hello earns the tap; a line of board numbers does not. **Shorten the first line, never the message.**
 

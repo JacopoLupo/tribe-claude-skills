@@ -390,7 +390,7 @@ So the message runs six short paragraphs and roughly 180 words, in this fixed or
 
 > Ciao [First name], thanks for accepting.
 >
-> [ONE observation from their own board, scanned that morning. Unique to them, always. Around 35 words.]
+> [THE PRACTICE LINE: that he reads the job boards of 41 European scaleups every week, and why. Wording varied per person.] [THEN the observation from their board, scanned that morning, unique to them always. Around 55 words for the pair.]
 >
 > [A bridge line, VARIED per person, saying he would rather be plain than dance around it.]
 >
@@ -399,6 +399,16 @@ So the message runs six short paragraphs and roughly 180 words, in this fixed or
 > The fixed part is small on purpose. I have spent years making our recruiters genuinely good rather than merely available, so I would rather be paid when people start than paid for the attempt. It puts us on the same side of the problem as you, and it is the only version of this I have seen work at your stage.
 >
 > No ask attached. If it is the wrong shape, tell me and I will leave it.
+
+**NEVER OPEN ON THE BARE FACT. Say how he knows it first (Jacopo, 24 Aug 2026: "I like more I'm monitoring the startups website bla bla bla and I noticed etc, like this is too direct").**
+
+"Three roles went up on your board this morning" stated cold is a fact about a stranger's company with no explanation of where it came from, and that reads as surveillance. The same fact behind "I track the job boards of 41 European scaleups every week, mostly so I know how the market is moving instead of guessing at it" reads as a person with a systematic view of the market who happened to notice them.
+
+**This is the index earning its keep inside the DM.** The practice line is the only place in the whole first message where Tribe's genuine advantage appears, and it appears as a credential rather than a pitch. It also makes the later "happy to send you the cut for your segment" land as an obvious next step instead of a bribe, because he has already told them the data exists.
+
+**The practice line varies in wording every time.** It describes the same habit for every recipient, so sent identically it becomes the next "59 days" line. Two that worked on 24 Aug: "I track the job boards of 41 European scaleups every week, mostly so I know how the market is moving instead of guessing at it" and "Part of my week goes on reading the job boards of 41 European scaleups, which is how I keep an honest picture of the market rather than a guessed one." The habit is fixed. The sentence is not.
+
+**Bridge into the observation, do not just append it.** "Sereact stood out this morning" and "Dash0 caught my eye for an odd reason" both hand over the fact as something noticed rather than something compiled. The second is stronger where the observation contains a contrast, because it promises the reader a small payoff.
 
 **"Ciao" is his, not a translation error.** It is how he opens LinkedIn messages to people of every nationality and it has been in his sent invitations for months. Keep it in English-language messages to Germans, Danes and Swedes alike.
 
