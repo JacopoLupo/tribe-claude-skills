@@ -69,6 +69,8 @@ Ask every morning: who in the warming queue is ready today? Open tasks with subj
 
 Who accepted since yesterday, who replied. Runs on its own schedule but read the result as part of the day: every acceptance is a same-day DM, every reply is a same-day answer and beats every cold email on the list. Full rules under "The 10:00 scanner" below.
 
+**Read the whole inbox, not only the prospect threads.** Every unanswered message gets an answer or an explicit decision the same day, including the ones that are not leads. On 24 Aug 2026 three were sitting unread, two of them for three days with LinkedIn itself prompting "Reply?" on them: a recruiter connecting, a candidate following up on an old conversation, and a former Nexi colleague asking whether Tribe had work for her. None were sales leads and all three were reputational, and the last one was a delivery-capacity question that belonged with Kris or Salem. Non-leads get routed or answered in one line, never left. A desk that lets its inbox queue for three days cannot claim to be good at the conversation after first contact.
+
 ### 1f. The funding radar
 
 Daily, not weekly: one sweep for EU funding rounds announced the previous day. A round announced yesterday is today's best cold lead and next week's worst one. Any hit goes through the Lead Engine (dedupe, Tribester check, board scan) the same morning.
@@ -217,6 +219,24 @@ Every Monday, run `scripts/index_post.py`. It produces a paste-ready LinkedIn po
 
 The script prints an operator note under the post with the fastest-moving board and the oldest role in the index. Those are the week's two best cold-lead tips, free, as a side effect of publishing.
 
+## The funnel scoreboard
+
+**One reply-rate number was hiding four separate problems.** Through August the desk reported "35 sends, 0 replies", which is a single unreadable figure covering a chain of five conversions, each with its own failure mode and its own fix. From 24 Aug 2026 the report carries the whole chain, every stage as its own line with its own denominator:
+
+```
+connects sent      ->  accepted        (10 -> 4, 40%)
+accepted           ->  DM sent         (4 -> 4)
+DM sent            ->  answered        (4 -> ?, too early)
+answered           ->  model explained
+model explained    ->  call booked
+emails sent        ->  opened          (needs the Track box)
+opened             ->  replied
+```
+
+**Read it as a diagnosis, not a report.** Acceptance at 40% says the connect note works and needs nothing. The next unknown is the DM answer rate, so that is the only stage worth optimising until it has a number. Email opens are still unmeasurable while the Track box is off, which is why that check is a hard gate and not a nicety.
+
+**The rule this exists to enforce: fix the earliest broken stage, never the loudest one.** Rewriting emails when the real gap is that nobody answers the DMs is motion, not progress.
+
 ## The weekly sweep
 
 Friday, or Monday before anything else. Seven checks:
@@ -227,7 +247,7 @@ Friday, or Monday before anything else. Seven checks:
 4. **The overdue tripwire: any task more than 14 days overdue gets named in the report as dead-or-real, and decided.** Not snoozed, not carried, decided: closed as dead with one line of why, or given a real date this week. This rule exists because a pile of 40 overdue LinkedIn follow-up tasks accumulated between May and August 2026 with nothing forcing the question.
 5. **Contacts with a send but no email on the record.** Every one is a duplicate waiting to happen. See the blank-email rule in tribe-outbound-sequence.
 6. **Accounts owned by another Tribester that appear in his list.** Park them and say whose they are.
-7. **The A/B scoreboard** (per tribe-outbound-sequence): sends and replies per variant, one line, and the days remaining until the end-of-September call.
+7. **The funnel scoreboard, five stages, not one number** (see below).
 
 ## What cannot be done, and should be said early
 

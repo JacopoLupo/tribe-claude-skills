@@ -107,6 +107,24 @@ Through 24 August 2026: **4 acceptances from 10 double-channel sends, against 0 
 
 ---
 
+## After they accept
+
+The connect gets the door open. This is what happens once you are through it, and it is the part that used to have nothing written down.
+
+**Rung 1, the same day they accept.** Claude hands you a DM: half a sentence of thanks, one fact re-scanned from their board that morning, one real question. No pitch, and never a repeat of the email.
+
+**Rung 2, they answer.** Answer inside the hour if you can. Give something concrete and free before asking for anything. **Do not ask for a meeting here.** This is the message where the instinct is to convert and converting kills the thread.
+
+**Rung 3, the model.** Once they have engaged twice, the thing to put in front of them is how Tribe actually charges, because that is the differentiator and founders think in incentives. A low fixed fee plus a fee per hire, the fixed part small on purpose. Ask Claude for it and it comes back in your words.
+
+**Rung 4, the call.** Only after rung 3, where it becomes a logistics question rather than a request for free time.
+
+**If they never answer:** no nudge on LinkedIn, ever. The email ladder carries the account, and they stay connected, which means they see every index post from here on.
+
+> **An acceptance is permission, not interest.** It is worth two things: a thread that decays in days, and a subscriber who does not decay at all. The second is the bigger one, and it only pays off if the index actually gets published every Monday.
+
+---
+
 ## The ladder
 
 **Touch 1** → **touch 2** two to three weeks later carrying something new, usually the index cut for their segment → then **not a third email**. Route to a second name at the company, openly, or park with a dated reopen condition.
@@ -121,12 +139,15 @@ Two people maximum per company. A reply at any rung voids the ladder and switche
 
 Live until end of September 2026.
 
-| | Opens with |
-|---|---|
-| **Variant A**, the index email | Their stuck role against the market median |
-| **Variant B**, the candor email | An AI test that doesn't mention Tribe, then the pivot |
+| | Opens with | Contains a pitch |
+|---|---|---|
+| **Variant A**, the index email | Their stuck role against the market median | Yes |
+| **Variant B**, the candor email | An AI test that doesn't mention Tribe, then the pivot | Yes |
+| **Variant C**, the choice email | A decision they made, judged in one line | **No** |
 
-Half of each batch gets each variant, every send tagged in its HubSpot task, metric is replies within 14 days. **Do not edit either variant mid-test.** An edit restarts that variant's count.
+Variant C was added on 24 August. The reasoning: the connect note is accepted by 40% of the people who get it and the email is replied to by none of them, on the same day, to the same people. The note opens on a choice and asks for nothing. The email opens on a problem and pitches. **C is variant A with the pitch taken out**, so the thing being tested is the pitch itself. Everything C would have said about Tribe moves to rung 3 above, where it is earned.
+
+Every send tagged in its HubSpot task. **Do not edit a variant mid-test.** An edit restarts that variant's count.
 
 ---
 

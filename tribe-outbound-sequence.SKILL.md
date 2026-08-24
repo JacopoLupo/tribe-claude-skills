@@ -322,6 +322,91 @@ Rules for B: RUN THE PROMPT IN CLAUDE ONCE BEFORE EACH BATCH, if Tribe appears i
 
 The canonical reference is JUPUS (sales, 36d median, Wolt five-markets proof, drafted 19 August): Jacopo picked it over the heavier variants, so match its weight. Paragraph two ends on a short verified punch from their board. Paragraph three carries no pricing, but for engineering and founder emails it closes with the one-line efficiency proof ("Across our clients: 4,300+ hires at an average cost per hire of 3,300 euros"), Jacopo restored it on 20 August as the scale-and-efficiency push. For TA and recruiter roles those numbers ARE the main proof. Every slot is filled from a real scan run that week, never from memory. For Heads of People, swap the coffee line for the soft concrete question per the close rules, everything else holds.
 
+**VARIANT C, THE CHOICE EMAIL. Added 24 August 2026 on Jacopo's instruction ("add variant C now, run alongside").**
+
+**The hypothesis, stated plainly so the test can kill it.** The connect note is accepted by 40% of the people who receive it. The email is replied to by none of them. The notes and the emails go to the same people on the same day, so the difference is not the audience and not deliverability. The structural difference is this: **the note opens on a choice they made and judges it, and asks for nothing. The email opens on a problem they have, diagnoses it, and pitches.** Founders engage with being understood and ignore being diagnosed by a stranger.
+
+So variant C is variant A with the pitch removed and the connect note's opener bolted on. **The variable under test is the pitch itself**, not the wording around it.
+
+> **Subject:** [same convention as A, the assigned subject arm, lowercase, under 45 chars]
+>
+> [First name], [the CHOICE they made, named specifically, with the cheaper or easier alternative visible in the sentence].
+>
+> [The judgment. First person, one clause, slightly contrarian, never a superlative.]
+>
+> [The pivot, and the ONLY number in the email, from their own board, scanned this week.]
+>
+> [ONE question about their operation, answerable in a line.]
+>
+> [Signature]
+
+**Worked example (Dash0, 24 Aug), 74 words:**
+
+> Mirko, you built Dash0 OpenTelemetry-native, which gives up exactly the lock-in that made the last generation of observability profitable.
+>
+> That is an expensive thing to walk away from on purpose and I think it is the right call.
+>
+> The hiring version is less comfortable. Your Commercial AE in Amsterdam has been open 350 days, older than 98% of every role across the 41 European boards I track.
+>
+> Is that a candidate supply problem, or does nobody have the hours to run it?
+
+**What C must NOT contain:** what Tribe does, the client trio, the cost-per-hire line, the shortlist promise, the index-cut offer, a call to action of any kind. All of it moves to rung 3 of the conversation ladder below, where it is earned rather than assumed. If writing C feels uncomfortably like giving something away for nothing, that is the point of the test.
+
+**Running three arms.** A, B and C alternate. Three arms need half again as much volume before anything is readable, so C is judged on REPLIES over a longer window rather than on the subject test's open metric, and the daily scoreboard reports it as its own line. The subject-line test continues underneath, unaffected, because the subject convention is held identical across all three bodies.
+
+## The conversation after they accept
+
+**This is the half the system has never had, and Jacopo named it on 24 August 2026: "people are accepting, at least we have the first point of contact, we have to push on that duality of connections, we need to get better in speaking after with them".**
+
+### What an acceptance is actually worth
+
+An acceptance is permission, not interest. People accept connections freely because it costs nothing and risks nothing, so 4 out of 10 does not mean 4 people want to buy. Treating an accept as buying intent and pitching into it is the fastest way to waste it.
+
+But it produces two assets, and the desk has only ever used one:
+
+1. **A thread.** One conversation, and it decays in days.
+2. **A subscriber.** They now see everything Jacopo posts, permanently, and that does not decay at all.
+
+The second is the bigger prize and it pairs exactly with the weekly index post. **Every acceptance widens the distribution of the index, and the index is what produces inbound.** So an accept that never turns into a conversation is still a win, banked, as long as the index actually gets published. This is why acceptances compound and cold emails do not.
+
+The practical consequence: **stop trying to convert the thread, and let the feed do the middle of the funnel.** The DM opens, the index post keeps him in front of them for weeks, and the ask comes when they have seen the benchmark three times and it is no longer a claim.
+
+### The four rungs
+
+**Rung 1, the acceptance DM.** Same day. The formula is under "THE ACCEPTANCE DM" above: half a sentence of thanks, no repeat of the email, one fact re-scanned from their board that morning, one real question. No pitch.
+
+**Rung 2, they answer. This is the rung everything used to fall off.** Three rules, and the third is the hard one:
+
+- **Answer inside the hour if possible, same day without exception.** A LinkedIn thread has a far shorter half-life than an email thread. A day of silence reads as disinterest in a way it never would in an inbox.
+- **Give before asking, always.** Whatever they said, the reply contains something concrete, useful and free: the segment cut, the percentile their role sits in, the two things that actually move a stuck req in their market. Real substance, not a teaser for substance.
+- **Do NOT ask for a meeting here.** This is the discipline the whole ladder rests on. The reply to their first answer is the highest-risk message in the sequence because the instinct is to convert, and converting here reliably produces "let's keep in touch", which is where threads go to die. End on a second question, or on a specific offer of a thing.
+
+**Rung 3, the model.** Once they have engaged twice, the thing to put in front of them is **not a data freebie and not a calendar link. It is how Tribe actually charges**, because the commercial structure IS the differentiator and founders think in incentives. Jacopo's own framing (24 Aug 2026): a startup that works with scaleups, shared success, a partner both ways, a low fixed fee plus a fee per hire, and the fixed part is low on purpose because he has spent years making the recruiters genuinely good.
+
+The message, as it should go out:
+
+> This is how we actually work, because the shape of it is the whole point.
+>
+> We are a startup and we only work with scaleups. Most RPOs are built for enterprise hiring and charge like it, a large retainer that lands whether or not anyone joins.
+>
+> We do the opposite. A low fixed fee, then a fee on each hire we make. The fixed part is small on purpose. I have spent years making our recruiters genuinely good rather than merely available, so I would rather be paid when people start than paid for the attempt. It puts us on the same side of the problem as you, which is the only arrangement I have seen work at this stage.
+>
+> If that is the wrong shape for where you are, tell me and I will drop it.
+
+**Two claims that were deliberately softened, and must stay softened.** Jacopo describes Tribe as "the only RPO made for real scaleups" and the fee as "one of the lowest in the market". Both are unfalsifiable superlatives, and in a first commercial message to a founder they invite exactly the scepticism the rest of the message is trying to avoid. The structural contrast (built for enterprise and priced that way, versus this) makes the same point and cannot be argued with. Say the fee is low and say WHY it is low; do not rank it.
+
+**Rung 4, the call, and only now.** It comes as a consequence of rung 3, never as the ask in rung 2. "Easier to walk you through how the per-hire part works than to type it, fifteen minutes?" A call proposed after the model has been explained is a logistics question. A call proposed before it is a request for free time from a stranger.
+
+### When they do not answer
+
+**No nudge on LinkedIn. Ever.** The email ladder carries the account, and one channel runs at a time. The connection is kept, they go on the index distribution, and the account waits for a better pretext than persistence: their next round, one of their roles crossing 90 or 180 days, or their own comment on an index post.
+
+### Two bans, both earned on 24 August 2026
+
+**No sentence may appear in two people's DMs.** The DMs to Michael Blicher Soerensen and Fabian Riedel both carried the identical clause "the median engineering role across the 40 European boards I track takes 59 days", in the same position. Two founders comparing notes see a mail merge. The market median may appear at most once per person and NEVER as the opening fact. **The opening fact always comes from their own board.**
+
+**No inbound message waits.** Anything that arrives in the LinkedIn inbox gets an answer or a decision the same day, including messages that are not sales leads. On 24 August three sat unanswered, two of them for three days with LinkedIn itself prompting "Reply?": a recruiter networking, a candidate following up, and a former Nexi colleague asking whether Tribe had work for her. None were prospects and all three were reputational. The desk cannot claim to be good at the conversation after first contact while the inbox has a three-day queue in it.
+
 ## The follow-up lifecycle
 
 Every send moves the account one rung down a fixed ladder, and closing a task ALWAYS creates its successor in the same motion. A closed task without a successor task ID in its body is the failure mode this section exists to prevent.
