@@ -1,70 +1,114 @@
 # Tribe Claude Skills
 
-The playbook that runs Tribe's outbound sales desk inside Claude. Two skills, built and battle-tested on live outreach in August 2026: one writes, one keeps the discipline. Together they turn "find me leads" into sent-ready drafts with the CRM already handled.
+**The outbound sales desk, running inside Claude.** Two skills do the work: one finds and writes, one keeps the discipline. Together they turn "find me leads" into sent-ready drafts with the CRM already handled and every follow-up already dated.
 
-**This repository is public so the Tribe team can use it without access friction** (Jacopo's call, 20 Aug 2026). It still contains the full outbound playbook, client proof points, live A/B test variants and HubSpot record references, so don't advertise the link outside Tribe.
+Built and hardened on live outreach through August 2026. Every rule in here exists because something went wrong once and cost something.
 
-## What the system guarantees
+> **This repo is public so the team can use it without access friction.** It carries the full playbook, client proof points, live A/B variants and CRM references, so don't advertise the link outside Tribe.
 
-Every send logged in HubSpot automatically. Every follow-up scheduled the moment a send is confirmed, so no account ever goes quiet unnoticed. Every email built on live job board data from the Tribe Board Index, a weekly scan of 41 European scaleup boards that no competitor can quote. And every design choice tested, not argued: the two email variants run as a live A/B test with replies as the metric.
+---
+
+## The idea in one paragraph
+
+Most outbound fails because it guesses. This one doesn't: every email quotes a number computed that same week from the prospect's own job board, measured against 41 European scaleup boards. "Your Account Executive has been open 146 days. The market median is 32." That sentence is unarguable, it is about them, and no competitor can send it.
+
+---
+
+## How a lead travels
+
+```mermaid
+flowchart TD
+    A["<b>FIND</b><br/>funding_radar.py<br/>7 press feeds x 7 ATS probes"] --> B["<b>QUALIFY</b><br/>money + roles opening fast<br/>+ no recruiters"]
+    A2["<b>FIND</b><br/>index.py velocity diff<br/>41 boards, day over day"] --> B
+    B --> C{"Decision-maker<br/>posted this week?"}
+    C -->|yes| W["<b>WARM</b><br/>comment first,<br/>variant W inside 72h"]
+    C -->|no| D["<b>COLD</b><br/>variant A or B,<br/>alternating"]
+    W --> E["<b>SHIP BOTH CHANNELS</b><br/>email + LinkedIn connect,<br/>same day, always"]
+    D --> E
+    E --> F["<b>HUMAN SENDS</b><br/>Claude never sends"]
+    F --> G["<b>LOG</b><br/>email auto-logs via BCC<br/>LinkedIn logged as notes"]
+    G --> H["<b>LADDER</b><br/>touch 2 dated on both channels<br/>in the same motion"]
+    H --> I["<b>DAILY RECONCILE</b><br/>replies, bounces, acceptances"]
+    I --> A
+```
+
+**The rule that makes it work:** closing a task and scheduling its successor happen in the same motion. A closed task without a successor is the failure this system exists to prevent.
+
+---
 
 ## The two skills
 
-### tribe-outbound-sequence, the writing half
+| | **tribe-outbound-sequence** | **tribe-sales-desk** |
+|---|---|---|
+| **Does** | Finds leads, writes the outreach | Keeps the pipeline honest |
+| **Run it when** | "run the lead engine", "prep the outbound" | "prep my day", "what's due", "someone replied" |
+| **Owns** | Lead Engine, the A/B variants, proof rules, address verification | Daily reconcile, follow-up ladder, CRM hygiene, weekly sweep |
+| **Source** | `tribe-outbound-sequence.SKILL.md` | `tribe-sales-desk.SKILL.md` |
+| **Packaged** | `tribe-outbound-sequence.skill` | `tribe-sales-desk.skill` |
 
-Turns a prospect name into a sent-ready draft: checks HubSpot for duplicates and colleagues already on the account, scans the prospect's live job board, writes the email in Jacopo's voice using one of two locked A/B variants, enriches the recipient's verified email address, and creates the dated HubSpot task that carries the whole plan.
+Use the desk skill **first**. It decides what deserves the effort before anything gets written.
 
-Its engine is `index.py`, the Tribe Board Index scanner. Run it before any batch: it pulls 41 scaleup job boards through the Ashby API and computes the numbers the emails quote ("your role is at 127 days, the market median is 33"). Nobody else in the market can send that sentence.
+---
 
-Source: `tribe-outbound-sequence.SKILL.md` | Packaged: `tribe-outbound-sequence.skill`
+## The scripts
 
-### tribe-sales-desk, the discipline half
+### `funding_radar.py`, the free lead finder
 
-The 15-minute daily run that keeps the pipeline honest: reconciles the task list against what was actually sent (never trusts the plan), catches replies with no task behind them, checks bounces and email-tracking health, and enforces the follow-up ladder, first touch, second touch 2 to 3 weeks later, then route to a second name or park. Closing a task and scheduling its successor happen in the same motion, so no account ever goes silent unnoticed.
-
-Source: `tribe-sales-desk.SKILL.md` | Packaged: `tribe-sales-desk.skill`
-
-## How the pieces fit
-
-```mermaid
-flowchart LR
-    A1[COLD feed<br/>triangulated funding sweep,<br/>board velocity, TA pressure] --> R{Decision-maker<br/>posted recently?}
-    R -->|no| B[Harvest list<br/>deduped in HubSpot]
-    R -->|yes| W[WARM lane: comment on their post<br/>WARMING task, 72h fresh window]
-    W --> B
-    B --> C[Board scan<br/>index.py + ATS probes]
-    C --> D[Draft: variant A/B cold,<br/>variant W warm, verified address]
-    D --> E[Human sends<br/>Claude never sends]
-    E --> F[BCC auto-logs to HubSpot]
-    F --> G[Task closed +<br/>follow-up scheduled]
-    G --> H[Daily reconcile: replies, bounces,<br/>tracking, warming queue]
-    H --> A1
+```bash
+python3 funding_radar.py --days 3     # daily
+python3 funding_radar.py --days 7     # Monday harvest
 ```
 
-This is the Lead Engine: one pipeline, and every lead in it is FRESH. The cold feed finds new companies through a triangulated funding sweep (press + web search + VC announcements, every find confirmed against live open roles), board velocity diffs, first-recruiter-role alerts and TA pressure. Then the fork: if the company's decision-maker posted on LinkedIn recently, and a founder who just announced a round always has, the lead enters the WARM lane. Jacopo comments on the post, and within 72 hours (same day if they engaged back) they get variant W, which opens from that exchange. Everyone else gets the A/B-tested cold variants. The account-list sheet is not a harvest source; commenting there is relationship maintenance. The rule that protects both lanes: nobody mid-warm-up ever receives a cold email. The human stays in the loop at exactly two points: the comment and the send.
+Sweeps 7 European funding-press RSS feeds, extracts every company that raised, then probes 7 ATS providers (Ashby, Lever, Greenhouse, Workable, Recruitee, SmartRecruiters, Personio) for each one's live board. Scores what it finds: total roles, roles posted in the last 14 days, recruiter count.
 
-Improving these skills is a team sport: see **[CONTRIBUTING.md](CONTRIBUTING.md)** for how to propose changes without breaking the machine.
+**Money + a board opening roles fast + no recruiters = the lead.** Zero credits, no paid data.
+
+### `index.py`, the Tribe Board Index
+
+```bash
+python3 index.py                 # market stats
+python3 index.py monumental      # one company's full board
+python3 index.py --probe 146     # percentile for a 146-day-old role
+```
+
+Scans 41 European scaleup boards and computes the numbers every email quotes: medians by category, percentile tables, the >90/>180/>300 day counts, open recruiter roles, and TA pressure per board. It also **diffs against the previous run**, which is how a company gets spotted the week it starts scaling rather than the month after.
+
+---
+
+## What the system guarantees
+
+**Nothing gets sent by Claude.** Every email is a draft until a human presses send. Every address is verified before it touches a To field.
+
+**Every lead gets two channels.** Email and LinkedIn connect ship together, same day, every time. A prep with only an email is incomplete.
+
+**Nothing goes quiet unnoticed.** Every send, on either channel, gets a dated follow-up created the moment the send is confirmed.
+
+**Every number is fresh.** No email quotes a figure that wasn't computed that week from a live board.
+
+**Design choices get tested, not argued.** The two cold variants run as a live A/B test with replies as the metric.
+
+---
 
 ## The supporting skills
 
-The two desk skills lean on four more, all documented here so the repo is the complete system:
+**`linkedin-engagement-radar`** feeds the warm lane: it checks decision-makers at freshly harvested companies for recent posts, so a comment can land before the outreach does. Its second mode does maintenance commenting on the account list, on explicit ask only.
 
-**linkedin-engagement-radar** (`linkedin-engagement-radar.SKILL.md`) feeds the warm lane of the Lead Engine: it checks the decision-makers at freshly harvested companies for recent LinkedIn posts, so Jacopo can comment before the outreach goes out (its second mode, on explicit ask, does maintenance commenting on the account-list sheet). **jacopo-linkedin-voice** and **tribe-brand** govern how anything published or sent actually sounds, personal voice and company brand respectively. **anti-ai-writing-skill** is the quality gate on every piece of prose: it bans the vocabulary, sentence shapes and hype patterns that make writing read as machine-generated, and every cold email passes through it.
+**`jacopo-linkedin-voice`** and **`tribe-brand`** govern how anything published or sent actually sounds, personal voice and company brand respectively.
+
+**`anti-ai-writing-skill`** is the quality gate on every piece of prose. It bans the vocabulary, sentence shapes and hype patterns that make writing read as machine-generated. Every cold email passes through it.
+
+---
 
 ## Getting started
 
-Read **[USAGE.md](USAGE.md)**. It has the setup checklist (which connectors to link), the exact phrases to say to Claude, and a walkthrough of a full day on the desk.
+1. Read **[USAGE.md](USAGE.md)**, the operator's manual: which connectors to link, the exact phrases to say, and a walkthrough of a full day.
+2. Install a skill: claude.ai → Customize → Skills → upload a `.skill` file from this repo.
+3. Org-wide (owner only, Team/Enterprise): Organization settings → Skills → Add → upload. Re-uploading updates it for everyone.
 
-## Installing the skills
+Improving these is a team sport. **[CONTRIBUTING.md](CONTRIBUTING.md)** covers how to propose changes without breaking the machine.
 
-Individual: claude.ai → Customize → Skills → upload a `.skill` file from this repo.
+---
 
-Org-wide (org owner only, Team/Enterprise plan): Organization settings → Skills → enable the Skills toggles → Add → upload the `.skill` file. Everyone at Tribe gets it, and re-uploading updates it for all.
+## Before you run these as yourself
 
-## Updating
-
-Edit the `.SKILL.md` source (or `index.py`). To repackage: create a folder named after the skill containing `SKILL.md` (plus `scripts/index.py` for the outbound skill), zip it, rename the zip `<skill-name>.skill`, replace it here, re-upload to claude.ai. The skills carry their change history as dated decisions inside the prose; keep that convention, future Claude sessions rely on it.
-
-## Before teammates run these
-
-Both skills are currently personalized to Jacopo (signature, Calendly link, first-person voice, A/B test ownership). A teammate running them as-is would draft emails signed Jacopo. The team edition, with sender identity as a slot, is the next step; until then, treat this repo as the reference playbook and ask Jacopo before adopting.
+Both skills are currently personalised to Jacopo: signature, Calendly link, first-person voice, A/B test ownership. Run them as-is and you'll draft emails signed Jacopo. The team edition, with sender identity as a slot, is the next piece of work. Until then treat this as the reference playbook and ask before adopting.

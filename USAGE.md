@@ -1,94 +1,137 @@
-# How to use the Tribe sales skills
+# The operator's manual
 
-This is the operator's manual. Everything here is a phrase you type to Claude in a Cowork session, and what happens when you do. No coding, no setup beyond the checklist below.
+Everything here is a phrase you type to Claude in a Cowork session, and what happens when you do. No coding, no setup beyond the checklist.
+
+---
 
 ## One-time setup
 
-Connect these in your Claude session (the skills degrade gracefully without them, but this is the full machine):
-
 | Connector | What it powers |
 |---|---|
-| Gmail | Draft creation, Sent-folder reconciliation, bounce checks |
-| HubSpot | Contacts, companies, tasks, send logging, the A/B scoreboard |
-| Google Calendar | Meeting detection (a booked call changes the play) |
-| Vibe Prospecting | Verified email addresses from LinkedIn profiles (~2 credits per email) |
-| Claude in Chrome (optional) | Anything that needs your logged-in browser |
+| **Gmail** | Draft creation, Sent-folder reconciliation, bounce checks |
+| **HubSpot** | Contacts, companies, tasks, activity logging, the A/B scoreboard |
+| **Google Calendar** | Meeting detection, because a booked call changes the play |
+| **Vibe Prospecting** | Verified email addresses (~2 credits each) |
+| **Claude in Chrome** | LinkedIn reading, boards with no ATS API, GitHub |
 
-Two Gmail-side habits that make the whole system work:
+Two Gmail habits that make the whole thing work:
 
 1. **The HubSpot BCC** goes on every outreach email: `146748263@bcc.eu1.hubspot.com`. Claude pre-sets it in every draft. It is what logs sends to the CRM automatically.
-2. **The Track checkbox** (HubSpot Sales extension in Gmail) must be ticked at send to record opens. The BCC logs the send; only Track records opens. Set "track by default" once in the extension settings and forget it.
+2. **The Track checkbox** (HubSpot Sales extension) must be ticked at send to record opens. The BCC logs the send; only Track records the open. Set "track by default" once and forget it.
 
-## The golden rule
+**One HubSpot note:** the connection needs **notes write** scope, or LinkedIn activity cannot be logged where you'll find it.
 
-**Claude never sends.** Every email is a draft until a human presses Send. Claude also never guesses an email address into a To field: addresses get verified first (enrichment tool or a two-source pattern match), written onto the HubSpot contact, and only then into the draft.
+---
 
-## Daily driving: what to say
+## The golden rules
+
+> **Claude never sends.** Every email is a draft until you press send.
+>
+> **No guessed addresses, ever.** Addresses get verified, written onto the HubSpot contact, and only then into a draft. An unverified address means the To line stays empty and the draft says so in red.
+>
+> **Every lead gets both channels.** Email and LinkedIn connect note, same day, always. A prep that gives you only an email is not finished.
+
+---
+
+## Daily driving
 
 ### Start the day
 
-> "prep my day" or "what's due today"
+> **"prep my day"** · **"what's due today"**
 
-Runs the sales-desk routine: reconciles open tasks against the Sent folder (so you never email someone twice), checks bounces from yesterday, checks email tracking health, surfaces replies that have no task behind them (the most expensive thing to miss), and reports: what is done, what needs you today, what is scheduled.
+Reconciles open tasks against the Sent folder so you never email someone twice, checks yesterday's bounces, checks tracking health, surfaces replies with no task behind them, and reports what is done, what needs you, what is scheduled.
 
-### Find new prospects: the Lead Engine
+### Find leads
 
-> "run the lead engine" or "fresh leads" or "harvest"
+> **"run the lead engine"** · **"fresh leads"** · **"harvest"**
 
-One pipeline, two feeds. The COLD feed is a scaling detector with four signals: board velocity (the index script diffs every scan against the last one and flags any company that added 3+ roles, a brand-new board, or its FIRST recruiter role, the best-timed signal there is), plus a TRIANGULATED funding sweep: funding press (EU-Startups, Tech.eu, Sifted, Crunchbase News) cross-checked with web search and VC announcement pages, and every find confirmed against the company's LIVE open roles (Ashby, Lever, Greenhouse, careers page) before it becomes a lead. Funding alone is press; funding plus a board actively opening roles is a scale-up that needs attention. The WARM feed runs on the SAME fresh finds: the decision-maker at every new company gets checked for recent LinkedIn activity, and a founder who announced a round this week has always posted about it, so the announcement post becomes the commenting surface and the lead enters warm instead of cold. The account-list sheet is not part of the harvest; commenting there is relationship maintenance you do on the side. Everything merges into one list, deduped against HubSpot, colleague-owned accounts parked. A company hitting two signals in one week jumps the queue.
+Runs `funding_radar.py` across the funding press and probes every ATS for live boards, then cross-checks the index velocity diff for companies whose board jumped since the last scan. Everything is deduped against HubSpot and colleague-owned accounts are parked before you see the list.
+
+What survives the screen: EU-based, money in the bank, roles opening fast, and nobody internal running the hiring.
+
+### Turn leads into outreach
+
+> **"prep the emails"** · **"add them to HubSpot and draft the outreach"**
+
+Per target: company and contact created (duplicate-checked), address enriched and verified, email drafted in Gmail with BCC pre-set, **LinkedIn connect note written alongside it**, and a dated HubSpot task carrying the whole plan. Cold variants alternate A and B automatically.
 
 ### The commenting workflow (warm lane)
 
-You comment on 2 to 3 radar posts a day, real comments, in your voice. Tell Claude who you commented on:
+Tell Claude who you commented on:
 
-> "I commented on [name]'s post about [topic]"
+> **"I commented on [name]'s post about [topic]"**
 
-Claude logs a WARMING task on that contact the same day. The window is FRESH ONLY: the outreach goes out within 72 hours of the comment, and same day or next day if the person replied or reacted, while the exchange is still on their mind. The morning run surfaces who's ready ("two warm leads ready today") and the draft uses **variant W**: it opens from the exchange ("good exchange under your post on [topic]"), then goes into their board data, same skeleton as everything else after that. If the person replied to your comment, the touch goes as a LinkedIn DM instead of an email, they chose the channel.
+A WARMING task goes on that contact the same day. The window is **fresh only**: outreach goes within 72 hours, same day if they engaged back. Past 5 days the warmth is spent and the lead drops to the cold lane.
 
-Three rules the engine enforces: nobody mid-warm-up gets a cold email (the draft step checks for open WARMING tasks first); warmth expires at 5 days, after which the lead falls back to the cold lane; and variant W stays out of the A/B scoreboard, warm replies would corrupt the cold test.
+Warm leads get **variant W**, which opens from the exchange. Variant W needs your explicit go each time, and it stays out of the A/B scoreboard because warm replies would corrupt the cold test.
 
-### Turn prospects into drafts
+### After you send
 
-> "prep the emails for these" or "add them to HubSpot and draft the outreach"
+> **"I sent them"** · **"check the sent folder and log everything"**
 
-For each target: company and contact created in HubSpot (duplicate-checked), email address enriched and verified, draft written in Gmail with BCC pre-set, and a dated HubSpot task carrying the full plan, address status, variant tag, pre-send checklist. Drafts alternate between the two A/B variants automatically.
-
-### After you hit send
-
-> "I sent the emails, update the tasks" or "check the sent folder and log everything"
-
-Claude verifies each send in the Sent folder (never trusts a plan), closes the task with what actually went out, subject, address, date, edits you made, sets the contact's lead status, and creates the follow-up task 2 to 3 weeks out in the same motion. This close-and-schedule pairing is the rule that stops accounts going silent.
+Claude verifies each send in the Sent folder, never trusting the plan or the report, closes each task with what actually went out, and creates the follow-up 2 to 3 weeks ahead in the same motion. It will tell you plainly if something you thought went out didn't.
 
 ### When someone replies
 
-> "someone replied, what now" or just paste the reply
+> **"someone replied"** · or just paste it
 
-Same-day response is the standard. Claude creates the task first (a reply creates nothing in HubSpot by itself), then helps draft the answer by reply type: a question gets an answer with no pitch attached, "send me X" gets X the same day, "not now" gets a dated reopen, "no" gets a one-line ask about what tipped it and a clean close.
+Same-day response is the standard. A reply creates nothing in HubSpot by itself, so the task comes first, then the answer, drafted by reply type: a question gets an answer with no pitch attached, "send me X" gets X the same day, "not now" gets a dated reopen, "no" gets a one-line ask about what tipped it and a clean close.
 
 ### Refresh the market data
 
-> "run the index" or "re-run the board scan"
+> **"run the index"**
 
-Executes `index.py`: 41 boards, ~1,600 roles, medians by category, the percentile table, and the list of stuck TA roles. Every number in every email comes from a scan run that week, never from memory. `python3 index.py monumental` also dumps one company's full board; `--probe 127` gives the percentile for a specific role age.
+41 boards, ~1,600 roles, medians by category, percentile table, stuck recruiter roles, TA pressure, and the velocity diff against the last scan.
 
-### Weekly, Friday or Monday
+### Weekly
 
-> "run the weekly sweep" or "pipeline review"
+> **"run the weekly sweep"** · **"pipeline review"**
 
-Seven checks: stale deals, past-due close dates, overdue tasks, the 14-day dead-or-real tripwire, contacts missing emails, colleague-owned accounts in the list, and the A/B scoreboard with days remaining until the verdict.
+Seven checks: stale deals, past-due close dates, overdue tasks, the 14-day dead-or-real tripwire, contacts missing emails, colleague-owned accounts in the list, and the A/B scoreboard with days remaining.
 
-## The follow-up ladder (what the system enforces)
+---
 
-First email → follow-up 2 to 3 weeks later carrying something new (usually the index cut for their segment) → 2 to 3 weeks after that, NOT a third email to the same inbox: route to a second name at the company, openly, or park with a dated reopen condition. Two people maximum per company, then the account is cold until something changes. A reply at any rung voids the ladder and switches to the reply playbook.
+## Running automatically
 
-## The A/B test (live until end of September 2026)
+**LinkedIn to HubSpot sync**, weekday mornings. Reads your sent-invitations list and inbox, works out who accepted and who replied since yesterday, and writes it into HubSpot as notes. On a reply it logs the text, flips lead status, closes that account's email follow-up as superseded, and raises a same-day "answer today" task.
 
-Variant A, "the index email": opens with the prospect's stuck role against the market median from the Board Index. Variant B, "the candor email": opens with an AI test that doesn't mention Tribe, then the pivot. Half of each batch gets each variant, every send is tagged in its HubSpot task, the metric is replies within 14 days. Do not edit either variant mid-test; an edit restarts that variant's count.
+It exists because a LinkedIn reply reaches no inbox and no CRM. Without it, the most valuable signal in the pipeline is the one most likely to be missed.
 
-## Things Claude will refuse to do, on purpose
+---
 
-Send an email. Put a guessed address in a To field. Email an account a colleague owns. Send a third email to the same person. Quote an index number that wasn't computed that week. Invent the specifics of a past search. Each of these exists because the mistake was made once, manually, and cost something.
+## The ladder
+
+**Touch 1** → **touch 2** two to three weeks later carrying something new, usually the index cut for their segment → then **not a third email**. Route to a second name at the company, openly, or park with a dated reopen condition.
+
+Two people maximum per company. A reply at any rung voids the ladder and switches to the reply playbook.
+
+**Parks carry an expiry.** Every park names what would reopen it, in testable terms, and gets re-checked on a date. A park that was right in August can be badly wrong by September.
+
+---
+
+## The A/B test
+
+Live until end of September 2026.
+
+| | Opens with |
+|---|---|
+| **Variant A**, the index email | Their stuck role against the market median |
+| **Variant B**, the candor email | An AI test that doesn't mention Tribe, then the pivot |
+
+Half of each batch gets each variant, every send tagged in its HubSpot task, metric is replies within 14 days. **Do not edit either variant mid-test.** An edit restarts that variant's count.
+
+---
+
+## What Claude refuses to do, on purpose
+
+Send an email. Put a guessed address in a To field. Email an account a colleague owns. Send a third email to the same person. Quote an index number that wasn't computed that week. Invent the specifics of a past search.
+
+Each of these exists because the mistake was made once, by hand, and cost something.
+
+---
 
 ## When something looks wrong
 
-The skills log every decision into HubSpot task bodies, dated. Open any closed task and it tells you what was sent, when, and which task succeeded it. If the story and the CRM disagree, trust the Sent folder, and tell Claude, the reconciliation rules exist precisely because plans lie and outboxes don't.
+Every decision is logged into HubSpot task bodies, dated. Open any closed task and it tells you what was sent, when, and which task succeeded it.
+
+If the story and the CRM disagree, **trust the Sent folder**. The reconciliation rules exist precisely because plans lie and outboxes don't.
