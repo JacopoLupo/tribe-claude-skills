@@ -107,8 +107,12 @@ def main():
         if not ok and why:
             print(f"          gate said: {why}")
     print(f"\n  {passed}/{len(cases)} = {100*passed//len(cases)}%")
-    json.dump({"passed": passed, "total": len(cases), "rows": rows},
-              open(sys.argv[2], "w") if len(sys.argv) > 2 else sys.stdout, indent=2)
+    # Only write the JSON when somewhere to put it was named. It used to dump to
+    # stdout by default, which buried the fraction under 200 lines of it, and the
+    # fraction is the only thing the Friday sweep is asked to report.
+    if len(sys.argv) > 2:
+        json.dump({"passed": passed, "total": len(cases), "rows": rows},
+                  open(sys.argv[2], "w"), indent=2)
     return 0 if passed == len(cases) else 1
 
 sys.exit(main())

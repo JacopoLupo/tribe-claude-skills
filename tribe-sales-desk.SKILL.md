@@ -261,7 +261,7 @@ opened             ->  replied
 
 **It runs itself now (25 Aug 2026).** A scheduled task fires every Friday at 09:00 Prague and opens a fresh session with these checks as its brief. It runs in the cloud, so it has HubSpot and Gmail but no browser on Jacopo's machine: anything needing LinkedIn's UI gets named in the report for him rather than attempted. The sweep existing on a schedule does not make it automatic, it makes it unavoidable, which is the point. If a Friday passes with no sweep report, the scheduled task is broken and that is itself worth chasing.
 
-Friday, or Monday before anything else. Eleven checks, and the count is written here because it said seven while listing eleven for five days: a reader who stopped at seven skipped exactly the four newest, which are the four that exist because something expensive happened.
+Friday, or Monday before anything else. Twelve checks, and the count is written here because it said seven while listing eleven for five days: a reader who stopped at seven skipped exactly the four newest, which are the four that exist because something expensive happened.
 
 1. **Live deals with no activity in 14 days.** Each one gets an action or a stage change. Neither is optional.
 2. **Deals whose close date has passed.** Move it or close it.
@@ -274,6 +274,11 @@ Friday, or Monday before anything else. Eleven checks, and the count is written 
 9. **Closed tasks with no successor.** The rule says every closed task names what happens next by ID and date. Sample the week's closed tasks; a closed task with no successor is an account that has quietly stopped moving, and no overdue check can see it because nothing is overdue.
 10. **The UI merge queue task, opened and read.** It is due far in the future and never completed, so it is invisible to every overdue check by construction. If nobody opens it deliberately, it only ever grows.
 11. **The week's connect notes, re-read against the template.** Skeleton, character count, and whether the second beat names a choice rather than an outcome. The notes are the highest-converting thing this desk produces and the only quality check on them was Jacopo noticing.
+12. **The skills themselves, checked the way the desk checks everything else.** Run `python3 ../tribe-outbound-sequence/scripts/preflight.py --selftest` and `python3 ../tribe-outbound-sequence/scripts/eval_gate.py ../tribe-outbound-sequence/scripts/preflight.py`. Both must be green, and the eval harness prints a fraction, so report the fraction rather than the word "green". Then the question that no script can ask: **was any rule changed this week, and does something now verify it?**
+
+   This check exists because of 25 August 2026, which is the whole argument for it in one day. That morning the cadence changed from two touches per person to one email plus three weekly follow-ups. The prose was updated everywhere, the ladder script was updated, 58 follow-up tasks were created through 15 September, and nobody re-read the gate. Two of its checks had been written for cold first touches: one blocked any account carrying ATTEMPTED_TO_CONTACT, which this desk sets on everyone emailed at the moment of sending, and the other capped touches at the number the new cadence had just replaced. Between them they blocked every one of those 58 follow-ups. The gate's own selftest stayed green throughout because all eleven of its cases were first touches, so it certified the one lane that still worked.
+
+   The lesson is narrower and more useful than "test more". **A rule that changes has a blast radius, and the blast radius is every check written against the old version of it.** When a rule moves, list what reads it, and open each one. If the answer to "what verifies this now" is "someone will remember", the rule is not finished, and a green selftest is not evidence, it is the sound of the tests you happened to write.
 
 ## What cannot be done, and should be said early
 
