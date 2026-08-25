@@ -87,6 +87,34 @@ RED_LINE = "DELETE THIS LINE BEFORE SENDING"
 LEGAL_BASIS = "Legitimate interest \u2013 prospect/lead"
 BCC = "146748263@bcc.eu1.hubspot.com"
 
+# WHAT COUNTS AS A TOUCH. One definition, because two blocking checks key off
+# it and until now nothing said what it meant.
+#
+#   A TOUCH IS AN EMAIL SENT TO THAT PERSON. Nothing else is.
+#
+# Not a LinkedIn connect request, not the acceptance message, not a comment on
+# their post. Those are a second CHANNEL, which the skill mandates on the same
+# day as touch 1 on purpose, and a channel is not a rung. Getting this wrong in
+# either direction breaks something real: count the connect note as a touch and
+# every double-channel lead burns two rungs on day one, so follow-up 1 blocks;
+# count nothing and the seven-day floor stops meaning anything.
+#
+# It follows that last_touch_date is the date of the last EMAIL to that person,
+# and that the seven-day floor is a floor between emails. The same-day connect
+# note does not breach it and never did.
+TOUCH_TYPES = ("first", "followup", "second_name")
+
+# Statuses that mean a human at this company is already in a conversation with
+# us. Disqualifying for a cold open, expected for a follow-up.
+WORKED = ("ATTEMPTED_TO_CONTACT", "IN_PROGRESS", "CONNECTED", "OPEN_DEAL",
+          "BAD_TIMING", "UNQUALIFIED")
+
+# One email plus three weekly follow-ups (Jacopo, 25 Aug 2026: "I want 3 follow
+# up after the email that we sent... usually after 1 week and then after another
+# week"). Four rungs on one name, then a second name or a park. The dates come
+# from followup_ladder.py, which is the only place the gaps are written down.
+LADDER_LENGTH = 4
+
 
 def fail(bag, lead, msg):
     bag.append(("BLOCK", lead, msg))
@@ -97,14 +125,41 @@ def warn(bag, lead, msg):
 
 
 def check_screen(bag, name, s):
-    """The three screening questions that were each missed once this week.
+    """The screening questions that were each missed once, plus the lane the
+    gate could not see at all.
 
     Every field is required. A missing field is a blocker, not a default,
     because "absent" is exactly how amber and Upvest passed: nobody had looked,
     and nothing distinguished not-looked-at from looked-at-and-clean.
+
+    WHY touch_type EXISTS (25 Aug 2026, found by audit the same evening the
+    three-follow-up cadence shipped)
+        Every check below was written for a COLD FIRST TOUCH and then pointed
+        at follow-up sends without anyone re-reading it. Two of them made the
+        follow-up lane impossible:
+
+          - the worked-status screen blocks any account carrying
+            ATTEMPTED_TO_CONTACT, and the skill sets exactly that status on
+            everyone emailed, at the moment of sending. So follow-up 1 to a
+            person we emailed last week blocked on the evidence that we had
+            emailed them last week.
+          - touches_spent >= 2 blocked, quoting a ladder ("two per person")
+            that had been replaced that morning by one email plus three weekly
+            follow-ups.
+
+        Between them they blocked 100% of the 58 follow-up tasks scheduled
+        through 15 September, and the route-to-a-second-name step the ladder
+        mandates at +39. The shipped selftest never caught it because all
+        eleven of its cases are first touches. A gate that only knows one lane
+        is a gate that fails the other lane silently.
+
+        So the screen now asks which lane this lead is in, and the same
+        evidence means opposite things in each: a worked status on this person
+        is disqualifying for a first touch and REQUIRED for a follow-up.
     """
     required = ("company_owner_id", "contact_lead_statuses", "agent_notes_count",
-                "last_touch_date", "parked", "touches_spent")
+                "last_touch_date", "parked", "touches_spent", "touch_type",
+                "this_contact_status")
     for k in required:
         if k not in s:
             fail(bag, name, f"screen.{k} missing. Run the query and record the "
@@ -112,19 +167,47 @@ def check_screen(bag, name, s):
     if not all(k in s for k in required):
         return
 
+    lane = str(s["touch_type"]).lower()
+    if lane not in TOUCH_TYPES:
+        fail(bag, name, f"screen.touch_type is '{s['touch_type']}'. It must be "
+                        f"one of {', '.join(TOUCH_TYPES)}, because the same "
+                        f"evidence means opposite things in each lane.")
+        return
+
     owner = str(s["company_owner_id"] or "")
     if owner and owner != "33687989":
         fail(bag, name, f"company is owned by {owner}, not Jacopo. Park it and "
                         f"name whose it is.")
 
-    worked = [x for x in s["contact_lead_statuses"]
-              if str(x).upper() in ("ATTEMPTED_TO_CONTACT", "IN_PROGRESS",
-                                    "CONNECTED", "OPEN_DEAL", "BAD_TIMING",
-                                    "UNQUALIFIED")]
-    if worked:
-        fail(bag, name, f"a contact on this account is already at {worked[0]}. "
-                        f"This is the amber failure: the company record looked "
-                        f"clean and the contact record did not.")
+    mine = str(s["this_contact_status"] or "").upper()
+    worked = [x for x in s["contact_lead_statuses"] if str(x).upper() in WORKED]
+
+    if lane == "first":
+        # The amber failure: the company record looked clean and the contact
+        # record did not. Anyone on the account being live disqualifies a cold
+        # open, because a cold open into a live account is the second email
+        # that person did not ask for.
+        if worked:
+            fail(bag, name, f"a contact on this account is already at "
+                            f"{worked[0]}. This is the amber failure: the "
+                            f"company record looked clean and the contact "
+                            f"record did not.")
+    elif lane == "followup":
+        # Inverted on purpose. Following up on someone who was never emailed
+        # means the ladder is being run against the wrong record, and the
+        # follow-up will open on a first email that does not exist.
+        if mine not in WORKED:
+            fail(bag, name, f"this is a follow-up but the contact is at "
+                            f"'{mine or 'nothing'}'. A follow-up to someone "
+                            f"never emailed is a cold email wearing the wrong "
+                            f"opener. Check you have the right record.")
+    elif lane == "second_name":
+        # Other contacts being worked is the whole reason this lane exists.
+        # This person having been worked is not.
+        if mine in WORKED:
+            fail(bag, name, f"routing to a second name, but this name is "
+                            f"himself already at {mine}. That is not a second "
+                            f"name, it is a fourth email to a spent inbox.")
 
     if s["agent_notes_count"]:
         fail(bag, name, f"{s['agent_notes_count']} notes from another agent on "
@@ -138,10 +221,26 @@ def check_screen(bag, name, s):
                         "catch our own finished ladder. Proxima Fusion's real "
                         "state, two touches spent and no third email to that "
                         "name, lived only in a task body.")
-    elif spent >= 2:
-        fail(bag, name, f"{spent} touches already spent on this name. The ladder "
-                        f"is two per person, then route to a second name or "
-                        f"park. Never a third email to the same inbox.")
+    elif lane in ("first", "second_name"):
+        if spent:
+            fail(bag, name, f"{spent} touches already spent on this name, but "
+                            f"this is logged as a {lane} touch. A fresh name "
+                            f"has spent none. Either the lane is wrong or the "
+                            f"record is.")
+    elif lane == "followup":
+        if spent < 1:
+            fail(bag, name, "a follow-up with zero touches spent. The first "
+                            "email has to exist before anything follows it up.")
+        elif spent >= LADDER_LENGTH:
+            fail(bag, name, f"{spent} touches already spent on this name. The "
+                            f"ladder is one email plus three weekly follow-ups, "
+                            f"{LADDER_LENGTH} in total, then a second name or a "
+                            f"park. Never a fifth email to the same inbox.")
+        if not s["last_touch_date"]:
+            fail(bag, name, "a follow-up with no last_touch_date. The seven-day "
+                            "floor cannot be checked against a date nobody "
+                            "recorded, and that is how Optiml got five emails "
+                            "in eight days.")
 
     if s["parked"]:
         fail(bag, name, "account is parked. Read the park's own reopen "
@@ -427,6 +526,8 @@ TEMPLATE = {
         "company_id": "0000",
         "variant_authorised": False,
         "screen": {
+            "touch_type": "first",
+            "this_contact_status": "NEW",
             "company_owner_id": "33687989",
             "contact_lead_statuses": ["NEW"],
             "agent_notes_count": 0,
@@ -454,6 +555,7 @@ def selftest():
                  "follow how it goes.")
     base = {
         "company": "Testco", "screen": {
+            "touch_type": "first", "this_contact_status": "NEW",
             "company_owner_id": "33687989", "contact_lead_statuses": ["NEW"],
             "agent_notes_count": 0, "last_touch_date": None, "parked": False,
             "touches_spent": 0},
@@ -511,6 +613,53 @@ def selftest():
     stale = json.loads(json.dumps(base))
     stale["board"]["scan_date"] = "2026-08-18"
     cases.append(("stale board scan", stale, True))
+
+    # THE FOLLOW-UP LANE. Everything above this line is a cold first touch, and
+    # that is precisely how the gate shipped on 25 Aug 2026 blocking every one
+    # of the 58 follow-ups on the calendar while its own selftest read green.
+    # A selftest that only exercises the happy lane certifies the happy lane.
+    eight = str(TODAY - datetime.timedelta(days=8))
+    three = str(TODAY - datetime.timedelta(days=3))
+
+    def fu(**kw):
+        L = json.loads(json.dumps(base))
+        L["screen"].update({"touch_type": "followup",
+                            "this_contact_status": "ATTEMPTED_TO_CONTACT",
+                            "contact_lead_statuses": ["ATTEMPTED_TO_CONTACT"],
+                            "last_touch_date": eight})
+        L["screen"].update(kw)
+        return L
+
+    cases.append(("follow-up 1 of 3 passes", fu(touches_spent=1), False))
+    cases.append(("follow-up 2 of 3 passes", fu(touches_spent=2), False))
+    cases.append(("follow-up 3 of 3 passes", fu(touches_spent=3), False))
+    cases.append(("a fifth email to the same inbox", fu(touches_spent=4), True))
+    cases.append(("follow-up inside the seven day floor",
+                  fu(touches_spent=1, last_touch_date=three), True))
+    cases.append(("follow-up on a name never actually emailed",
+                  fu(touches_spent=1, this_contact_status="NEW",
+                     contact_lead_statuses=["NEW"]), True))
+    cases.append(("follow-up with no recorded last touch",
+                  fu(touches_spent=1, last_touch_date=None), True))
+    cases.append(("another agent's notes block a follow-up too",
+                  fu(touches_spent=1, agent_notes_count=318), True))
+
+    second = json.loads(json.dumps(base))
+    second["screen"].update({"touch_type": "second_name",
+                             "this_contact_status": "NEW",
+                             "contact_lead_statuses": ["ATTEMPTED_TO_CONTACT",
+                                                       "NEW"]})
+    cases.append(("route to a fresh second name at a worked account",
+                  second, False))
+
+    second_worked = json.loads(json.dumps(second))
+    second_worked["screen"]["this_contact_status"] = "ATTEMPTED_TO_CONTACT"
+    cases.append(("second name who was himself already worked",
+                  second_worked, True))
+
+    lane = json.loads(json.dumps(base))
+    lane["screen"]["touch_type"] = "cold"
+    cases.append(("a touch_type nobody defined", lane, True))
 
     ok = True
     for label, lead, should_block in cases:

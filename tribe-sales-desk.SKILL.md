@@ -147,15 +147,13 @@ The rules that come out of that:
 
 **What did NOT change, and why it matters more now.** The seven-day floor between touches is still the floor, and weekly follow-ups sit exactly on it. Every follow-up still has to carry something the last one did not. Four emails of the same email is not persistence, it is the Optiml pattern with a longer fuse: five emails in eight days to someone who had been replying inside twenty minutes, and the answer was no. Cadence buys you the right to be there; material is what makes the touch worth opening.
 
-**The old rule, for the record.** The third touch used to go to a different name at the same company rather than a third attempt at the same inbox. Route it openly: "if this sits better with X, tell me and I will keep it with her" gets replies from people who would otherwise ignore it.
-
-**Two names per company, then stop, which is at most four emails (clarified 25 Aug 2026).** The heading here used to read "two emails per company" while the rule above it allows two per person across two people, so the same page said two and four. The ladder is: two touches to the first name, then route to a second name, two touches there, then the account is cold. Park it with a dated reopen condition rather than a third name. A reader who parked after two emails total was killing live sequences.
+**Two names per company, then stop (rewritten 25 Aug 2026 to match the ladder above).** Four touches to the first name, then route to a second name openly: "if this sits better with X, tell me and I will keep it with her" gets replies from people who would otherwise ignore it. That second name gets its own four rungs, and then the account is cold: park it with a dated reopen condition rather than a third name. Two earlier versions of this paragraph said two touches per person and are gone, because they disagreed with the ladder four lines above them and the gate reads the ladder.
 
 **Never send an ask without the thing.** If the email asks them to sign, agree, or decide, the document has to be attached to that same email. Asking someone to move forward on something they have not seen is how a live deal dies quietly.
 
 **Track what you promised.** If a follow-up said "I will write once and then leave you alone", do not schedule a third. Put a routing check instead.
 
-**Standard spacing that works here (updated 20 Aug 2026):** first email, follow-up 2 to 3 weeks later (3 over summer or quiet periods), then 2 to 3 weeks after the second touch comes the route to a second name or the park with a dated reopen condition, never a third email to the same inbox. Closing any send task and creating its successor happen in the same motion; the full ladder lives in tribe-outbound-sequence under "The follow-up lifecycle". A follow-up task is only marked complete when the send is confirmed in Sent and the body carries what actually went out; a reply at any point voids the pending task, close it with the outcome and switch to the reply playbook above.
+**One authority for the spacing, and it is not this paragraph.** `followup_ladder.py` computes every date; the gate checks them against it. Do not restate the gaps here or in a task body, because the 20 August version of this paragraph (first email, follow-up at 2 to 3 weeks, route at 2 to 3 weeks after that) outlived the rule it described by five days and was still being read as current. Closing any send task and creating its successor happen in the same motion. A follow-up task is only marked complete when the send is confirmed in Sent and the body carries what actually went out; a reply at any point voids the pending task, close it with the outcome and switch to the reply playbook above.
 
 ## Task hygiene
 
@@ -263,7 +261,7 @@ opened             ->  replied
 
 **It runs itself now (25 Aug 2026).** A scheduled task fires every Friday at 09:00 Prague and opens a fresh session with these checks as its brief. It runs in the cloud, so it has HubSpot and Gmail but no browser on Jacopo's machine: anything needing LinkedIn's UI gets named in the report for him rather than attempted. The sweep existing on a schedule does not make it automatic, it makes it unavoidable, which is the point. If a Friday passes with no sweep report, the scheduled task is broken and that is itself worth chasing.
 
-Friday, or Monday before anything else. Seven checks:
+Friday, or Monday before anything else. Eleven checks, and the count is written here because it said seven while listing eleven for five days: a reader who stopped at seven skipped exactly the four newest, which are the four that exist because something expensive happened.
 
 1. **Live deals with no activity in 14 days.** Each one gets an action or a stage change. Neither is optional.
 2. **Deals whose close date has passed.** Move it or close it.
