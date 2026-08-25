@@ -148,8 +148,15 @@ def parse_feed(url):
             meur = float(amt) * (1000 if unit == "b" else 1)
         except ValueError:
             continue
+        # The article link is carried so qualify.py can resolve the company's
+        # OWN domain from it. Press coverage nearly always links the startup,
+        # and that link identifies the company far better than a slug guessed
+        # from the headline: guessing turned "Smart thermostat maker Boldr"
+        # into a Washington DC company and "Solace Care" into a 17-role US
+        # board, both of which only the location gate caught.
         out.append({"company": name, "title": title, "amount": meur,
                     "cur": m.group("cur"), "date": dt.date().isoformat(),
+                    "link": (item.findtext("link") or "").strip(),
                     "src": url.split("/")[2]})
     return out
 
@@ -217,8 +224,16 @@ def loc_summary(jobs):
     non_eu = sum(1 for l in locs if any(k in l.lower() for k in NON_EU))
     return top, non_eu / len(locs)
 
-def probe_boards(name):
+def probe_boards(name, slugs=None):
     """Try every ATS provider for every slug candidate. Return best hit.
+
+    `slugs` lets a caller supply the slug it already resolved (qualify.py reads
+    it off the company's own careers URL) instead of guessing from the name.
+    It is a PARAMETER and not a patched global on purpose: the first version
+    monkey-patched slugify(), ten threads raced on it, and boards that resolved
+    correctly in isolation came back empty in the concurrent run. A shared
+    mutable global is not a way to pass an argument.
+
     A hit found only via the FIRST-WORD slug of a multi-word name is tagged
     verify=True: it can be a same-named stranger (a board called 'singular'
     is not necessarily Singular Photonics). Always confirm those by eye."""
@@ -230,7 +245,7 @@ def probe_boards(name):
             return None
     words = re.sub(r"[^a-z0-9 ]", "", name.lower()).split()
     risky_slug = words[0] if len(words) > 1 else None
-    for slug in slugify(name):
+    for slug in (slugs if slugs is not None else slugify(name)):
         risky = (slug == risky_slug)
         # Ashby
         raw = fetch(f"https://api.ashbyhq.com/posting-api/job-board/{slug}", 8)
@@ -318,73 +333,85 @@ def probe_boards(name):
     return None
 
 # ---- run ----
-rounds = []
-with cf.ThreadPoolExecutor(8) as ex:
-    for lst in ex.map(parse_feed, FEEDS):
-        rounds.extend(lst)
+# WHY THIS IS A FUNCTION AND NOT TOP-LEVEL CODE (25 Aug 2026)
+#     qualify.py needs probe_boards, parse_feed and the location gate. With the
+#     sweep running at import time, importing this file ran the whole radar as a
+#     side effect, so the only way to reuse any of it was to copy it. Copying is
+#     how a rule ends up true in one file and false in another, which is the bug
+#     class that cost three separate fixes today. One home, imported.
+def main():
+    rounds = []
+    with cf.ThreadPoolExecutor(8) as ex:
+        for lst in ex.map(parse_feed, FEEDS):
+            rounds.extend(lst)
 
-# dedupe by lowercase company name, keep biggest amount
-by_name = {}
-for r in rounds:
-    k = r["company"].lower()
-    if k not in by_name or r["amount"] > by_name[k]["amount"]:
-        by_name[k] = r
-rounds = sorted(by_name.values(), key=lambda r: -r["amount"])
+    # dedupe by lowercase company name, keep biggest amount
+    by_name = {}
+    for r in rounds:
+        k = r["company"].lower()
+        if k not in by_name or r["amount"] > by_name[k]["amount"]:
+            by_name[k] = r
+    rounds = sorted(by_name.values(), key=lambda r: -r["amount"])
 
-reach = max(FEED_REACH) if FEED_REACH else 0
-window = min(DAYS, reach)
-print(f"FUNDING RADAR {NOW.date()} | last {window} days | "
-      f"{len(rounds)} companies from {len(FEEDS)} feeds")
-if DAYS > reach:
-    print(f"!!! YOU ASKED FOR {DAYS} DAYS AND THE FEEDS ONLY REACH BACK {reach}.")
-    print("    RSS carries a fixed number of recent items, so anything older is")
-    print("    simply not in the file and no flag can retrieve it. This is NOT")
-    print("    'no rounds were announced': it is 'this tool cannot see them'.")
-    print("    For older rounds use the weekly recaps (tech.eu, EU-Startups)")
-    print("    by hand, and never report a quiet fortnight off this output.")
-print("=" * 78)
+    reach = max(FEED_REACH) if FEED_REACH else 0
+    window = min(DAYS, reach)
+    print(f"FUNDING RADAR {NOW.date()} | last {window} days | "
+          f"{len(rounds)} companies from {len(FEEDS)} feeds")
+    if DAYS > reach:
+        print(f"!!! YOU ASKED FOR {DAYS} DAYS AND THE FEEDS ONLY REACH BACK {reach}.")
+        print("    RSS carries a fixed number of recent items, so anything older is")
+        print("    simply not in the file and no flag can retrieve it. This is NOT")
+        print("    'no rounds were announced': it is 'this tool cannot see them'.")
+        print("    For older rounds use the weekly recaps (tech.eu, EU-Startups)")
+        print("    by hand, and never report a quiet fortnight off this output.")
+    print("=" * 78)
 
-def enrich(r):
-    r["board"] = probe_boards(r["company"])
-    return r
+    def enrich(r):
+        r["board"] = probe_boards(r["company"])
+        return r
 
-with cf.ThreadPoolExecutor(10) as ex:
-    rounds = list(ex.map(enrich, rounds))
+    with cf.ThreadPoolExecutor(10) as ex:
+        rounds = list(ex.map(enrich, rounds))
 
-hot, cold = [], []
-for r in rounds:
-    (hot if r["board"] else cold).append(r)
+    hot, cold = [], []
+    for r in rounds:
+        (hot if r["board"] else cold).append(r)
 
-def score(r):
-    """Rank a lead. Workable, Recruitee, SmartRecruiters and Personio do not
-    expose a per-role publish date, so `recent` is None for them. Treating that
-    as 0 (the old `b["recent"] or 0`) meant those four providers could never
-    outrank an Ashby board, regardless of how good the lead was. Estimate from
-    the board size instead, and mark it so the operator knows it is an estimate."""
-    b = r["board"]
-    recent = b["recent"]
-    if recent is None:
-        recent = b["roles"] * 0.25   # neutral assumption, not a zero penalty
-    return (b["roles"] + 3 * recent) * (2 if b["ta"] == 0 else 1)
+    def score(r):
+        """Rank a lead. Workable, Recruitee, SmartRecruiters and Personio do not
+        expose a per-role publish date, so `recent` is None for them. Treating that
+        as 0 (the old `b["recent"] or 0`) meant those four providers could never
+        outrank an Ashby board, regardless of how good the lead was. Estimate from
+        the board size instead, and mark it so the operator knows it is an estimate."""
+        b = r["board"]
+        recent = b["recent"]
+        if recent is None:
+            recent = b["roles"] * 0.25   # neutral assumption, not a zero penalty
+        return (b["roles"] + 3 * recent) * (2 if b["ta"] == 0 else 1)
 
-for r in sorted(hot, key=score, reverse=True):
-    b = r["board"]
-    rec = f", {b['recent']} posted <=14d" if b["recent"] is not None else ""
-    ta = "NO TA ROLES" if b["ta"] == 0 else f"{b['ta']} TA roles"
-    v = " [VERIFY SLUG]" if b.get("verify") else ""
-    amt_s = f"{r['amount']:.1f}" if r['amount'] < 10 else f"{r['amount']:.0f}"
-    print(f"*{v} {r['company']:<24} {r['cur']}{amt_s}M  {r['date']}  "
-          f"{b['ats']}: {b['roles']} roles{rec}, {ta}")
-    top, non_eu = r["board"].get("locs", ("", None))
-    if non_eu is not None and non_eu >= 0.5:
-        print(f"    LOCATION GATE: {non_eu:.0%} of these roles are outside EMEA "
-              f"({top}). Tribe sells EMEA hiring, so drop this unless the EU "
-              f"slice alone justifies it.")
-    else:
-        print(f"    locations: {top}")
-    print(f"    {r['title'][:74]}")
-print("-" * 78)
-print("no public board found (check careers page by hand, or park):")
-for r in cold:
-    amt_s = f"{r['amount']:.1f}" if r['amount'] < 10 else f"{r['amount']:.0f}"
-    print(f"  {r['company']:<24} {r['cur']}{amt_s}M  {r['date']}  [{r['src']}]")
+    for r in sorted(hot, key=score, reverse=True):
+        b = r["board"]
+        rec = f", {b['recent']} posted <=14d" if b["recent"] is not None else ""
+        ta = "NO TA ROLES" if b["ta"] == 0 else f"{b['ta']} TA roles"
+        v = " [VERIFY SLUG]" if b.get("verify") else ""
+        amt_s = f"{r['amount']:.1f}" if r['amount'] < 10 else f"{r['amount']:.0f}"
+        print(f"*{v} {r['company']:<24} {r['cur']}{amt_s}M  {r['date']}  "
+              f"{b['ats']}: {b['roles']} roles{rec}, {ta}")
+        top, non_eu = r["board"].get("locs", ("", None))
+        if non_eu is not None and non_eu >= 0.5:
+            print(f"    LOCATION GATE: {non_eu:.0%} of these roles are outside EMEA "
+                  f"({top}). Tribe sells EMEA hiring, so drop this unless the EU "
+                  f"slice alone justifies it.")
+        else:
+            print(f"    locations: {top}")
+        print(f"    {r['title'][:74]}")
+    print("-" * 78)
+    print("no public board found (check careers page by hand, or park):")
+    for r in cold:
+        amt_s = f"{r['amount']:.1f}" if r['amount'] < 10 else f"{r['amount']:.0f}"
+        print(f"  {r['company']:<24} {r['cur']}{amt_s}M  {r['date']}  [{r['src']}]")
+
+
+
+if __name__ == "__main__":
+    main()
