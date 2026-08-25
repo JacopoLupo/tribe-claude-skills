@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+batch*.json
+board_history.json
+index_post_history.json
