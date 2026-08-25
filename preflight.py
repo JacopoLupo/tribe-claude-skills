@@ -69,9 +69,22 @@ NOTE_BANNED = (
     "open roles", "days", "recruiter", "median", "%", "percent",
 )
 
+# Closes and phrasings that were retired for EVERY variant, not just the one
+# they were first spotted in. "coffee chat" was pulled on 24 Aug 2026 with the
+# rest of the soft closes, and the ban was written into variant A's spec because
+# that is where it was found. It then went out unnoticed in two variant B drafts
+# (Enpal and Photoroom, both prepared 25 Aug), because B's spec had no ban list
+# at all. A rule filed under one variant is a rule the other variants do not
+# have: retirements belong here, where they apply to everything.
+BANNED_EVERYWHERE = (
+    "coffee chat",
+    "worth 15 minutes",
+    "quick chat",
+)
+
 VARIANT_SPECS = {
     # variant: (min words, max words, subject rule, must contain, must not contain)
-    "A": (55, 110, None, (), ("coffee chat", "this week i checked")),
+    "A": (55, 110, None, (), ("this week i checked",)),
     # B's subject follows the same fact-based convention as A and C. It used to
     # be "Tribe / [category] comparison"; the 24 Aug fix killed that pattern by
     # name and the two rules stood side by side for six days, which is how a
@@ -344,6 +357,12 @@ def check_email(bag, name, e):
         if phrase.lower() not in low:
             fail(bag, name, f"variant {variant} is missing its defining line: "
                             f"'{phrase}'.")
+    for phrase in BANNED_EVERYWHERE:
+        if phrase in body.lower():
+            fail(bag, name, f"body contains '{phrase}', a close retired on "
+                            f"24 Aug 2026 for every variant. It asks for time "
+                            f"without naming what the time is for, which is the "
+                            f"shape the zero-reply cohort used.")
     for phrase in must_not:
         if phrase.lower() in low:
             fail(bag, name, f"variant {variant} contains '{phrase}', which was "
@@ -683,6 +702,13 @@ def selftest():
     lane = json.loads(json.dumps(base))
     lane["screen"]["touch_type"] = "cold"
     cases.append(("a touch_type nobody defined", lane, True))
+
+    coffee = json.loads(json.dumps(base))
+    coffee["email"]["variant"] = "B"
+    coffee["email"]["body"] = (RED_LINE + "\nTribe was nowhere in the results. "
+                               + ("word " * 200)
+                               + "just for a coffee chat.")
+    cases.append(("retired close in variant B, not just A", coffee, True))
 
     cases.append(("follow-up with no connect note is complete",
                   fu(touches_spent=1, **{}) | {"connect_note": ""}, False))
