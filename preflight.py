@@ -491,8 +491,54 @@ def check_note(bag, name, note, has_email, lane="first"):
                         "lead.")
 
 
+# THE SEND CAP, AND WHY IT IS A RAMP (Jacopo, 25 Aug 2026: "NUMBERS IS THE KEY
+# THE MORE WE CONTACT THE MORE REPLY WE HAVE")
+#
+# He is right and two a day was never a deliverability limit. It was a task-list
+# limit, set because nine tasks on one morning got bulk-snoozed and a snoozed
+# task is worse than no task. That is a real problem and it is not solved by
+# sending less, it is solved by the ladder creating the tasks itself.
+#
+# THE ARITHMETIC THAT ACTUALLY SETS THE CEILING. Every new contact gets one
+# email plus three weekly follow-ups. At steady state, a day carries N first
+# touches plus the follow-ups owed to the cohorts from 7, 14 and 21 days ago:
+#
+#     daily email volume = 4 x N
+#
+# So N=5 is 20 emails a day, N=10 is 40, N=15 is 60. From one mailbox on one
+# domain. The connect request rides along at N a day, and LinkedIn throttles
+# invitations at roughly 100 a week, which caps N at about 20 on that side alone.
+#
+# N=10 is the honest ceiling: 40 emails a day steady state and 50 invitations a
+# week, both inside what a warmed single mailbox and a normal LinkedIn account
+# sustain. Higher needs a second sending domain, not a bigger number here.
+#
+# AND IT RAMPS RATHER THAN JUMPS. Going from 2 to 10 overnight is the pattern
+# that gets a domain filtered, and a filtered domain does not send 40 a day, it
+# sends 40 into spam. The schedule below raises the cap on dates, so nobody has
+# to remember to do it and nobody can skip ahead by editing one number in a
+# batch file. Reaching a step is not permission to take it: the bounce rate and
+# the reply rate from the previous step have to be read first, and if either
+# moved the wrong way the ramp pauses here rather than continuing.
+SEND_CAP_RAMP = [
+    (datetime.date(2026, 8, 25), 2),
+    (datetime.date(2026, 8, 27), 5),
+    (datetime.date(2026, 9, 3), 8),
+    (datetime.date(2026, 9, 10), 10),
+]
+
+
+def send_cap(day=None):
+    day = day or TODAY
+    cap = SEND_CAP_RAMP[0][1]
+    for start, n in SEND_CAP_RAMP:
+        if day >= start:
+            cap = n
+    return cap
+
+
 def check_daily_cap(bag, batch, leads):
-    """Two outbound sends a day, counting what is ALREADY on the list.
+    """The day's outbound sends against the ramp, counting what is ALREADY there.
 
     Added 25 Aug 2026, after the gate passed a two-lead batch for a day that
     already carried four follow-up sends dated weeks earlier. The gate could not
@@ -515,12 +561,22 @@ def check_daily_cap(bag, batch, leads):
                            "list and means nothing.")
         return
     total = already + new_sends
-    if total > 2:
+    cap = send_cap()
+    if total > cap:
+        nxt = next((f"{s.isoformat()} it becomes {n}"
+                    for s, n in SEND_CAP_RAMP if s > TODAY), "there is no further step")
         fail(bag, "batch", f"{already} send(s) already scheduled that day plus "
-                           f"{new_sends} new = {total}. The cap is two. Move the "
-                           f"newest cold sends rather than the follow-ups: a "
-                           f"follow-up has a live thread behind it and a cold "
-                           f"send does not.")
+                           f"{new_sends} new = {total}. Today's cap is {cap} "
+                           f"({nxt}). Move the newest cold sends rather than the "
+                           f"follow-ups: a follow-up has a live thread behind it "
+                           f"and a cold send does not. Raising the cap is a "
+                           f"commit to the ramp with the bounce and reply rates "
+                           f"read first, never an edit to one batch.")
+    elif total == cap:
+        warn(bag, "batch", f"the day is full at {cap}. Anything else goes to "
+                           f"tomorrow, and at steady state each of these owes "
+                           f"three more emails, so today's {total} becomes "
+                           f"{total * 4} a day once the ladders overlap.")
 
 
 def check_rotation(bag, leads):

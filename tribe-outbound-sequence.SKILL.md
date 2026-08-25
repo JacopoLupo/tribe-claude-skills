@@ -20,6 +20,34 @@ The job: take people Jacopo wants to contact and get him to the point where he o
 
 Most of the value here is not the writing. It is the checks that happen before the writing, because his CRM has 8,500+ companies, a history of bad imports, and duplicates that multiply every time someone sends an email to a contact whose email field is blank.
 
+## THE SELECTION GATE. Nothing is created until Jacopo picks
+
+There are two gates and they run in this order. This one is his and it comes first. The preflight gate below is mechanical and comes second. A batch that skips this one is not fast, it is a batch that made his decisions for him.
+
+**The rule: the morning pass ends with a numbered list, and nothing is written to HubSpot, Gmail or LinkedIn until he has said which numbers.** No company record, no contact record, no draft, no task, no connect note. `python3 scripts/qualify.py --days 3` prints the tiers already numbered for exactly this. Hand him the list, wait, then build only what he chose.
+
+**Why (25 Aug 2026).** That morning five contacts were created before he had chosen anything: Enpal, Dust, Multiverse, Photoroom and Upvest. **The Upvest contact was created at 08:21. The account was parked at 08:51.** Thirty minutes. Upvest is a past client and another Tribester's agent has 318 Company Intel notes on the record, so it should never have been touched, and by the time anyone knew that there was a contact record, a Gmail draft and a task that all had to be unwound by hand. The draft is still sitting in his mailbox needing to be binned.
+
+Creating records early feels like preparation. It is not: it is committing the CRM to a decision nobody made. Records are cheap to create and expensive to remove, HubSpot deletion is UI-only on this portal, and every premature contact is a duplicate waiting to happen.
+
+**What the handover looks like.** Tiers, numbered, with the reason each is in the tier it is in, the money, the domain, the board if there is one. Then stop and ask. He replies with numbers or a tier, and only then does anything get written.
+
+**The one exception** is a lead he has already named himself. If he says "prep Enpal", that is the selection, and the pass goes straight to building.
+
+### The three tiers, and what each one lets you say
+
+The tiers are about what can truthfully be said to a company today, not about how good the company is.
+
+**Tier 1, the index angle.** Board visible, EMEA, roles moving, no recruiter of their own. The email quotes a role age from their own board against the market median. Strongest evidence available, because they can check every word of it.
+
+**Tier 2, the infrastructure angle.** Funded, EMEA, and no job board findable anywhere. **This is a signal, not a gap** (Jacopo, 25 Aug 2026: "if companies have 0 ats they are in need of help which is great to approach"). A company that raised eight figures last week with no applicant tracking is about to run its next ten hires through somebody's inbox, and that is a sharper thing to say than a stuck req because it is about what happens next rather than what already went wrong.
+
+The evidence is weaker here and the wording has to admit it. We observed that no board could be found. We did not observe that none exists: a Notion careers page or a Personio instance behind a login look identical to nothing from outside. **So this email opens on what was actually done, not on a claim about their stack:** "I went looking for your board and could not find one" is checkable by the recipient. "You have no ATS" is not, and every other email this desk sends is checkable, so this one has to be too. Close on the question rather than the assertion.
+
+**Tier 3, watch.** The board address is known and it is empty or still. Add the slug to `board_common.SLUGS` and let the nightly velocity diff promote it the week roles appear, which is before any competitor knows they are hiring. Costs nothing until then.
+
+**Tiers 1 and 2 compete for the same two send slots.** Tiering decides what to say, not how much to send. The connect request ships with every pick and costs no slot, which is where volume actually lives.
+
 ## THE PREFLIGHT GATE. Nothing reaches Jacopo until it exits 0
 
 On 25 August 2026 the desk broke three written rules in one morning and Jacopo caught all three: a company was prepped for a send while a colleague's agent was working it, a second was prepped a day after its CEO had already been emailed, and three connect notes were improvised instead of written from the template. None of it was carelessness. Every one of those rules lived in prose with no moment where anything verified it, and a rule with no gate is a wish.
@@ -391,7 +419,7 @@ Rules for B: RUN THE PROMPT IN CLAUDE ONCE BEFORE EACH BATCH, if Tribe appears i
 
 **1. Test ONE variable at a time, and test the subject line first.** Not two whole emails. The subject is the biggest single lever and the cheapest thing to change. Everything below the subject stays identical across the arms, or the comparison means nothing.
 
-**2. Measure OPENS, not replies.** Open rates run 40 to 60%, so 40 sends per arm produces readable signal. **At this desk's real volume that is not two weeks, and saying so matters:** the cap is two cold sends a day, so 80 sends across two arms is roughly eight working weeks, i.e. a verdict around late October rather than early September. An earlier draft of this section promised two weeks, which would have had the test read as stalled or the cap quietly broken to make the date. The scoreboard is a running tally with no promised verdict date; the verdict comes when both arms reach 40. Reply rate stays the north star of the whole desk, it is simply not the test metric, because it is too rare to move a test at this volume.
+**2. Measure OPENS, not replies.** Open rates run 40 to 60%, so 40 sends per arm produces readable signal. **At this desk's real volume that is not two weeks, and saying so matters:** the cap ramps from two to ten cold sends a day through September, so 80 sends across two arms lands somewhere between late September and late October depending on how far the ramp actually gets. Recompute the projection from today's cap rather than quoting a date. An earlier draft of this section promised two weeks, which would have had the test read as stalled or the cap quietly broken to make the date. The scoreboard is a running tally with no promised verdict date; the verdict comes when both arms reach 40. Reply rate stays the north star of the whole desk, it is simply not the test metric, because it is too rare to move a test at this volume.
 
 **3. THE TRACK BOX IS NOW A HARD GATE.** It lapsed through the entire August cohort and that is precisely why zero replies was unreadable. No Track box means no open data means the test does not run at all. If a batch goes out untracked, it is EXCLUDED from the test rather than counted, and the daily run flags it.
 
@@ -573,7 +601,7 @@ Every send moves the account one rung down a fixed ladder, and closing a task AL
 
 **A reply at any rung voids the ladder.** Close the pending follow-up task with the outcome and switch to the reply playbook in tribe-sales-desk, the reply is worth more than the next ten cold emails.
 
-**Scheduling mechanics:** maximum 2 outbound tasks due per day, so batch follow-ups across consecutive days; every new task names the exact give it must carry (never "follow up"); and every closed task names its successor by task ID and date, so opening any closed task tells you where the account went next.
+**Scheduling mechanics:** the daily send cap is a RAMP, not a fixed two, and `preflight.py` computes today's number from `SEND_CAP_RAMP` (2 until 27 Aug, then 5, then 8 from 3 Sept, then 10 from 10 Sept). Jacopo, 25 Aug 2026: "NUMBERS IS THE KEY THE MORE WE CONTACT THE MORE REPLY WE HAVE." He is right, and two a day was never a deliverability limit: it was a task-list limit set because nine tasks on one morning got bulk-snoozed, and the ladder script now creates those tasks itself. **The arithmetic that sets the real ceiling:** every contact gets one email plus three weekly follow-ups, so at steady state a day carries N first touches plus the follow-ups owed to the cohorts from 7, 14 and 21 days ago. Daily volume is 4 x N. Ten new contacts a day is forty emails a day from one mailbox, and the connect requests riding along hit LinkedIn's ~100-a-week invitation throttle at about the same point. **Ten is the honest ceiling; past it needs a second sending domain, not a bigger number.** It ramps rather than jumps because going from 2 to 10 overnight is how a domain gets filtered, and a filtered domain does not send forty a day, it sends forty into spam. Reaching a step is not permission to take it: read the bounce rate and the reply rate from the step before, and pause the ramp if either moved the wrong way. Batch follow-ups across consecutive days; every new task names the exact give it must carry (never "follow up"); and every closed task names its successor by task ID and date, so opening any closed task tells you where the account went next.
 
 **The risk reversal rides in every first email and every follow-up:** "First shortlist within five days, before any contract is signed." It is Tribe's free trial, it costs nothing to say because the team can actually do it, and it converts a reply from a commitment into a no-risk yes.
 
@@ -686,7 +714,7 @@ Each task body should contain:
 - Any decision he has to make first, stated as a check rather than a suggestion. "CHECK FIRST: Grégory Leyne contacted 10 July, no reply. Decide if this is deliberate multi-threading."
 - Who the backup contact is at that company
 
-Spacing: two per day at most, and check what is already on his calendar before scheduling. Piling nine tasks onto one morning guarantees they get bulk-snoozed.
+Spacing: today's cap comes from `preflight.py --template` rather than from memory, and check what is already on his calendar before scheduling. Piling nine tasks onto one morning guarantees they get bulk-snoozed, which is the problem the old fixed two was solving; the ladder creating its own tasks is what solves it now.
 
 Set `hs_lead_status` to `ATTEMPTED_TO_CONTACT` on anyone he has emailed, so the CRM reflects reality without him touching it.
 

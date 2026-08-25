@@ -56,6 +56,7 @@ USAGE
 """
 import concurrent.futures as cf
 import datetime
+import itertools
 import json
 import re
 import sys
@@ -292,7 +293,25 @@ def tier(r, known):
         if r.get("ats_known"):
             return "T3", (f"board found at {r['ats_known']} with nothing live "
                           f"yet, so watch that address")
-        return "T2", "no board reachable, so there is no number to write an email around"
+        # NO ATS IS A SIGNAL, NOT A GAP (Jacopo, 25 Aug 2026: "if companies have
+        # 0 ats they are in need of help which is great to approach").
+        # He is right and the first version of this file was wrong. It treated an
+        # unreachable board as "nothing to say", because the index angle needs a
+        # role age to quote. But a company that raised eight figures last week and
+        # has no applicant tracking anywhere is not a company with no story. It is
+        # a company whose next ten hires are about to go through somebody's inbox,
+        # and that is a sharper thing to say than a stuck req, because it is about
+        # what happens next rather than what already went wrong.
+        #
+        # The evidence is weaker and the wording has to admit it. We observed that
+        # no board could be found; we did not observe that none exists. A Notion
+        # careers page or a Personio instance behind a login both look identical
+        # to nothing from out here. So this lane opens on what was actually done
+        # ("I went looking for your board and could not find one") rather than on
+        # an assertion about their stack. Every other email here is checkable by
+        # the recipient, and this one has to be too.
+        return "T2", ("funded, and no job board findable anywhere. The infrastructure "
+                      "angle: hiring is about to start with nothing to run it on")
     if b["ta"]:
         return "T2", f"{b['ta']} TA role(s) of their own, so lead with the person not the gap"
     recent = b["recent"] if b["recent"] is not None else b["roles"] * 0.25
@@ -345,8 +364,9 @@ def main():
     print(f"  OUT     excluded, with a reason each        {len(buckets['OUT']):>3}")
     print("=" * 78)
 
-    for key, head in (("T1", "TIER 1, write the email today"),
-                      ("T2", "TIER 2, connect request only"),
+    counter = itertools.count(1)
+    for key, head in (("T1", "TIER 1, the index angle: a stuck role with a number"),
+                      ("T2", "TIER 2, the infrastructure angle: funded, no board anywhere"),
                       ("T3", "TIER 3, watch list"),
                       ("OUT", "EXCLUDED")):
         rows = buckets[key]
@@ -354,9 +374,10 @@ def main():
             continue
         print(f"\n--- {head} ({len(rows)}) ---")
         for r in rows:
+            r["pick"] = next(counter)
             amt = f"{r['amount']:.1f}" if r["amount"] < 10 else f"{r['amount']:.0f}"
             dom = r.get("domain") or "domain not found"
-            print(f"  {r['company'][:26]:<26} {r['cur']}{amt}M  {dom}")
+            print(f"  [{r['pick']:>2}] {r['company'][:26]:<26} {r['cur']}{amt}M  {dom}")
             print(f"      {r['why']}")
             if r.get("board"):
                 b = r["board"]
@@ -366,11 +387,12 @@ def main():
             elif r.get("ats_known"):
                 print(f"      {r['ats_known']}, empty today, add to the watch list")
 
-    print(f"\nSend slots are 2 a day and tier 1 has {len(buckets['T1'])}. "
-          f"Tier 2 costs no slot,\nbut LinkedIn throttles invitations at roughly "
-          f"100 a week, so 15 to 20 a day is\nthe real ceiling there. Tier 3 goes "
-          f"into board_common.SLUGS and costs nothing\nuntil the nightly diff "
-          f"promotes it.")
+    print(f"\nNOTHING IS CREATED IN HUBSPOT FROM THIS LIST. Pick by number first.")
+    print(f"Send slots are still 2 a day and tiers 1 and 2 compete for them, so "
+          f"this is a\nchoice about what to say, not a licence to send more. The "
+          f"connect request ships\nwith every pick and costs no slot, which is "
+          f"where the volume actually lives:\nLinkedIn throttles invitations "
+          f"around 100 a week, so 15 to 20 a day is the ceiling.")
 
     if JSON_OUT:
         json.dump([{k: v for k, v in r.items() if k != "board"} |
