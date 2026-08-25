@@ -260,6 +260,14 @@ def check_email(bag, name, e):
     if len(subject) > 45:
         warn(bag, name, f"subject is {len(subject)} chars, over the 45 the "
                         f"convention asks for.")
+    if "calendly.com" in body.lower():
+        # Jacopo moved to a Google Calendar appointment schedule on 25 Aug 2026.
+        # The old link still works, which is exactly why it survives in drafts
+        # nobody re-reads, and it sends prospects to a booking page he has
+        # stopped watching.
+        fail(bag, name, "the signature still points at Calendly. It is the "
+                        "Google Calendar appointment schedule now, and a dead "
+                        "booking link is worse than no link.")
     if "—" in body or "–" in body:
         fail(bag, name, "em or en dash in the body. Jacopo does not use them "
                         "and they are the loudest tell that a machine wrote it.")

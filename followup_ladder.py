@@ -34,11 +34,13 @@ THE LADDER, and why each gap is what it is
     +14 days  review the DM if one was sent. If silent, do NOT nudge on
               LinkedIn: the email ladder carries the account from here, one
               channel at a time.
-    +18 days  touch 2, the second email to the same person. The floor is 7 days
-              between touches and the range that works here is 2 to 3 weeks;
-              18 days sits inside it and clears summer quiet periods.
+    +7 days   follow-up 1. Jacopo reset this on 25 Aug 2026: "I want 3 follow up
+              after the email that we sent... usually after 1 week and then
+              after another week." That replaces the old single touch 2 at +18.
+    +14 days  follow-up 2.
+    +21 days  follow-up 3, the last on this name.
     +39 days  route to a second name at the same company, or park. Never a
-              third email to the same inbox.
+              fifth email to the same inbox.
     +60 days  the park review, if it parked. A park with no review date is a
               deletion with extra steps, and one nearly cost the best lead of
               the month.
@@ -68,15 +70,22 @@ STEPS = [
     (14, "dm", "Review the DM: {company}",
      "If the DM is unanswered, do NOT nudge on LinkedIn. Touch 2 by email is the "
      "next move and it is already dated below. One channel at a time after touch 1."),
-    (18, "touch2", "{company}: touch 2 to the same name",
-     "Second and last email to this person. It must carry something the first "
-     "did not: a change on their board, a timing consequence, a number with a "
-     "source. 'Just following up' burns the touch and buys nothing."),
+    (7,  "fu1", "{company}: follow-up 1 of 3",
+     "It must carry something the first email did not: a change on their board, "
+     "a timing consequence, a number with a source. 'Just following up' burns "
+     "the touch and buys nothing."),
+    (14, "fu2", "{company}: follow-up 2 of 3",
+     "Same rule, new material. A role crossing 90 or 180 days, a round, a People "
+     "hire, a board that moved. A reply at any point voids the rest of the "
+     "ladder: close it and switch to the reply playbook."),
+    (21, "fu3", "{company}: follow-up 3 of 3",
+     "The last one on this name. If it goes unanswered the next move is a second "
+     "name at the company or a park with a dated reopen condition, never a fifth "
+     "email to the same inbox. Decide which, in this task, and write it down."),
     (39, "route", "{company}: route to a second name, or park",
-     "Two touches are spent on this person. Go to a different name at the "
-     "company, openly ('if this sits better with X, tell me and I will keep it "
-     "with her'), or park with a testable reopen condition. Never a third email "
-     "to the same inbox."),
+     "The ladder is spent on this person. Go to a different name at the company, "
+     "openly ('if this sits better with X, tell me and I will keep it with her'), "
+     "or park with a testable reopen condition."),
     (60, "park_review", "{company}: park review",
      "Only if it parked. Re-read the park's OWN reopen condition against this "
      "week and say whether it is met. Parks were created weekly and reviewed by "

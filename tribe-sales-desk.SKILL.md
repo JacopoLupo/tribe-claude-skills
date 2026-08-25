@@ -143,7 +143,11 @@ The rules that come out of that:
 
 **Every follow-up must carry something the last one did not.** A timing consequence, a number with a source, a change on their job board, a piece of news. "Just following up" and "last follow up I promise" both burn a touch and buy nothing.
 
-**Two emails per person, then switch.** The third touch goes to a different name at the same company, not a third attempt at the same inbox. Route it openly: "if this sits better with X, tell me and I will keep it with her" gets replies from people who would otherwise ignore it.
+**THE LADDER IS ONE EMAIL PLUS THREE FOLLOW-UPS, A WEEK APART (Jacopo reset this on 25 Aug 2026: "I want 3 follow up after the email that we sent, because following up is the key for every account, usually after 1 week and then after another week").** This replaces the old "two emails per person, then switch". Send, then +7, +14, +21, computed by `followup_ladder.py` rather than by hand. The fifth email to the same inbox does not exist: after follow-up 3 the account routes to a second name or parks.
+
+**What did NOT change, and why it matters more now.** The seven-day floor between touches is still the floor, and weekly follow-ups sit exactly on it. Every follow-up still has to carry something the last one did not. Four emails of the same email is not persistence, it is the Optiml pattern with a longer fuse: five emails in eight days to someone who had been replying inside twenty minutes, and the answer was no. Cadence buys you the right to be there; material is what makes the touch worth opening.
+
+**The old rule, for the record.** The third touch used to go to a different name at the same company rather than a third attempt at the same inbox. Route it openly: "if this sits better with X, tell me and I will keep it with her" gets replies from people who would otherwise ignore it.
 
 **Two names per company, then stop, which is at most four emails (clarified 25 Aug 2026).** The heading here used to read "two emails per company" while the rule above it allows two per person across two people, so the same page said two and four. The ladder is: two touches to the first name, then route to a second name, two touches there, then the account is cold. Park it with a dated reopen condition rather than a third name. A reader who parked after two emails total was killing live sequences.
 
