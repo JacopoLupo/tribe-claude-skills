@@ -411,10 +411,31 @@ def check_followup(bag, name, lead):
                         f"thread is cold and touch 2 reads as a new cold email.")
 
 
-def check_note(bag, name, note, has_email):
-    if note is None:
-        fail(bag, name, "no connect note. The double channel is not optional: a "
-                        "prep with an email and no note is unfinished.")
+def check_note(bag, name, note, has_email, lane="first"):
+    """The four-beat note.
+
+    WHEN A NOTE IS REQUIRED, and when demanding one is wrong (found 25 Aug 2026
+    by running the gate over a real day rather than over its own fixtures).
+        The double channel is mandatory at touch 1: email and connect request
+        ship the same day, and a prep with an email and no note is unfinished.
+        A follow-up is the opposite case. The connect request already went out
+        weeks ago and is either accepted or pending; sending a second one is not
+        possible, and the skill's own rule is that withdrawing and resending
+        reads as pestering. So a follow-up with no note is complete, and the
+        gate blocking it was the gate applying a touch-1 rule to touch 3.
+
+        Caught on the Satispay follow-up, which had no note because it correctly
+        should not have one, and collected four blockers for it.
+
+        second_name is a FRESH person at a worked account, so the double channel
+        applies to them exactly as it does to any first touch.
+    """
+    if not (note or "").strip():
+        if lane == "followup":
+            return  # correct and complete: see above
+        fail(bag, name, "no connect note. The double channel is not optional on "
+                        "a first touch: a prep with an email and no note is "
+                        "unfinished.")
         return
     note = note.strip()
     n = len(note)
@@ -512,7 +533,9 @@ def run(batch):
         check_email(bag, name, lead.get("email"))
         if lead.get("email") or lead.get("connect_note"):
             check_followup(bag, name, lead)
-        check_note(bag, name, lead.get("connect_note"), bool(lead.get("email")))
+        check_note(bag, name, lead.get("connect_note"),
+                   bool(lead.get("email")),
+                   str((lead.get("screen") or {}).get("touch_type", "first")).lower())
     check_rotation(bag, leads)
     check_daily_cap(bag, batch, leads)
     return bag
@@ -660,6 +683,18 @@ def selftest():
     lane = json.loads(json.dumps(base))
     lane["screen"]["touch_type"] = "cold"
     cases.append(("a touch_type nobody defined", lane, True))
+
+    cases.append(("follow-up with no connect note is complete",
+                  fu(touches_spent=1, **{}) | {"connect_note": ""}, False))
+
+    nonote = json.loads(json.dumps(base))
+    nonote["connect_note"] = ""
+    cases.append(("first touch with no connect note is not", nonote, True))
+
+    second_nonote = json.loads(json.dumps(second))
+    second_nonote["connect_note"] = ""
+    cases.append(("second name with no connect note is not either",
+                  second_nonote, True))
 
     ok = True
     for label, lead, should_block in cases:
