@@ -95,6 +95,19 @@ VARIANT_SPECS = {
 }
 
 RED_LINE = "DELETE THIS LINE BEFORE SENDING"
+
+# The signature block, verbatim from Jacopo's real sent mail (24 Aug DeepL send).
+# THERE IS NO LOGO: the skill claimed the block ended with one that he pasted in
+# by hand, and his actual sent signature is three lines of grey Verdana and no
+# image. A false claim about a manual step is worse than a missing rule, because
+# it tells the reader an incomplete draft is finished.
+BOOKING = ("https://calendar.google.com/calendar/u/0/appointments/schedules/"
+           "AcZssZ0ucyiz8Z7z9UGvfNyNXeEh6YJjDHs8Dk02uscgg0swol9OVf5cpWu8u9tSpWTLPU5_AvajhK3y")
+SIGNATURE = (
+    '<p style="font-family:Verdana,sans-serif;font-size:9pt;color:#7a7a7a">'
+    'Jacopo Lupo Ferrari<br>'
+    '<a href="https://tribe.xyz/">Head of Delivery @ Tribe.xyz</a><br>'
+    f'<a href="{BOOKING}">Book a meeting with me!</a></p>')
 # The portal's option value, copied from get_properties. The en dash is real and
 # the template used to print a hyphen, which writes an invalid enum silently.
 LEGAL_BASIS = "Legitimate interest \u2013 prospect/lead"
@@ -378,6 +391,19 @@ def check_email(bag, name, e):
     if len(subject) > 45:
         warn(bag, name, f"subject is {len(subject)} chars, over the 45 the "
                         f"convention asks for.")
+    # The signature, which is not decoration: a draft without it is a draft the
+    # human retypes into a fresh compose window, which is exactly what Jacopo was
+    # doing on 25 Aug. Five of six live drafts that day had no signature while the
+    # rule had been written down since 20 August.
+    if "Jacopo Lupo Ferrari" not in body:
+        fail(bag, name, "no signature block. Gmail only auto-appends a signature "
+                        "in the compose window, never to an API-created draft, so "
+                        "it has to be in the htmlBody. Without it the draft is not "
+                        "sendable and gets copied into a new email by hand.")
+    elif "calendar.google.com/calendar" not in body:
+        fail(bag, name, "signature is present but carries no booking link. The "
+                        "line is 'Book a meeting with me!' pointing at the Google "
+                        "Calendar appointment schedule.")
     if "calendly.com" in body.lower():
         # Jacopo moved to a Google Calendar appointment schedule on 25 Aug 2026.
         # The old link still works, which is exactly why it survives in drafts
@@ -660,7 +686,7 @@ def selftest():
         "board": {"non_eu_fraction": 0.1, "scan_date": str(TODAY)},
         "email": {"variant": "A", "to": "a@b.com", "address_verified": True,
                   "bcc": BCC, "subject": "x",
-                  "body": RED_LINE + "\n" + ("word " * 80),
+                  "body": RED_LINE + "\n" + ("word " * 80) + SIGNATURE,
                   "legal_basis": LEGAL_BASIS},
         "connect_note": good_note,
         "followup": {"due": str(TODAY + datetime.timedelta(days=18)),
@@ -755,6 +781,15 @@ def selftest():
     cases.append(("second name who was himself already worked",
                   second_worked, True))
 
+    nosig = json.loads(json.dumps(base))
+    nosig["email"]["body"] = RED_LINE + "\n" + ("word " * 80)
+    cases.append(("draft with no signature block", nosig, True))
+
+    oldlink = json.loads(json.dumps(base))
+    oldlink["email"]["body"] = oldlink["email"]["body"].replace(
+        BOOKING, "https://example.com/nothing")
+    cases.append(("signature present but the booking link is not", oldlink, True))
+
     lane = json.loads(json.dumps(base))
     lane["screen"]["touch_type"] = "cold"
     cases.append(("a touch_type nobody defined", lane, True))
@@ -763,7 +798,7 @@ def selftest():
     coffee["email"]["variant"] = "B"
     coffee["email"]["body"] = (RED_LINE + "\nTribe was nowhere in the results. "
                                + ("word " * 200)
-                               + "just for a coffee chat.")
+                               + "just for a coffee chat." + SIGNATURE)
     cases.append(("retired close in variant B, not just A", coffee, True))
 
     cases.append(("follow-up with no connect note is complete",

@@ -36,7 +36,7 @@ def build(pf):
         "board": {"non_eu_fraction": 0.1, "scan_date": str(T)},
         "email": {"variant": "A", "to": "a@b.com", "address_verified": True,
                   "bcc": pf.BCC, "subject": "x",
-                  "body": pf.RED_LINE + "\n" + ("word " * 80),
+                  "body": pf.RED_LINE + "\n" + ("word " * 80) + pf.SIGNATURE,
                   "legal_basis": pf.LEGAL_BASIS},
         "connect_note": note,
         "followup": {"due": str(T + datetime.timedelta(days=18)),
