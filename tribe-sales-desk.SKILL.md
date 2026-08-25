@@ -61,7 +61,9 @@ Search `from:mailer-daemon` since the last run, every day, no exceptions. Strict
 
 **This is no longer a nice-to-have (24 Aug 2026).** The Track box lapsed across the entire August cohort, which is exactly why thirty-plus sends producing zero replies was unreadable: three failure points (delivered, opened, replied) collapsed into one number that could not be diagnosed. Domain auth was checked and is clean, so the silence was never deliverability.
 
-Every morning, check the previous day's sends for tracker keys on the EMAIL engagement objects. **A send with no tracker key is EXCLUDED from the A/B test rather than counted**, and gets reported as excluded, because an untracked send is a data point that cannot be read. If a whole batch went out untracked, say so plainly and tell Jacopo to fix "track by default" in the HubSpot Sales extension before the next batch.
+**THE PROPERTY IS `hs_email_open_count`, NOT A "TRACKER KEY" (corrected 25 Aug 2026).** There is no tracker-key property on this portal; `hs_email_tracker_key` was a guessed name and querying it returns propertiesNotFound, which means the step both files call a hard gate could never be executed as written and the A/B test's stated precondition was never once verified. It also produced a false alarm on 24 August that cost an hour. The real check: `search_crm_objects(EMAIL, ...)` on yesterday's sends reading `hs_email_open_count`, `hs_email_status` and `hs_email_to_email`. Zero opens across a whole batch means untracked; `hs_email_status = BOUNCED` gives the bounce check below a CRM-native cross-check it never had.
+
+Every morning, run that query for the previous day's sends. **A send that could not be tracked is EXCLUDED from the A/B test rather than counted**, and gets reported as excluded, because an untracked send is a data point that cannot be read. If a whole batch went out untracked, say so plainly and tell Jacopo to fix "track by default" in the HubSpot Sales extension before the next batch.
 
 **AND CHECK THE GDPR LAWFUL BASIS, WHICH IS A SECOND, SEPARATE WAY TO GO UNTRACKED (24 Aug 2026).** This portal has HubSpot's GDPR tools on, and a contact with no `hs_legal_basis` is silently excluded from tracking. HubSpot shows a one-line banner at send time and then sends normally, with no pixel. On 24 Aug a sweep found FORTY actively-worked contacts with no basis, every cold prospect since late July except two that came in with the original October 2025 import. Twelve of the fourteen August sends could never have registered an open under any circumstances.
 
@@ -71,7 +73,7 @@ That is why "35 sends, 0 replies" was unreadable, and it is why "1 open in 14" w
 
 The daily check compares, for yesterday's sends, recipients carrying a lawful basis against recipients sent to. Any gap is reported by name, and those sends are excluded from the test rather than counted as unopened.
 
-One query against HubSpot's logged emails (the EMAIL engagement object) for the most recent sends: do they carry a tracker key? If the latest sends have none, the Track box in the Gmail extension has lapsed (signed out, unticked, or sent outside desktop Chrome) and the morning report says "Track box lapsed, opens are not being recorded" the same day. The BCC keeps logging regardless, so this is about open data, not CRM history. Found the hard way on 20 August 2026: six sends went out untracked and nobody knew until the day was over.
+One query against HubSpot's logged emails (the EMAIL engagement object) for the most recent sends, reading `hs_email_open_count`. If a whole batch sits at zero a day later, the Track box in the Gmail extension has lapsed (signed out, unticked, or sent outside desktop Chrome) and the morning report says "Track box lapsed, opens are not being recorded" the same day. The BCC keeps logging regardless, so this is about open data, not CRM history. Found the hard way on 20 August 2026: six sends went out untracked and nobody knew until the day was over.
 
 ### 1d. The warming queue
 
@@ -79,7 +81,7 @@ Ask every morning: who in the warming queue is ready today? Open tasks with subj
 
 ### 1e. The LinkedIn scan, 10:00
 
-Who accepted since yesterday, who replied. Runs on its own schedule but read the result as part of the day: every acceptance is a same-day DM, every reply is a same-day answer and beats every cold email on the list. Full rules under "The 10:00 scanner" below.
+Who accepted since yesterday, who replied. **Ask the CRM first, not the browser (25 Aug 2026):** the portal carries HubLead properties that fill themselves, `hublead_last_linkedin_invitation_sent_date`, `hublead_last_linkedin_invitation_accepted_date`, `hublead_last_linkedin_message_sent_date` and `hublead_last_linkedin_message_received_date`. Accepted-date since yesterday IS the scan, it takes one query, and it does not depend on a LinkedIn page rendering. Read the UI afterwards for anything the properties cannot carry, such as the text of a reply. Runs on its own schedule but read the result as part of the day: every acceptance is a same-day DM, every reply is a same-day answer and beats every cold email on the list. Full rules under "The 10:00 scanner" below.
 
 **Read the whole inbox, not only the prospect threads.** Every unanswered message gets an answer or an explicit decision the same day, including the ones that are not leads. On 24 Aug 2026 three were sitting unread, two of them for three days with LinkedIn itself prompting "Reply?" on them: a recruiter connecting, a candidate following up on an old conversation, and a former Nexi colleague asking whether Tribe had work for her. None were sales leads and all three were reputational, and the last one was a delivery-capacity question that belonged with Kris or Salem. Non-leads get routed or answered in one line, never left. A desk that lets its inbox queue for three days cannot claim to be good at the conversation after first contact.
 
@@ -89,7 +91,7 @@ Daily, not weekly: one sweep for EU funding rounds announced the previous day. A
 
 ### 2. Find replies with no task behind them
 
-Search the inbox for replies from prospects, then check whether each one has an open task. Anything with a reply and no task is the top of today's list, ahead of every cold email.
+**Query the CRM before the inbox (25 Aug 2026).** The claim above that "a reply creates nothing" is no longer true: contacts carry `last_reply_date`, auto-updated by workflow on email replies, LinkedIn DMs and logged meetings. One filter on `last_reply_date` within the last few days catches replies on channels a Gmail search cannot see at all. Then search the inbox for replies from prospects, and check whether each one has an open task. Anything with a reply and no task is the top of today's list, ahead of every cold email.
 
 Check open deals the same way. A deal in a live stage whose `notes_last_contacted` is more than 14 days old, or whose `closedate` is in the past, is the same failure wearing a different hat.
 
@@ -98,6 +100,12 @@ Check open deals the same way. A deal in a live stage whose `notes_last_contacte
 If a task body carries a draft written days ago, re-check the fact it opens on. Job boards move. An email that opens "your Testing Architect has been open 40 days" is worse than useless if the role came off the board yesterday.
 
 The Ashby public API is the fastest check: `https://api.ashbyhq.com/posting-api/job-board/<slug>` returns every live job with `title`, `location` and `publishedAt`. Days open is `today - publishedAt`, and that number has opened every email that got a reply this month.
+
+### 3b. The preflight gate, before anything is shown to him
+
+`python3 ../tribe-outbound-sequence/scripts/preflight.py batch.json`, and a batch that does not exit 0 is not presented. The gate exists because on 25 August three written rules broke in one morning and every one of them was a rule with no verification step. Its checks and the four queries whose answers it demands are documented in tribe-outbound-sequence under "THE PREFLIGHT GATE"; the only thing this file adds is when it runs, which is last, after the drafts exist and before Jacopo sees them.
+
+The daily report says the gate ran and what it said. "Preflight green, 2 leads, 0 warnings" is one line and it is the difference between a rule and a wish.
 
 ### 4. Then draft what is genuinely left
 
@@ -135,9 +143,13 @@ The rules that come out of that:
 
 **Every follow-up must carry something the last one did not.** A timing consequence, a number with a source, a change on their job board, a piece of news. "Just following up" and "last follow up I promise" both burn a touch and buy nothing.
 
-**Two emails per person, then switch.** The third touch goes to a different name at the same company, not a third attempt at the same inbox. Route it openly: "if this sits better with X, tell me and I will keep it with her" gets replies from people who would otherwise ignore it.
+**THE LADDER IS ONE EMAIL PLUS THREE FOLLOW-UPS, A WEEK APART (Jacopo reset this on 25 Aug 2026: "I want 3 follow up after the email that we sent, because following up is the key for every account, usually after 1 week and then after another week").** This replaces the old "two emails per person, then switch". Send, then +7, +14, +21, computed by `followup_ladder.py` rather than by hand. The fifth email to the same inbox does not exist: after follow-up 3 the account routes to a second name or parks.
 
-**Two emails per company, then stop.** After a People lead and a founder have both had their touches with no reply, the account is cold. Park it with a dated reopen condition rather than a third name.
+**What did NOT change, and why it matters more now.** The seven-day floor between touches is still the floor, and weekly follow-ups sit exactly on it. Every follow-up still has to carry something the last one did not. Four emails of the same email is not persistence, it is the Optiml pattern with a longer fuse: five emails in eight days to someone who had been replying inside twenty minutes, and the answer was no. Cadence buys you the right to be there; material is what makes the touch worth opening.
+
+**The old rule, for the record.** The third touch used to go to a different name at the same company rather than a third attempt at the same inbox. Route it openly: "if this sits better with X, tell me and I will keep it with her" gets replies from people who would otherwise ignore it.
+
+**Two names per company, then stop, which is at most four emails (clarified 25 Aug 2026).** The heading here used to read "two emails per company" while the rule above it allows two per person across two people, so the same page said two and four. The ladder is: two touches to the first name, then route to a second name, two touches there, then the account is cold. Park it with a dated reopen condition rather than a third name. A reader who parked after two emails total was killing live sequences.
 
 **Never send an ask without the thing.** If the email asks them to sign, agree, or decide, the document has to be attached to that same email. Asking someone to move forward on something they have not seen is how a live deal dies quietly.
 
@@ -151,7 +163,7 @@ The rules that come out of that:
 
 **Every closed task names what happens next**, by task ID and date. Opening a closed task should tell you where the account went, not leave you hunting.
 
-**Two tasks per day, maximum.** Nine tasks on one morning get bulk-snoozed, and a snoozed task is worse than no task because it looks handled.
+**Two OUTBOUND SEND tasks per day, maximum.** Nine tasks on one morning get bulk-snoozed, and a snoozed task is worse than no task because it looks handled. The cap counts cold and warm first touches and follow-up sends. It does not count the desk's own bookkeeping (bounce checks, park reviews, "find an address", the merge queue), which is why an active day can legitimately show more than two tasks and still be inside the rule. Stated because the unqualified version made every routine in this file look like a breach.
 
 **Set `hs_lead_status` to `ATTEMPTED_TO_CONTACT`** on everyone emailed, at the moment of sending.
 
@@ -199,28 +211,13 @@ HubSpot merges and deletions are UI-only, so ghosts and duplicates accumulate. T
 
 ## Logging LinkedIn in HubSpot
 
-**LOG LINKEDIN NATIVELY THROUGH THE HUBSPOT UI. NOTES FOR LINKEDIN ACTIVITY ARE BANNED (Jacopo, 24 Aug 2026: "don't add anymore notes is creating a mess in every people hubspot").**
+**One spec, and it is NOT here.** The full mechanics live in **tribe-outbound-sequence**, under "LOG LINKEDIN NATIVELY THROUGH THE HUBSPOT UI". Go there.
 
-HubSpot HAS a native LinkedIn activity type. It sits on the contact record under the **More** button in the activity row, as **Log a LinkedIn message**, alongside Log SMS and Log a WhatsApp message. It renders on the timeline with a LinkedIn icon, it is filterable by channel, and it can be counted in reports. Notes can do none of that.
+This section used to be a byte-for-byte copy of that one: twenty-four lines of browser automation, the same sleep timings, the same React notes, duplicated across two files. It was the largest verbatim clone in either skill, in a codebase whose own stated worst failure mode is that a rule written twice disagrees with itself within a day. Two copies of a procedure with timing constants in it is two copies that drift the first time a selector changes.
 
-**How this was missed for a whole day, which is the lesson.** The MCP connector cannot see the `communications` object, so the conclusion drawn was "HubSpot cannot log LinkedIn". That was wrong and it cost an afternoon spent on a REST API route, a private app, a token handoff and a message to an admin, none of which were needed. The connector's blind spot was mistaken for the product's. **When a tool says a thing is impossible, look at what a human sees in the interface before believing it.** Jacopo found it by opening the menu.
+**What belongs here, and only this:** LinkedIn activity is logged the same day it happens, natively, never as a note (Jacopo, 24 Aug 2026: "don't add anymore notes is creating a mess in every people hubspot"). An unlogged DM is invisible to every routine in this file, which is how a channel that produces a 40% acceptance rate ends up with no record of what was said.
 
-**The mechanics, all verified working 24 Aug 2026:**
-
-- Use the host **app-eu1.hubspot.com**. The Chrome extension is denied read permission on `app.hubspot.com` and every call fails with "Permission denied for reading pages on this domain"; the EU host works. `https://app-eu1.hubspot.com/contacts/146748263/record/0-1/{contactId}`
-- Click **More** (aria-label matches `/More activities/`), wait ~1.3s, click **Log a LinkedIn message**, wait ~2.5s.
-- The editor is `[aria-label="Create a Logged LinkedIn message"]`. Focus it and fill with `document.execCommand('insertText', ...)`. **Setting innerHTML does not register with React** and the Log button stays disabled.
-- Element refs from `find` go stale because the menu closes on blur. Drive the whole sequence in ONE `javascript_tool` call instead of find-then-click.
-- The dialog carries its own **"Create a To-do task to follow up in 3 business days"** checkbox. Tick it for PENDING connect requests, where a three-day acceptance check is exactly the right question. Skip it where the contact already has dated tasks, or the list fills with duplicates.
-- **After ticking that checkbox, wait ~1.5s before clicking Log.** Clicking immediately lands mid-rerender and silently does nothing, and the dialog just sits there looking fine.
-- Confirm success by checking the editor is gone from the DOM.
-- The **Activity date defaults to now and React rejects programmatic changes**. If the real send time differs, put it in the body in square brackets rather than fighting the field.
-
-**What goes in the body:** the message text verbatim, then one bracketed line carrying what the text does not say. When it was sent, the current status (pending, accepted, replied), and anything that decides what happens next.
-
-**Connection requests are logged the same way**, as a LinkedIn message carrying the connect-note text plus the bracketed status line. There is no separate "log a connection request" type, and the `Engage on LinkedIn` submenu (Send InMail, Send connection request) sends through Sales Navigator rather than logging something already sent by hand.
-
-`scripts/linkedin_to_hubspot.py` remains in the repo as the API route, and it is now the FALLBACK rather than the plan. It needs a private app token and an admin; this needs a browser. Prefer this.
+**And check the CRM before the browser.** The HubLead properties on the contact (`hublead_last_linkedin_invitation_sent_date`, `..._invitation_accepted_date`, `..._message_sent_date`, `..._message_received_date`) fill themselves and answer most of what the 10:00 scan asks. Drive the UI only for what they cannot carry.
 
 ## Follow-ups exist for BOTH channels
 
@@ -235,7 +232,7 @@ Two LinkedIn tasks, both dated about two weeks out:
 
 The highest-leverage thing on this desk is not another email. It is that **nobody else in European recruiting has the index**, and until 24 Aug 2026 it existed only as a private script used to write cold emails to twenty people at a time.
 
-Every Monday, run `scripts/index_post.py`. It produces a paste-ready LinkedIn post from that morning's scan: role count, boards, medians by function with week-over-week movement, the >90 and >300 day counts, and the line that does the work ("recruiting roles themselves take 36 days to fill, so the companies that most need to hire are the slowest at hiring the people who do the hiring").
+Every Monday, run `../tribe-outbound-sequence/scripts/index_post.py`. It produces a paste-ready LinkedIn post from that morning's scan: role count, boards, medians by function with week-over-week movement, the >90 and >300 day counts, and the line that does the work ("recruiting roles themselves take 36 days to fill, so the companies that most need to hire are the slowest at hiring the people who do the hiring").
 
 **Why this matters more than the outbound.** Outbound is linear: one email, one prospect, one chance. The index compounds. Founders who delete a cold email will still read a benchmark about their own market, and once they have seen it, "I track 45 boards" stops being a claim in an email and becomes something they recognise. It is also the only part of this system a competitor cannot copy without building the scanner first.
 
@@ -245,7 +242,7 @@ The script prints an operator note under the post with the fastest-moving board 
 
 ## The funnel scoreboard
 
-**One reply-rate number was hiding four separate problems.** Through August the desk reported "35 sends, 0 replies", which is a single unreadable figure covering a chain of five conversions, each with its own failure mode and its own fix. From 24 Aug 2026 the report carries the whole chain, every stage as its own line with its own denominator:
+**One reply-rate number was hiding four separate problems.** Through August the desk reported "35 sends, 0 replies", which is a single unreadable figure covering a chain of SIX conversions (the block below has six rows and the prose said five in two places, corrected 25 Aug 2026), each with its own failure mode and its own fix. From 24 Aug 2026 the report carries the whole chain, every stage as its own line with its own denominator:
 
 ```
 connects sent      ->  accepted        (10 -> 4, 40%)
@@ -264,6 +261,8 @@ opened             ->  replied
 
 ## The weekly sweep
 
+**It runs itself now (25 Aug 2026).** A scheduled task fires every Friday at 09:00 Prague and opens a fresh session with these checks as its brief. It runs in the cloud, so it has HubSpot and Gmail but no browser on Jacopo's machine: anything needing LinkedIn's UI gets named in the report for him rather than attempted. The sweep existing on a schedule does not make it automatic, it makes it unavoidable, which is the point. If a Friday passes with no sweep report, the scheduled task is broken and that is itself worth chasing.
+
 Friday, or Monday before anything else. Seven checks:
 
 1. **Live deals with no activity in 14 days.** Each one gets an action or a stage change. Neither is optional.
@@ -272,14 +271,18 @@ Friday, or Monday before anything else. Seven checks:
 4. **The overdue tripwire: any task more than 14 days overdue gets named in the report as dead-or-real, and decided.** Not snoozed, not carried, decided: closed as dead with one line of why, or given a real date this week. This rule exists because a pile of 40 overdue LinkedIn follow-up tasks accumulated between May and August 2026 with nothing forcing the question.
 5. **Contacts with a send but no email on the record.** Every one is a duplicate waiting to happen. See the blank-email rule in tribe-outbound-sequence.
 6. **Accounts owned by another Tribester that appear in his list.** Park them and say whose they are.
-7. **The funnel scoreboard, five stages, not one number** (see below).
+7. **The funnel scoreboard, six stages, not one number** (the section above).
+8. **Every park's reopen condition, re-read against this week.** Parks are created weekly and were reviewed by nothing, which nearly cost the best lead of the month. Any park whose condition is now met comes back into the queue by name.
+9. **Closed tasks with no successor.** The rule says every closed task names what happens next by ID and date. Sample the week's closed tasks; a closed task with no successor is an account that has quietly stopped moving, and no overdue check can see it because nothing is overdue.
+10. **The UI merge queue task, opened and read.** It is due far in the future and never completed, so it is invisible to every overdue check by construction. If nobody opens it deliberately, it only ever grows.
+11. **The week's connect notes, re-read against the template.** Skeleton, character count, and whether the second beat names a choice rather than an outcome. The notes are the highest-converting thing this desk produces and the only quality check on them was Jacopo noticing.
 
 ## What cannot be done, and should be said early
 
-- **Sending email.** Neither HubSpot nor the Gmail connector can send. Drafts only, and a human clicks send.
+- **Sending email is a RULE, not a limit (corrected 25 Aug 2026).** The Gmail connector exposes send, reply and forward. Jacopo's standing instruction is that nothing goes out without him ("wait always for me before sending anything"), so the desk drafts and he clicks send. State it that way: a capability claim that is false gets discovered as false, and the last time that happened on this portal it cost an afternoon.
 - **Merging records.** Companies and contacts, UI only. Hand over record IDs and which to keep as primary.
 - **Deleting records.** No delete tool. Rename junk records with a `ZZ DELETE` prefix and a date so they sort to the bottom.
-- **Writing HubSpot notes.** Permission is off on this portal. Meetings, tasks, calls and deals all work.
+- **Writing HubSpot notes is a RULE, not a permission (corrected 25 Aug 2026).** Note read and write are both available. Jacopo banned writing them on 24 August because 182 landed on contact records in one day. Reading them is not merely allowed, it is REQUIRED: another agent on this portal records its work only in notes, and treating notes as unreadable is how an account it was working got prepped for a send.
 
 Say each of these at the moment it becomes relevant, not after he has waited for it.
 

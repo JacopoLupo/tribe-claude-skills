@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """Log LinkedIn activity into HubSpot as native Communications.
 
-WHY THIS EXISTS
-    HubSpot has no native LinkedIn logging and has not built it since the
-    feature was first requested in 2019. But the Communications API does
-    support it: the object accepts hs_communication_channel_type =
-    LINKEDIN_MESSAGE and renders on the contact timeline as a real LinkedIn
-    activity rather than a generic note.
+WHY THIS EXISTS, AND WHY IT IS THE FALLBACK (header corrected 25 Aug 2026)
+    THE PREMISE THIS FILE WAS BUILT ON WAS FALSE. It used to open "HubSpot has
+    no native LinkedIn logging", which is exactly the belief that cost an
+    afternoon on 24 August: the connector could not see the communications
+    object, and the connector's blind spot was mistaken for the product's.
+    HubSpot has had native LinkedIn logging the whole time, on the contact
+    record under More > Log a LinkedIn message. Leaving the false sentence in
+    the header of a live script is how a corrected belief comes back.
 
-    The HubSpot MCP connector Claude normally uses has no code path for that
-    object, so this talks to HubSpot's REST API directly instead.
+    So the primary route is the HubSpot UI, documented in the skill. This
+    script is the fallback for the day that route is unavailable or a bulk
+    backfill is needed: the Communications API accepts
+    hs_communication_channel_type = LINKEDIN_MESSAGE and renders the same
+    activity on the timeline. It needs a private app token and an admin; the
+    UI route needs a browser. Prefer the browser.
 
 THE TOKEN NEVER PASSES THROUGH CLAUDE
     The script reads it from a file on Jacopo's own machine. Claude writes and

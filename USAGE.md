@@ -166,3 +166,40 @@ Each of these exists because the mistake was made once, by hand, and cost someth
 Every decision is logged into HubSpot task bodies, dated. Open any closed task and it tells you what was sent, when, and which task succeeded it.
 
 If the story and the CRM disagree, **trust the Sent folder**. The reconciliation rules exist precisely because plans lie and outboxes don't.
+
+## The two new scripts
+
+### `preflight.py` — the gate, added 25 August 2026
+
+Nothing goes to Jacopo until this exits 0.
+
+```bash
+python3 preflight.py --template > batch.json   # the shape to fill in
+python3 preflight.py batch.json                # gate it
+python3 preflight.py --selftest                # prove it catches what it claims
+```
+
+It has no HubSpot credentials and never will, so it cannot run the screening
+queries. What it does is refuse to pass a batch until their ANSWERS are present,
+which is what stops a query being skipped and then quietly forgotten. Everything
+textual it checks outright: connect-note skeleton and character count, red
+reminder line, BCC, em dashes, per-variant word counts and banned phrases,
+subject convention, variant rotation, board scan freshness, EMEA location
+fraction, verified address, GDPR lawful basis, and the dated successor task.
+
+`--selftest` replays eleven real failures, including the three that happened in
+a single morning on 25 August 2026.
+
+### `followup_ladder.py` — the chase, computed
+
+```bash
+python3 followup_ladder.py 2026-08-26 --company=Multiverse --variant=A --channel=both
+python3 followup_ladder.py --check 2026-09-13 2026-08-26   # is that date sane
+```
+
+Bounce check at +1 business day, connect check at +3, DM review at +14 when a DM
+actually went out, touch 2 at +18, route-or-park at +39, park review at +60. The
+failure paths get tasks too: an account whose send bounced still gets its bounce
+row and its route row, because the accounts most likely to be forgotten are
+exactly the ones a success-only rule leaves out.
+

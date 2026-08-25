@@ -124,11 +124,43 @@ if os.path.exists(POST_HISTORY):
         history = []
 
 prev = None
+skipped_versions = []
 for entry in sorted(history, key=lambda e: (e.get("year", 0), e.get("week", 0)),
                     reverse=True):
-    if (entry.get("year"), entry.get("week")) != (year, week):
-        prev = entry
-        break
+    if (entry.get("year"), entry.get("week")) == (year, week):
+        continue
+    # NEVER DIFF ACROSS A FILTER CHANGE (25 Aug 2026 audit). index.py has
+    # guarded this since 24 Aug; the script that PUBLISHES did not, which is
+    # the wrong way round. A filter edit removes roles that were never real,
+    # and without this check every one of them is published as a role the
+    # market closed. The 25 Aug evergreen fix alone would have printed
+    # Knowunity's 337-day phantom as a genuine closure.
+    if entry.get("filter_version") != FILTER_VERSION:
+        skipped_versions.append((entry.get("week"), entry.get("filter_version")))
+        continue
+    prev = entry
+    break
+
+# Say WHY there are no deltas, every time there are none. Silence here reads
+# as "the market did not move", which is a different and much worse claim than
+# "this run has no comparable baseline".
+if not prev:
+    if skipped_versions:
+        w, v = skipped_versions[0]
+        why = (f"the most recent baseline (week {w}) was written under filter "
+               f"version {v} and this scan is version {FILTER_VERSION}, and "
+               f"diffing across a filter change publishes filter edits as "
+               f"market movement")
+    elif history:
+        why = ("the only entries on file are for this same week, so there is "
+               "nothing to compare against yet")
+    else:
+        why = "there is no history file yet"
+    print(f"!!! NO WEEK-OVER-WEEK DELTAS IN THIS POST, because {why}.\n"
+          f"    The post below is complete and correct without them. Do not "
+          f"add movement figures by hand.\n"
+          f"    If anyone asks, the honest answer is that this week has no "
+          f"comparable baseline, not that the market was flat.\n")
 
 if prev:
     gap = (year - prev.get("year", year)) * 52 + (week - prev.get("week", week))
