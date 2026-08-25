@@ -6,6 +6,8 @@ Built and hardened on live outreach through August 2026. Every rule in here exis
 
 > **This repo is public so the team can use it without access friction.** It carries the full playbook, client proof points, live A/B variants and CRM references, so don't advertise the link outside Tribe.
 
+**Current build: 25 August 2026.** If the copy you have installed does not mention the preflight gate, it is older than this and should be replaced. What the 25 August pass added: `preflight.py`, a gate every batch must clear before a human sees it, so a rule that used to live in someone's head now fails loudly instead of quietly; `followup_ladder.py`, which computes follow-up dates rather than trusting anyone to work them out at the end of a long day; three weekly follow-ups after the first email instead of two touches per person; and a daily send cap the gate can actually see.
+
 ---
 
 ## The idea in one paragraph
@@ -87,7 +89,7 @@ python3 index.py monumental      # one company's full board
 python3 index.py --probe 146     # percentile for a 146-day-old role
 ```
 
-Scans 41 European scaleup boards and computes the numbers every email quotes: medians by category, percentile tables, the >90/>180/>300 day counts, open recruiter roles, and TA pressure per board. It also **diffs against the previous run**, which is how a company gets spotted the week it starts scaling rather than the month after.
+Scans 45 European scaleup boards and computes the numbers every email quotes: medians by category, percentile tables, the >90/>180/>300 day counts, open recruiter roles, and TA pressure per board. It also **diffs against the previous run**, which is how a company gets spotted the week it starts scaling rather than the month after.
 
 ---
 
@@ -129,4 +131,4 @@ Improving these is a team sport. **[CONTRIBUTING.md](CONTRIBUTING.md)** covers h
 
 ## Before you run these as yourself
 
-Both skills are currently personalised to Jacopo: signature, Calendly link, first-person voice, A/B test ownership. Run them as-is and you'll draft emails signed Jacopo. The team edition, with sender identity as a slot, is the next piece of work. Until then treat this as the reference playbook and ask before adopting.
+Both skills are currently personalised to Jacopo: signature, booking link, first-person voice, A/B test ownership. Run them as-is and you'll draft emails signed Jacopo. The team edition, with sender identity as a slot, is the next piece of work. Until then treat this as the reference playbook and ask before adopting.
