@@ -52,6 +52,15 @@ def fetch(url, timeout=12):
     except Exception:
         return None
 
+# HOW FAR BACK THE FEEDS ACTUALLY REACH (25 Aug 2026 audit).
+# --days 14 and --days 30 returned the identical 17 companies, because an RSS
+# feed only carries its last ~10-20 items, which on these sites is about a
+# week. The header printed "last 30 days" and delivered seven, which is the
+# kind of number that ends up in an email. Every item age seen before the DAYS
+# filter is recorded here so the header can state the REAL reach.
+FEED_REACH = []
+
+
 def parse_feed(url):
     raw = fetch(url)
     if not raw:
@@ -70,6 +79,7 @@ def parse_feed(url):
             dt = dt.replace(tzinfo=datetime.timezone.utc)
         except Exception:
             dt = NOW
+        FEED_REACH.append((NOW - dt).days)
         if (NOW - dt).days > DAYS:
             continue
         m = ROUND_RE.search(title)
@@ -160,6 +170,53 @@ def slugify(name):
 
 TA_WORDS = ("recruit", "talent", "people", "hr ")
 
+# LOCATION IS A GATE, NOT A DETAIL (rule of 24 Aug 2026, tooling added 25 Aug).
+# The velocity diff once surfaced 1X as the best lead of the day: 82 roles, +6
+# in four days, three stuck recruiter searches. Every role was in San Carlos
+# and Hayward, California. The counts were real and the lead was worthless,
+# because Tribe sells EMEA hiring. The rule said "any board probe that feeds a
+# lead must print the location distribution" and nothing implemented it, so the
+# rule could only ever be obeyed by remembering it. Now the probe carries it.
+NON_EU = ("united states", "usa", " us)", "remote - us", "california", "new york",
+          "san francisco", "san carlos", "hayward", "austin", "boston", "seattle",
+          "chicago", "denver", "toronto", "vancouver", "canada", "singapore",
+          "tokyo", "japan", "sydney", "australia", "bengaluru", "bangalore",
+          "india", "dubai", "uae", "tel aviv", "israel", "sao paulo", "brazil",
+          "mexico", "shanghai", "beijing", "hong kong", "seoul", "texas", ", ca",
+          ", ny", ", ma", ", wa", ", il", ", co", ", tx", ", fl", ", ga",
+          ", dc", ", us", ", usa", "washington d.c", "atlanta", "miami")
+
+
+def _loc_of(job):
+    """Pull a location string out of whatever shape the provider returns."""
+    for key in ("locationName", "location", "city", "office"):
+        v = job.get(key)
+        if isinstance(v, str) and v.strip():
+            return v.strip()
+        if isinstance(v, dict):
+            parts = [v.get(k) for k in ("city", "region", "country", "name")]
+            parts = [p for p in parts if isinstance(p, str) and p.strip()]
+            if parts:
+                return ", ".join(parts)
+    cats = job.get("categories")
+    if isinstance(cats, dict) and isinstance(cats.get("location"), str):
+        return cats["location"].strip()
+    return ""
+
+
+def loc_summary(jobs):
+    """Return (top-3 string, non_eu_fraction). Empty locations are ignored in
+    the fraction rather than counted as European, so a board that exposes no
+    location reads as 'unknown' instead of quietly passing the gate."""
+    locs = [_loc_of(j) for j in jobs]
+    locs = [l for l in locs if l]
+    if not locs:
+        return "location not exposed by this provider", None
+    from collections import Counter as _C
+    top = ", ".join(f"{l} x{n}" for l, n in _C(locs).most_common(3))
+    non_eu = sum(1 for l in locs if any(k in l.lower() for k in NON_EU))
+    return top, non_eu / len(locs)
+
 def probe_boards(name):
     """Try every ATS provider for every slug candidate. Return best hit.
     A hit found only via the FIRST-WORD slug of a multi-word name is tagged
@@ -186,7 +243,8 @@ def probe_boards(name):
                 ages = [age_days(j.get("publishedAt", "")) for j in jobs]
                 return {"verify": risky, "ats": f"ashby/{slug}", "roles": len(jobs),
                         "recent": sum(1 for a in ages if a is not None and a <= 14),
-                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS))}
+                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS)),
+                        "locs": loc_summary(jobs)}
         # Lever
         raw = fetch(f"https://api.lever.co/v0/postings/{slug}?mode=json", 8)
         if raw:
@@ -198,7 +256,8 @@ def probe_boards(name):
                 now_ms = NOW.timestamp() * 1000
                 return {"verify": risky, "ats": f"lever/{slug}", "roles": len(jobs),
                         "recent": sum(1 for j in jobs if now_ms - j.get("createdAt", 0) < 14 * 86400000),
-                        "ta": sum(1 for j in jobs if any(k in (j.get("text") or "").lower() for k in TA_WORDS))}
+                        "ta": sum(1 for j in jobs if any(k in (j.get("text") or "").lower() for k in TA_WORDS)),
+                        "locs": loc_summary(jobs)}
         # Greenhouse
         raw = fetch(f"https://boards-api.greenhouse.io/v1/boards/{slug}/jobs", 8)
         if raw:
@@ -210,7 +269,8 @@ def probe_boards(name):
                 ages = [age_days(j.get("updated_at", "")) for j in jobs]
                 return {"verify": risky, "ats": f"greenhouse/{slug}", "roles": len(jobs),
                         "recent": sum(1 for a in ages if a is not None and a <= 14),
-                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS))}
+                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS)),
+                        "locs": loc_summary(jobs)}
         # Workable
         raw = fetch(f"https://apply.workable.com/api/v1/widget/accounts/{slug}?details=false", 8)
         if raw:
@@ -220,7 +280,8 @@ def probe_boards(name):
                 jobs = []
             if jobs:
                 return {"verify": risky, "ats": f"workable/{slug}", "roles": len(jobs), "recent": None,
-                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS))}
+                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS)),
+                        "locs": loc_summary(jobs)}
         # Recruitee
         raw = fetch(f"https://{slug}.recruitee.com/api/offers/", 8)
         if raw:
@@ -230,7 +291,8 @@ def probe_boards(name):
                 jobs = []
             if jobs:
                 return {"verify": risky, "ats": f"recruitee/{slug}", "roles": len(jobs), "recent": None,
-                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS))}
+                        "ta": sum(1 for j in jobs if any(k in (j.get("title") or "").lower() for k in TA_WORDS)),
+                        "locs": loc_summary(jobs)}
         # SmartRecruiters
         raw = fetch(f"https://api.smartrecruiters.com/v1/companies/{slug}/postings", 8)
         if raw:
@@ -241,13 +303,18 @@ def probe_boards(name):
             if d.get("totalFound", 0) > 0:
                 jobs = d.get("content", [])
                 return {"verify": risky, "ats": f"smartrecruiters/{slug}", "roles": d["totalFound"], "recent": None,
-                        "ta": sum(1 for j in jobs if any(k in (j.get("name") or "").lower() for k in TA_WORDS))}
+                        "ta": sum(1 for j in jobs if any(k in (j.get("name") or "").lower() for k in TA_WORDS)),
+                        "locs": loc_summary(jobs)}
         # Personio
         raw = fetch(f"https://{slug}.jobs.personio.de/xml", 8)
         if raw and b"<position>" in raw:
             n = raw.count(b"<position>")
             ta = sum(raw.lower().count(w.encode()) > 0 for w in ("recruit", "talent acquisition"))
-            return {"verify": risky, "ats": f"personio/{slug}", "roles": n, "recent": None, "ta": ta}
+            # Personio's XML feed is parsed for counts only, so say so rather
+            # than returning an empty string that reads like "no locations".
+            return {"verify": risky, "ats": f"personio/{slug}", "roles": n,
+                    "recent": None, "ta": ta,
+                    "locs": ("not parsed from the Personio feed, check by hand", None)}
     return None
 
 # ---- run ----
@@ -264,8 +331,17 @@ for r in rounds:
         by_name[k] = r
 rounds = sorted(by_name.values(), key=lambda r: -r["amount"])
 
-print(f"FUNDING RADAR {NOW.date()} | last {DAYS} days | "
+reach = max(FEED_REACH) if FEED_REACH else 0
+window = min(DAYS, reach)
+print(f"FUNDING RADAR {NOW.date()} | last {window} days | "
       f"{len(rounds)} companies from {len(FEEDS)} feeds")
+if DAYS > reach:
+    print(f"!!! YOU ASKED FOR {DAYS} DAYS AND THE FEEDS ONLY REACH BACK {reach}.")
+    print("    RSS carries a fixed number of recent items, so anything older is")
+    print("    simply not in the file and no flag can retrieve it. This is NOT")
+    print("    'no rounds were announced': it is 'this tool cannot see them'.")
+    print("    For older rounds use the weekly recaps (tech.eu, EU-Startups)")
+    print("    by hand, and never report a quiet fortnight off this output.")
 print("=" * 78)
 
 def enrich(r):
@@ -299,6 +375,13 @@ for r in sorted(hot, key=score, reverse=True):
     amt_s = f"{r['amount']:.1f}" if r['amount'] < 10 else f"{r['amount']:.0f}"
     print(f"*{v} {r['company']:<24} {r['cur']}{amt_s}M  {r['date']}  "
           f"{b['ats']}: {b['roles']} roles{rec}, {ta}")
+    top, non_eu = r["board"].get("locs", ("", None))
+    if non_eu is not None and non_eu >= 0.5:
+        print(f"    LOCATION GATE: {non_eu:.0%} of these roles are outside EMEA "
+              f"({top}). Tribe sells EMEA hiring, so drop this unless the EU "
+              f"slice alone justifies it.")
+    else:
+        print(f"    locations: {top}")
     print(f"    {r['title'][:74]}")
 print("-" * 78)
 print("no public board found (check careers page by hand, or park):")

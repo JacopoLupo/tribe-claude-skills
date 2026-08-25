@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Tribe Board Index. Scans ~40 European scaleup Ashby job boards and prints
+"""Tribe Board Index. Scans the 45 European scaleup Ashby job boards in
+board_common.SLUGS (the count every cold email quotes, keep them equal) and prints
 the market statistics every cold email quotes: medians by category, percentile
 probes, the >90/>180/>300 day counts, and the open TA-roles list.
 
@@ -183,6 +184,18 @@ else:
 if failed:
     print(f"\n!!! History NOT written, {len(failed)} boards were missing. "
           f"Next run still diffs against {prev_date}.")
+elif prev_date == str(TODAY):
+    # SAME-DAY RE-RUN DESTROYS THE BASELINE (25 Aug 2026, found by an
+    # integration test). The skill says run this before every batch, so two runs
+    # in a morning is normal, and the second one used to overwrite yesterday's
+    # snapshot with today's. From then on the velocity diff compared today
+    # against today and printed "no significant board movement", which reads as
+    # a quiet market rather than a blind detector. Velocity is the skill's
+    # highest-ranked cold signal, so it failed silently in the place it mattered
+    # most. The first scan of a day is the baseline; later ones are read-only.
+    print(f"\n(history left alone: today's baseline was already written by an "
+          f"earlier run. Velocity above is against {prev_date}, which is TODAY, "
+          f"so treat it as no-signal rather than no-movement.)")
 else:
     json.dump({"date": str(TODAY), "filter_version": FILTER_VERSION,
                "boards": current}, open(HISTORY, "w"))

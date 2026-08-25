@@ -10,7 +10,7 @@ Built and hardened on live outreach through August 2026. Every rule in here exis
 
 ## The idea in one paragraph
 
-Most outbound fails because it guesses. This one doesn't: every email quotes a number computed that same week from the prospect's own job board, measured against 41 European scaleup boards. "Your Account Executive has been open 146 days. The market median is 32." That sentence is unarguable, it is about them, and no competitor can send it.
+Most outbound fails because it guesses. This one doesn't: every email quotes a number computed that same week from the prospect's own job board, measured against 45 European scaleup boards. "Your Account Executive has been open 146 days. The market median is 32." That sentence is unarguable, it is about them, and no competitor can send it.
 
 ---
 
@@ -19,14 +19,16 @@ Most outbound fails because it guesses. This one doesn't: every email quotes a n
 ```mermaid
 flowchart TD
     A["<b>FIND</b><br/>funding_radar.py<br/>7 press feeds x 7 ATS probes"] --> B["<b>QUALIFY</b><br/>money + roles opening fast<br/>+ no recruiters"]
-    A2["<b>FIND</b><br/>index.py velocity diff<br/>41 boards, day over day"] --> B
-    B --> C{"Decision-maker<br/>posted this week?"}
+    A2["<b>FIND</b><br/>index.py velocity diff<br/>45 boards, day over day"] --> B
+    B --> P["<b>GATE</b><br/>preflight.py<br/>screen answers + draft checks"]
+    P --> C{"Decision-maker<br/>posted this week?"}
     C -->|yes| W["<b>WARM</b><br/>comment first,<br/>variant W inside 72h"]
     C -->|no| D["<b>COLD</b><br/>variant A or B,<br/>alternating"]
     W --> E["<b>SHIP BOTH CHANNELS</b><br/>email + LinkedIn connect,<br/>same day, always"]
     D --> E
-    E --> F["<b>HUMAN SENDS</b><br/>Claude never sends"]
-    F --> G["<b>LOG</b><br/>email auto-logs via BCC<br/>LinkedIn logged as notes"]
+    E --> P2["<b>GATE</b><br/>preflight.py must exit 0<br/>or the batch is not shown"]
+    P2 --> F["<b>HUMAN SENDS</b><br/>Claude never sends"]
+    F --> G["<b>LOG</b><br/>email auto-logs via BCC<br/>LinkedIn logged natively<br/>followup_ladder.py dates the chase"]
     G --> S{"Connect<br/>accepted?"}
     S -->|yes| T["<b>SAME-DAY DM</b><br/>a fact computed today,<br/>one real question, no pitch"]
     S -->|no| H["<b>LADDER</b><br/>touch 2 dated on both channels<br/>in the same motion"]
